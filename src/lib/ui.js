@@ -66,6 +66,17 @@ export function iconButton({
   return h('button', { ...props, type: 'button' }, svg);
 }
 
+/**
+ * 'stepan.varganov.dev@example.com' → <wbr> before the '@' and the dots of the local part, so a long
+ * address wraps as 'stepan.varganov.dev' / '@example.com' — never mid-word, never a lone '.com'.
+ */
+export function breakable(email) {
+  const at = email.lastIndexOf('@');
+  if (at < 1) return email;
+  const local = email.slice(0, at).split(/(?=\.)/);
+  return [...local.flatMap((part, i) => [i ? h('wbr') : null, part]), h('wbr'), email.slice(at)];
+}
+
 export function copyEmailButton(email, { variant = 'outline', size = 'md' } = {}) {
   if (!email) return null;
   const px = BTN_ICON[size] ?? BTN_ICON.md;

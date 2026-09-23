@@ -94,7 +94,7 @@ function icon(v, where) {
 function url(v, where, { optional = true } = {}) {
   if (optional && (v === null || v === undefined || v === '')) return;
   if (typeof v !== 'string' || !/^(https?:\/\/|mailto:)/.test(v)) err(where, `"${v}" must be a full https:// link (or null to hide it)`);
-  else if (/your-handle|example\.(com|org)|alex-?moreno/i.test(v)) warn(where, `"${v}" is still a placeholder link`);
+  else if (/your-handle|example\.(com|org)/i.test(v)) warn(where, `"${v}" is still a placeholder link`);
 }
 function unique(list, key, where) {
   const seen = new Map();
@@ -249,7 +249,6 @@ if (need(person, ['name', 'handle', 'tagline', 'pitch', 'bio', 'photo', 'locatio
   for (const k of ['name', 'handle', 'tagline', 'pitch', 'location', 'school', 'focus', 'email', 'responseTime']) str(person, k, 'person');
   const shown = String(person.handle || person.name || '');
   if ([...shown].length > 14) warn('person.handle', `"${shown}" is ${[...shown].length} characters — handles over ~14 are scaled down on phones to fit`);
-  if (person.name === 'Alex Moreno') warn('person.name', 'still the template student — put your own name here');
   str(person, 'pronouns', 'person', { optional: true });
   accent(person.pitch, site.sections?.about?.accent, 'site.sections.about.accent (inside person.pitch)');
   if (!isArr(person.bio) || !person.bio.length) err('person.bio', 'needs at least one paragraph');
@@ -435,9 +434,9 @@ if (skills.length && (skills.length < 3 || skills.length > 5)) warn('skills', `t
   if (need(t, ['quote', 'name', 'role', 'relationship'], w)) { str(t, 'quote', w); str(t, 'name', w); }
 });
 
-// Plain text only: flag anything that looks like HTML, and the template's fictional student.
+// Plain text only: flag anything that looks like HTML, and the template's fictional school.
 // (The TypicalTitan handle itself is fine — it's the site owner's real display name.)
-const TEMPLATE_IDENTITY = /Alex Moreno|Northgate|alex\.moreno/i;
+const TEMPLATE_IDENTITY = /Northgate/i;
 const identityHits = [];
 (function scan(v, where) {
   if (typeof v === 'string') {
@@ -451,7 +450,7 @@ const identityHits = [];
 
 if (identityHits.length) {
   const shown = identityHits.slice(0, 6).join(', ');
-  warn('content', `${identityHits.length} fields still mention the template student (Alex Moreno / Northgate): ${shown}${identityHits.length > 6 ? ', …' : ''}`);
+  warn('content', `${identityHits.length} fields still mention the template's placeholder school (Northgate): ${shown}${identityHits.length > 6 ? ', …' : ''}`);
 }
 
 /* ── Report ───────────────────────────────────────────────────────────────── */

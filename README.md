@@ -1,6 +1,6 @@
 # TypicalTitan — Student Engineer Portfolio (template)
 
-A fast, accessible, single-page portfolio for high-school engineers, built with **Vite + vanilla JS** and styled in a crimson / lava / petal look. It is a **template**: every name, number, project, lab, image and PDF in this repo is a realistic placeholder for a fictional student, *Alex Moreno (TypicalTitan)*. You make it yours by editing **one file**, `src/content.js`, and swapping the files in `public/`.
+A fast, accessible, single-page portfolio for high-school engineers, built with **Vite + vanilla JS** and styled in a crimson / lava / petal look. It is a **template** for *Stepan Varganov (TypicalTitan)*: every description is lorem ipsum, and the projects, labs, jobs, schools, numbers, images and PDFs are realistic placeholders. You make it yours by editing **one file**, `src/content.js`, and swapping the files in `public/`.
 
 What you get:
 
@@ -11,7 +11,7 @@ What you get:
 - Case-study pages for every project (`#/projects/<slug>`) and every lab (`#/labs/<slug>`)
 - No framework, no CDN, no tracking. It works offline, prints cleanly and respects *reduce motion*
 
-> **Before you publish:** replace the placeholders, then run `npm run check -- --strict`. It flags the placeholders it knows about: the portrait, the email, the LinkedIn link, the placeholder PDFs and any text that still mentions the template student (Alex Moreno / Northgate). Repo and demo links are yours to check by hand.
+> **Before you publish:** replace the placeholders, then run `npm run check -- --strict`. It flags the placeholders it knows about: the portrait, the email, the LinkedIn link, the placeholder PDFs and any text that still mentions the template's placeholder school (Northgate). Repo and demo links are yours to check by hand.
 
 ---
 

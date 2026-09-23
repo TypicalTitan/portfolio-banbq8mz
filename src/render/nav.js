@@ -5,7 +5,7 @@
 import { h, focusHeading, trapTab } from '../lib/dom.js';
 import { icon } from '../lib/icons.js';
 import { asset, pad2 } from '../lib/format.js';
-import { button, iconButton, socialLinks } from '../lib/ui.js';
+import { breakable, button, iconButton, socialLinks } from '../lib/ui.js';
 import { sectionHref } from '../router.js';
 import { motionPaused, onReducedMotionChange, setMotionPaused } from '../effects/index.js';
 
@@ -94,7 +94,7 @@ export function renderNav(content) {
         'a',
         { class: 'nav-drawer-email', href: `mailto:${person.email}` },
         icon('Mail', { size: 20 }),
-        h('span', null, person.email),
+        h('span', null, breakable(person.email)),
       )
     : null;
 

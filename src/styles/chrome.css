@@ -108,7 +108,7 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
 .nav-name {
   overflow: hidden;
   color: var(--c-ink);
-  font: 700 1rem/1 var(--font-sans);
+  font: 700 1rem/1.25 var(--font-sans);
   letter-spacing: -.01em;
   text-overflow: ellipsis;
   white-space: nowrap;

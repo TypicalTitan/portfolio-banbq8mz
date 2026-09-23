@@ -84,6 +84,12 @@
   background: linear-gradient(90deg, transparent, #ff3b6b);
 }
 .hm-hero-realname::after { transform: scaleX(-1); }
+@media (max-width: 379.98px) {
+  /* Shorter rules and gap so a two-word name stays on one line below 380px. */
+  .hm-hero-realname { gap: 8px; }
+  .hm-hero-realname::before,
+  .hm-hero-realname::after { width: 16px; }
+}
 
 .hm-hero-tagline {
   max-width: 36ch;

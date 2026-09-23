@@ -7,7 +7,7 @@
 import { h } from '../../lib/dom.js';
 import { icon, brand } from '../../lib/icons.js';
 import { asset } from '../../lib/format.js';
-import { button, copyEmailButton } from '../../lib/ui.js';
+import { breakable, button, copyEmailButton } from '../../lib/ui.js';
 import { mountLava, mountParticles, sprig, thornSeam, yinYang } from '../../effects/index.js';
 
 export function renderContact(content) {
@@ -76,17 +76,6 @@ function emailTile(email) {
       h('a', { class: 'hm-contact-tile-value', href: `mailto:${email}` }, breakable(email)),
     ),
   );
-}
-
-/**
- * 'alex.moreno.dev@example.com' → <wbr> before the '@' and the dots of the local part, so a long
- * address wraps as 'alex.moreno.dev' / '@example.com' — never mid-word, never a lone '.com'.
- */
-function breakable(email) {
-  const at = email.lastIndexOf('@');
-  if (at < 1) return email;
-  const local = email.slice(0, at).split(/(?=\.)/);
-  return [...local.flatMap((part, i) => [i ? h('wbr') : null, part]), h('wbr'), email.slice(at)];
 }
 
 function linkTile({ glyph, label, value, href }) {
