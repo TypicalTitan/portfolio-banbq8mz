@@ -1,0 +1,510 @@
+/* ==========================================================================
+   Experience slice (.xp-*)
+   G7  Experience: stacked role cards on the deep crimson band
+   G11 Leadership & activities
+   G12 Kind words
+   Shell primitives (section-head, chips, glass pill, ember-list, blackletter)
+   are only re-coloured here in context, never restyled globally.
+   ========================================================================== */
+
+/* ── G7 · Crimson band ─────────────────────────────────────────────────── */
+
+.xp {
+  position: relative;
+  z-index: 1; /* the thorn seam straddles the top edge, over the section above */
+  background: var(--g-band-crimson);
+}
+.xp > .fx-thorn-seam { z-index: var(--z-lift); }
+.xp-inner {
+  position: relative;
+  z-index: var(--z-content);
+}
+
+/* Band text colours (G7). Every text colour on the band measures ≥ 7:1. */
+.xp .eyebrow { color: var(--c-rose); }
+.xp .section-head__blurb { color: var(--c-on-band); }
+.xp .accent {
+  background: none;
+  color: var(--c-rose);
+  -webkit-text-fill-color: currentColor;
+  filter: drop-shadow(0 0 18px rgba(255, 45, 85, .35));
+}
+
+.xp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Role card ─────────────────────────────────────────────────────────── */
+
+.xp-role {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid rgba(255, 220, 228, .14);
+  border-radius: var(--r-card);
+  overflow: clip;
+  box-shadow: var(--shadow-card);
+  transition:
+    border-color var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+/* The reveal rule replaces `transition`; keep the hover properties in the list. */
+html.js .xp-role.reveal.is-in {
+  transition:
+    opacity var(--dur-4) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+    transform var(--dur-4) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+    border-color var(--dur-3) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
+}
+@media (min-width: 768px) {
+  .xp-role { grid-template-columns: 200px minmax(0, 1fr); }
+}
+@media (min-width: 1024px) {
+  .xp-role { grid-template-columns: 240px minmax(0, 1fr); }
+}
+
+/* Hover: hot hairline + heat bloom below and inside the org panel. No lift. */
+.xp-role:focus-within { border-color: var(--c-hairline-hot); }
+@media (hover: hover) {
+  .xp-role:hover {
+    border-color: var(--c-hairline-hot);
+    box-shadow: var(--shadow-card), 0 30px 60px -34px rgba(255, 45, 85, .5);
+  }
+  .xp-role:hover .xp-org::before { opacity: 1; }
+}
+
+/* ── Org panel (logo slide) ────────────────────────────────────────────── */
+
+.xp-org {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 232px;
+  padding: 64px 20px; /* symmetric, so the mark sits at the panel's true centre */
+  text-align: center;
+  background:
+    radial-gradient(70% 60% at 30% 85%, rgba(255, 74, 0, .5), transparent 70%),
+    radial-gradient(60% 50% at 80% 15%, rgba(255, 45, 85, .3), transparent 70%),
+    linear-gradient(160deg, #6b0a18, #1a0306);
+  box-shadow: inset -1px 0 0 rgba(255, 220, 228, .1);
+}
+.xp-org::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(80% 65% at 30% 92%, rgba(255, 176, 0, .32), rgba(255, 74, 0, .18) 45%, transparent 75%);
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+  pointer-events: none;
+}
+.xp-org.grain { --grain-opacity: .1; }
+
+.xp-type {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1;
+}
+
+/* Fixed box so the white mark never shifts layout while it loads. */
+.xp-logo {
+  display: block;
+  width: 120px;
+  height: 88px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 22px rgba(26, 3, 6, .55));
+}
+.xp-monogram {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border: 1px solid rgba(255, 220, 228, .22);
+  border-radius: 22px;
+  background: rgba(26, 3, 6, .35);
+  color: #fff;
+  font: 800 2rem/1 var(--font-sans);
+  letter-spacing: -.02em;
+}
+.xp-org-name {
+  margin: 0;
+  max-width: 22ch;
+  font-size: .9375rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  text-wrap: balance;
+  text-shadow: 0 1px 14px rgba(26, 3, 6, .7);
+}
+
+/* ── Role body ─────────────────────────────────────────────────────────── */
+
+.xp-body {
+  container: xp-body / inline-size;
+  min-width: 0;
+  padding: clamp(20px, 3vw, 36px);
+  background: rgba(255, 210, 220, .06);
+}
+
+/* Visual order: role + dates on one line, org line below (DOM keeps role → org → dates).
+   When the body is too narrow for both, the dates drop below the org line instead. */
+.xp-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+.xp-role-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.1rem + .6vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: var(--tr-tight);
+  color: var(--c-ink);
+  text-wrap: balance;
+}
+.xp-dates {
+  order: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 3px 11px;
+  border: 1px solid rgba(255, 209, 220, .22);
+  border-radius: var(--r-pill);
+  background: rgba(26, 3, 6, .32);
+  font: 500 .8125rem/1.5 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--c-rose);
+  white-space: nowrap;
+}
+.xp-now {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-lava-hi);
+  box-shadow: 0 0 0 3px rgba(255, 176, 0, .16), 0 0 10px rgba(255, 176, 0, .75);
+}
+.xp-orgline {
+  order: 2;
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  color: var(--c-on-band);
+}
+.xp-org-label {
+  font-weight: 600;
+  color: var(--c-rose);
+}
+.xp-loc {
+  display: inline-block; /* wraps as a unit, never "(on-" / "site)" */
+  font-size: .9375rem;
+}
+.xp-sep { color: var(--c-rose); }
+@container xp-body (max-width: 559.98px) {
+  .xp-dates {
+    order: 3;
+    margin-top: 4px;
+  }
+}
+
+.xp-org-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 209, 220, .4);
+  text-underline-offset: 3px;
+  border-radius: 4px;
+  transition: text-decoration-color var(--dur-2) var(--ease-out);
+}
+.xp-org-link:hover { text-decoration-color: currentColor; }
+.xp-org-arrow {
+  display: inline-block;
+  margin-inline-start: 2px;
+  vertical-align: -2px;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .xp-org-link:hover .xp-org-arrow { transform: translate(2px, -2px); }
+}
+
+.xp-summary {
+  margin: 14px 0 0;
+  max-width: 68ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--c-on-band);
+  text-wrap: pretty;
+}
+.xp-wins {
+  margin: 16px 0 0;
+  max-width: 72ch;
+}
+.xp-wins > li {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--c-text);
+}
+.xp-chips { margin-top: 20px; }
+.xp-role .chip {
+  background: rgba(26, 3, 6, .32);
+  border-color: rgba(255, 220, 228, .16);
+}
+
+/* Reference quote inside a role */
+.xp-quote {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: 14px;
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 220, 228, .14);
+}
+.xp-quote-icon {
+  grid-row: 1 / span 2;
+  margin-top: 4px;
+  color: var(--c-rose);
+}
+.xp-quote-text {
+  grid-column: 2;
+  margin: 0;
+  max-width: 60ch;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--c-ink);
+  text-wrap: pretty;
+}
+.xp-quote-text p { margin: 0; }
+.xp-quote-by {
+  grid-column: 2;
+  margin-top: 8px;
+  font-size: .875rem;
+  line-height: 1.5;
+  color: var(--c-on-band);
+}
+.xp-quote-title { display: inline-block; }
+.xp-quote-name {
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+/* Phones: the org panel becomes a 120px strip on top (logo left, type pill right). */
+@media (max-width: 767.98px) {
+  .xp-org {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 0;
+    height: 120px;
+    padding: 0 20px;
+    text-align: start;
+    box-shadow: inset 0 -1px 0 rgba(255, 220, 228, .1);
+  }
+  .xp-type {
+    position: static;
+    order: 2;
+  }
+  .xp-logo {
+    width: 104px;
+    height: 64px;
+    object-position: left center;
+  }
+  .xp-monogram {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    font-size: 1.5rem;
+  }
+  .xp-org-name { display: none; } /* the org line directly below names it */
+}
+
+/* ── G11 · Leadership & activities ─────────────────────────────────────── */
+
+.xp-lead { background: var(--g-pulse), var(--c-bg); }
+
+.xp-lead-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 56px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 1024px) {
+  .xp-lead-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.xp-lead-item {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-areas: "icon text years";
+  column-gap: 16px;
+  align-items: start;
+  padding: 20px 0;
+  border-top: 1px solid var(--c-hairline);
+}
+.xp-lead-item > .icon-tile { grid-area: icon; }
+.xp-lead-text {
+  grid-area: text;
+  min-width: 0;
+}
+.xp-lead-role {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: var(--tr-tight);
+  color: var(--c-ink);
+}
+.xp-lead-org {
+  margin: 2px 0 0;
+  font-size: .9375rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--c-muted);
+}
+.xp-lead-desc {
+  margin: 8px 0 0;
+  max-width: 52ch;
+  font-size: .9375rem;
+  line-height: 1.55;
+  color: var(--c-muted);
+  text-wrap: pretty;
+}
+/* --c-subtle measures ≥ 5:1 even over the brightest part of the pulse at every width. */
+.xp-lead-years {
+  grid-area: years;
+  margin: 0;
+  font: 400 .875rem/1.7 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--c-subtle);
+  text-align: end;
+  white-space: nowrap;
+}
+@media (max-width: 479.98px) {
+  .xp-lead-item {
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas:
+      "icon years"
+      "icon text";
+  }
+  .xp-lead-years { text-align: start; }
+}
+
+/* ── G12 · Kind words ──────────────────────────────────────────────────── */
+
+/* Continue the leadership pulse across the shared edge so no hard line shows. */
+.xp-lead + .xp-quotes {
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(138, 15, 31, .42) 0%, rgba(58, 15, 46, .2) 45%, transparent 75%),
+    var(--c-bg);
+}
+
+.xp-quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: 24px;
+}
+.xp-quotes-grid--solo {
+  grid-template-columns: minmax(0, 820px);
+  justify-content: center;
+}
+
+.xp-quote-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  margin: 0;
+  padding: clamp(24px, 6vw, 36px);
+  border: 1px solid var(--c-hairline-2);
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(106, 26, 74, .45), rgba(23, 6, 9, .9));
+  box-shadow: var(--shadow-card);
+}
+/* The glyph sits high in its em box; pull the quote up under it. */
+.xp-quote-mark {
+  align-self: flex-start;
+  margin: -.1em 0 -.52em -.06em;
+  font-size: 6rem;
+  pointer-events: none;
+  user-select: none;
+}
+.xp-quote-card-text {
+  position: relative; /* paints above the positioned glyph box */
+  margin: 0;
+  font-size: clamp(1.125rem, 1rem + .45vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--c-ink);
+  text-wrap: pretty;
+}
+.xp-quote-card-text p { margin: 0; }
+.xp-quote-card-by {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: 28px;
+}
+.xp-quote-card-by::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  margin-bottom: 14px;
+  border-radius: 2px;
+  background: var(--g-lava);
+  box-shadow: 0 0 10px rgba(255, 74, 0, .45);
+}
+.xp-quote-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--c-ink);
+}
+.xp-quote-card-meta > span { display: inline-block; }
+.xp-quote-card-meta {
+  font-size: .875rem;
+  line-height: 1.45;
+  color: var(--c-muted);
+}
+
+/* ── Forced colours & print ────────────────────────────────────────────── */
+
+@media (forced-colors: active) {
+  .xp .accent { filter: none; }
+  /* Keep the dark plate behind the white org mark, even on light forced themes. */
+  .xp-org { forced-color-adjust: none; background: #1a0306; border: 1px solid CanvasText; }
+  .xp-role,
+  .xp-quote-card { border-color: CanvasText; }
+  .xp-now {
+    box-sizing: border-box;
+    border: 3px solid CanvasText;
+    box-shadow: none;
+  }
+}
+
+/* base.css already prints black on white; the org panel (a white mark) and the decorative
+   quote glyph have nothing to show on paper, and the org line carries the org name. */
+@media print {
+  .xp-org,
+  .xp-quote-mark,
+  .xp-quote-card-by::before { display: none !important; }
+  .xp-role { grid-template-columns: minmax(0, 1fr); }
+  .xp-role,
+  .xp-quote-card,
+  .xp-dates { border-color: #999 !important; }
+  .xp-role,
+  .xp-lead-item,
+  .xp-quote-card { break-inside: avoid; }
+}

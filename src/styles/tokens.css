@@ -1,0 +1,164 @@
+/* Design tokens (spec §E). Every colour, gradient, size and duration used by the site lives here. */
+:root {
+  color-scheme: dark;
+
+  /* ===== Base: warm near-black canvas ===== */
+  --c-bg:            #0a0204;
+  --c-bg-deep:       #050102;
+  --c-surface-1:     #140609;
+  --c-surface-2:     #1d0a10;
+  --c-surface-3:     #2a0f18;
+  --c-tint:          rgba(200, 16, 46, .10);
+  --c-tint-hover:    rgba(200, 16, 46, .17);
+  --c-glass:         rgba(24, 6, 14, .62);
+  --c-glass-solid:   #1a0710;
+  --c-hairline:      rgba(255, 226, 232, .12);
+  --c-hairline-2:    rgba(255, 226, 232, .24);
+  --c-hairline-3:    rgba(255, 226, 232, .55);
+  --c-hairline-hot:  rgba(255, 59, 107, .45);
+
+  /* ===== Text (contrast vs --c-bg) ===== */
+  --c-ink:          #fbf3f5;   /* headings 18:1 */
+  --c-text:         #e8dade;   /* body 14:1 — use over imagery */
+  --c-muted:        #b9a9ae;   /* secondary 8.8:1; 6.3:1 on --c-crimson-800 */
+  --c-subtle:       #8f7d83;   /* meta ≥14px 5.3:1 — ONLY on bg/surface-1/surface-2, never bands/dusk/lava */
+  --c-accent-text:  #ff7a95;   /* the ONLY pink allowed for text: ≥5.6:1 on every dark surface incl. #5a0a16 */
+  --c-on-band:      rgba(255, 240, 242, .86);
+  --c-on-primary:   #ffffff;   /* on --c-crimson-500 5.9:1, on --c-crimson-400 4.8:1 */
+  --c-on-bright:    #16020a;   /* on lava / amber / hot fills */
+
+  /* ===== Crimson (Discord theme) ===== */
+  --c-crimson-950: #1a0306;
+  --c-crimson-900: #3d0610;
+  --c-crimson-800: #5a0a16;
+  --c-crimson-700: #6b0a18;
+  --c-crimson-600: #8a0f1f;
+  --c-crimson-500: #c8102e;   /* primary fill */
+  --c-crimson-400: #e0173a;   /* primary hover */
+
+  /* ===== Hot glow / petals (decorative only — never text) ===== */
+  --c-hot:        #ff2d55;
+  --c-hot-2:      #ff3b6b;
+  --c-rose:       #ffd1dc;
+  --c-petal:      #ff3355;
+  --c-petal-deep: #c8102e;
+
+  /* ===== Lava ===== */
+  --c-lava:       #ff4a00;
+  --c-lava-hi:    #ffb000;
+  --c-lava-gold:  #ffd98a;
+  --c-lava-core:  #fff1c2;
+  --c-crust:      #120304;
+
+  /* ===== Dusk (Steam) + violet (minor) ===== */
+  --c-dusk-1:   #3a0f2e;
+  --c-dusk-2:   #6a1a4a;
+  --c-strip-1:  #1b3a55;
+  --c-strip-2:  #4a1f4f;
+  --c-violet-1: #3b1a6e;
+  --c-violet-2: #8a3fd1;
+
+  /* ===== Stone (Steam backdrop) ===== */
+  --c-stone-1: #0e0b0d;
+  --c-stone-2: #161214;
+  --c-stone-3: #221c1f;
+
+  /* ===== Gradients ===== */
+  --g-crimson-fade: linear-gradient(180deg, #8a0f1f 0%, #6b0a18 34%, #0a0204 100%);
+  --g-blackletter:  linear-gradient(180deg, #ffe3e8 0%, #ff9aae 20%, #ff3b5c 46%, #c8102e 72%, #6b0a18 100%);
+  --g-accent:       linear-gradient(180deg, #ffe08a 0%, #ffb000 38%, #ff7a1a 70%, #ff4a00 100%);
+  --g-lava:         linear-gradient(90deg, #ff4a00 0%, #ff7a00 55%, #ffb000 100%);
+  --g-lava-up:      linear-gradient(0deg, #ff4a00 0%, #ffb000 100%);
+  --g-ember-seam:   linear-gradient(90deg, transparent 0%, #ff3b6b 30%, #ffb000 55%, #ff3b6b 75%, transparent 100%);
+  --g-strip:        linear-gradient(90deg, #1b3a55 0%, #2e2a55 45%, #4a1f4f 100%);
+  --g-dusk:         linear-gradient(160deg, rgba(58,15,46,.88) 0%, rgba(106,26,74,.55) 100%);
+  --g-violet:       linear-gradient(135deg, #3b1a6e 0%, #8a3fd1 100%);
+  --g-primary:      linear-gradient(180deg, #d8143a 0%, #b80d2c 100%);
+  --g-band-crimson: radial-gradient(80% 60% at 18% 0%, rgba(200,16,46,.34), transparent 62%),
+                    linear-gradient(180deg, #0a0204 0%, #4a0812 10%, #2a0510 60%, #0a0204 100%);
+  --g-glow-top:     radial-gradient(60% 45% at 50% 0%, rgba(200,16,46,.24), transparent 70%);
+  --g-glow-labs:    radial-gradient(60% 42% at 50% 0%, rgba(27,58,85,.42), transparent 72%),
+                    radial-gradient(40% 40% at 88% 18%, rgba(74,31,79,.34), transparent 70%);
+  --g-pulse:        radial-gradient(90% 60% at 50% 100%, rgba(138,15,31,.42) 0%, rgba(58,15,46,.2) 45%, transparent 75%);
+  --g-hero-fallback:
+      radial-gradient(40% 30% at 28% 92%, rgba(255,176,0,.45), transparent 70%),
+      radial-gradient(55% 40% at 72% 98%, rgba(255,74,0,.58), transparent 70%),
+      radial-gradient(70% 50% at 50% 115%, #c8102e, transparent 70%),
+      linear-gradient(180deg, #0a0204 0%, #1a0306 45%, #3d0610 100%);
+  --g-hero-scrim:   radial-gradient(90% 62% at 50% 26%, rgba(10,2,4,.78) 0%, rgba(10,2,4,.32) 60%, transparent 85%);
+  --g-scrim-left:   linear-gradient(90deg, rgba(10,2,4,.9) 0%, rgba(10,2,4,.6) 50%, rgba(10,2,4,.1) 100%);
+  --g-vignette:     radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.78) 100%);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --scales: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='16'%3E%3Cpath d='M0 16a14 14 0 0 1 28 0M-14 8a14 14 0 0 1 28 0M14 8a14 14 0 0 1 28 0' fill='none' stroke='%23ffd6de' stroke-opacity='.045'/%3E%3C/svg%3E");
+
+  /* ===== Glows & shadows ===== */
+  --glow-hot:     0 0 0 1px rgba(255,45,85,.35), 0 0 24px rgba(255,45,85,.45);
+  --glow-hot-sm:  0 0 12px rgba(255,45,85,.5);
+  --glow-lava:    0 28px 64px -24px rgba(255,74,0,.5);
+  --glow-btn:     inset 0 1px 0 rgba(255,255,255,.22), 0 0 0 1px rgba(255,59,107,.35), 0 8px 24px -8px rgba(255,45,85,.55);
+  --glow-btn-hover: inset 0 1px 0 rgba(255,255,255,.3), 0 0 0 1px rgba(255,122,149,.7), 0 0 28px rgba(255,45,85,.6);
+  --shadow-card:  inset 0 1px 0 rgba(255,255,255,.06), 0 20px 40px -24px rgba(0,0,0,.8);
+  --shadow-shot:  0 40px 80px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.6), 0 0 60px -10px rgba(255,74,0,.35);
+  --ring-focus:   0 0 0 2px #0a0204, 0 0 0 4px #ff7a95, 0 0 18px 4px rgba(255,59,107,.4);
+  --text-glow:    drop-shadow(0 0 14px rgba(255,45,85,.55)) drop-shadow(0 2px 0 rgba(60,0,10,.6));
+  --accent-glow:  drop-shadow(0 0 14px rgba(255,74,0,.35));
+
+  /* ===== Radii ===== */
+  --r-pill: 999px; --r-hero: 24px; --r-media: 20px; --r-card: 16px;
+  --r-shot: 14px;  --r-tile: 12px; --r-icon: 14px;  --r-chip: 8px;
+
+  /* ===== Layout & spacing ===== */
+  --container: 1280px;
+  --container-wide: 1400px;
+  --container-narrow: 960px;
+  --prose: 68ch;
+  --gutter: clamp(16px, 5vw, 40px);
+  --hero-inset: clamp(8px, 1.2vw, 16px);
+  --nav-h: 72px;
+  --section-y: clamp(64px, 6.5vw, 96px);
+  --row-gap: clamp(64px, 8vw, 104px);
+  --head-gap: clamp(32px, 4vw, 56px);
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
+
+  /* ===== Type ===== */
+  --font-display: 'Grenze Gotisch Variable', 'Grenze Gotisch', Georgia, serif;
+  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --fs-handle:   clamp(3rem, 1.6rem + 7.5vw, 8rem);        /* 48 → 128 blackletter hero */
+  --fs-h1:       clamp(2.25rem, 1.5rem + 3.6vw, 4.5rem);   /* 36 → 72 detail titles */
+  --fs-h2:       clamp(2rem, 1.3rem + 3vw, 3.75rem);       /* 32 → 60 section titles */
+  --fs-cta:      clamp(2.25rem, 1.3rem + 4.2vw, 4.5rem);   /* 36 → 72 contact */
+  --fs-h3:       clamp(1.375rem, 1.1rem + 1.1vw, 2rem);    /* 22 → 32 */
+  --fs-h4:       clamp(1.1875rem, 1.1rem + .4vw, 1.5rem);  /* 19 → 24 */
+  --fs-realname: clamp(1.25rem, 1rem + 1.2vw, 2rem);       /* 20 → 32 */
+  --fs-lead:     clamp(1.0625rem, .95rem + .55vw, 1.3125rem); /* 17 → 21 */
+  --fs-body:     clamp(1rem, .97rem + .15vw, 1.0625rem);   /* 16 → 17 */
+  --fs-small:    .9375rem;                                  /* 15 */
+  --fs-meta:     .875rem;                                   /* 14 */
+  --fs-micro:    .8125rem;                                  /* 13, uppercase ≥600 only */
+  --fs-stat:     clamp(2.5rem, 1.8rem + 3vw, 4.25rem);     /* 40 → 68 thin numerals */
+  --fs-stat-sm:  clamp(2rem, 1.6rem + 1.4vw, 2.75rem);     /* 32 → 44 */
+  --fs-marquee:  clamp(1.625rem, 1.1rem + 2.2vw, 2.5rem);  /* 26 → 40 */
+  --lh-display: .95; --lh-heading: 1.05; --lh-snug: 1.3; --lh-body: 1.6;
+  --tr-display: -0.025em; --tr-tight: -0.015em; --tr-caps: .08em; --tr-micro: .12em;
+
+  /* ===== Z ===== */
+  --z-fx: 0; --z-scrim: 1; --z-content: 2; --z-lift: 3; --z-sticker: 4;
+  --z-nav: 50; --z-drawer: 60; --z-dialog: 70; --z-skip: 100;
+
+  /* ===== Motion ===== */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --dur-1: 120ms; --dur-2: 200ms; --dur-3: 320ms; --dur-4: 600ms;
+  --dur-marquee: 44s; --dur-sticker: 28s; --stagger: 60ms; --reveal-y: 24px;
+}
+@media (max-width: 767.98px) { :root { --nav-h: 64px; --r-hero: 18px; } }
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-1: 0ms; --dur-2: 0ms; --dur-3: 0ms; --dur-4: 0ms; --stagger: 0ms; --reveal-y: 0px; }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root { --c-glass: var(--c-glass-solid); }
+}

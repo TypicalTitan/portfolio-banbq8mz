@@ -1,0 +1,48 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 998 >>
+stream
+0.039 0.008 0.016 rg 0 672 612 120 re f
+0.784 0.063 0.180 rg 0 668 612 4 re f
+BT /F2 10 Tf 0.722 0.663 0.682 rg 56 740 Td (LAB REPORT ∑ AP PHYSICS 1 ∑ FEB 12, 2026) Tj ET
+BT /F1 22 Tf 0.984 0.953 0.961 rg 56 706 Td (Measuring g with a simple pendulum) Tj ET
+BT /F1 28 Tf 0.784 0.063 0.180 rg 56 592 Td (Placeholder ó replace me) Tj ET
+BT /F2 12 Tf 0.16 0.12 0.13 rg 16 TL 56 552 Td (This file is a stand-in for the full lab report.) Tj T* () Tj T* (Objective: Determine the local gravitational acceleration g from how a pendulumís) Tj T* (period changes with its length.) Tj T* () Tj T* (To use your own report:) Tj T* (1.  Export the write-up as a PDF and save it as public/files/labs/pendulum-g.pdf.) Tj T* (2.  Or change files.report for this lab in src/content.js.) Tj T* (3.  Run  npm run check  to confirm the link resolves.) Tj T* ET
+0.85 0.80 0.82 RG 0.5 w 56 64 m 556 64 l S
+BT /F2 9 Tf 0.45 0.40 0.42 rg 56 48 Td (TypicalTitan portfolio template ∑ public/files/labs/pendulum-g.pdf) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Title <FEFF004D006500610073007500720069006E0067002000670020007700690074006800200061002000730069006D0070006C0065002000700065006E00640075006C0075006D> /Author <FEFF0041006C006500780020004D006F00720065006E006F> /Creator (TypicalTitan portfolio template) >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000257 00000 n 
+0000000359 00000 n 
+0000000456 00000 n 
+0000001504 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R /Info 7 0 R >>
+startxref
+1777
+%%EOF

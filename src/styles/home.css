@@ -1,0 +1,1427 @@
+/* ==========================================================================
+   Home slice (.hm-*)
+   G1  Hero · G2 Proof strip · G3 Tools marquee · G8 About · G9 Skills fan
+   G10 Education & awards · G13 Contact banner
+   Shell primitives (btn, stat, shot, pill-glass, section-head, fx-*) are only
+   adjusted here in context, never restyled globally.
+   ========================================================================== */
+
+/* ── G1 · Hero ─────────────────────────────────────────────────────────── */
+
+.hm-hero { position: relative; }
+
+.hm-hero-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  margin: var(--hero-inset) var(--hero-inset) 0;
+  min-height: clamp(640px, calc(100vh - var(--nav-h) - 24px), 920px);
+  min-height: clamp(640px, calc(100svh - var(--nav-h) - 24px), 920px);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: var(--r-hero);
+  background: var(--g-hero-fallback);
+  overflow: clip;
+}
+
+.hm-hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-scrim);
+  background: var(--g-hero-scrim);
+  pointer-events: none;
+}
+
+.hm-hero-content {
+  position: relative;
+  z-index: var(--z-content);
+  container-type: inline-size; /* sizes long handles below */
+  flex: none;
+  width: 100%;
+  max-width: 920px;
+  margin-inline: auto;
+  padding: clamp(40px, 7vh, 88px) var(--gutter) 24px;
+  text-align: center;
+}
+.hm-hero-status { margin: 0; }
+
+.hm-hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 16px 0 0;
+  font: inherit;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--c-ink);
+}
+.hm-hero-title .hm-hero-handle {
+  /* Grenze Gotisch 800 runs ~.42–.46em per character; long handles scale down to fit the card. */
+  font-size: min(var(--fs-handle), calc(100cqi / (var(--chars, 12) * .48)));
+  font-weight: 800;
+}
+.hm-hero-realname {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-realname);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+.hm-hero-realname::before,
+.hm-hero-realname::after {
+  content: '';
+  flex: none;
+  width: 32px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ff3b6b);
+}
+.hm-hero-realname::after { transform: scaleX(-1); }
+
+.hm-hero-tagline {
+  max-width: 36ch;
+  margin: 16px auto 0;
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  line-height: var(--lh-snug);
+  color: var(--c-ink);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, .6);
+  text-wrap: balance;
+}
+
+.hm-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 20px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--c-text);
+}
+.hm-hero-meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hm-hero-meta .icon {
+  flex: none;
+  color: var(--c-accent-text);
+}
+
+.hm-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+/* Collage: three featured shots rising out of the card's bottom edge. */
+.hm-hero-collage {
+  position: relative;
+  z-index: var(--z-content);
+  flex: none;
+  margin-top: auto;
+  height: clamp(200px, 34vh, 380px);
+  perspective: 1600px;
+}
+.hm-hero-shot {
+  --tx: 0px;
+  --lift: 0px;
+  --ry: 0deg;
+  --rx: 0deg;
+  position: absolute;
+  display: block;
+  border-radius: var(--r-shot);
+  transform: translateX(var(--tx)) translateY(var(--lift)) rotateY(var(--ry)) rotateX(var(--rx));
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    filter var(--dur-3) var(--ease-out);
+}
+/* Heat bloom sits behind the shot and fades in on hover. */
+.hm-hero-shot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--glow-lava);
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+  pointer-events: none;
+}
+.hm-hero-shot--centre {
+  --tx: -50%;
+  --rx: 14deg;
+  left: 50%;
+  top: 10%;
+  z-index: 1;
+  width: min(46%, 640px);
+}
+.hm-hero-shot--left,
+.hm-hero-shot--right {
+  top: 30%;
+  width: 30%;
+  --rx: 10deg;
+  filter: brightness(.75) saturate(.85);
+}
+.hm-hero-shot--left { left: -4%; --ry: 20deg; }
+.hm-hero-shot--right { right: -4%; --ry: -20deg; }
+
+@media (hover: hover) {
+  .hm-hero-shot:hover::after { opacity: 1; }
+  .hm-hero-shot--left:hover,
+  .hm-hero-shot--right:hover { filter: brightness(.9) saturate(.95); }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hm-hero-shot:hover { --lift: -8px; }
+}
+
+/* The sticker disc scales its internals with its box, so it is resized directly below 768px. */
+.hm-hero-card > .fx-sticker {
+  right: 7%;
+  top: 44%;
+}
+
+@media (max-width: 1023.98px) {
+  .hm-hero-collage { height: 200px; }
+  .hm-hero-shot--left,
+  .hm-hero-shot--right { display: none; }
+  .hm-hero-shot--centre {
+    --rx: 8deg;
+    /* Capped so tablets still see the subject rise out of the 200px collage, not just the bar. */
+    width: min(86%, 460px);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .hm-hero-card { min-height: auto; }
+  .hm-hero-card > .fx-thorn-corner { width: 132px; height: 132px; }
+  /* 88px sticker anchored 170px up; the CTAs must end above its top edge (170 + 88 < 200 + 72). */
+  .hm-hero-card > .fx-sticker {
+    top: auto;
+    right: 10px;
+    bottom: 170px;
+    width: 88px;
+    height: 88px;
+  }
+  .hm-hero-card--sticker .hm-hero-content { padding-bottom: 72px; }
+}
+
+/* Landscape phones: the card sizes to its content and the handle to the short screen, so the CTAs
+   land above the fold. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hm-hero-card { min-height: auto; }
+  .hm-hero-content { padding-top: 16px; }
+  .hm-hero-title { margin-top: 8px; }
+  .hm-hero-title .hm-hero-handle { font-size: min(var(--fs-handle), 14vh, calc(100cqi / (var(--chars, 12) * .48))); }
+  .hm-hero-tagline { margin-top: 8px; font-size: 1.0625rem; }
+  .hm-hero-meta { margin-top: 6px; }
+  .hm-hero-ctas { margin-top: 14px; }
+  .hm-hero-collage { height: clamp(120px, 30vh, 160px); }
+  /* The sticker would sit on the text in a short card; it rides the collage edge instead. */
+  .hm-hero-card > .fx-sticker { top: auto; bottom: 24px; }
+}
+
+@media (max-width: 379.98px) {
+  .hm-hero-ctas .btn { width: 100%; }
+}
+
+/* ── G2 · Proof strip ──────────────────────────────────────────────────── */
+
+.hm-proof { position: relative; }
+.hm-proof > .container {
+  margin-top: 24px;
+  padding-block: 8px;
+}
+.hm-proof .hm-proof-row {
+  display: grid;
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+  border-block: 1px solid var(--c-hairline);
+}
+.hm-proof-row > .stat {
+  padding: 20px 28px;
+  border-radius: 0;
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+.hm-proof-row > .stat + .stat { border-inline-start: 1px solid var(--c-hairline); }
+.hm-proof-row > .stat--link:hover,
+.hm-proof-row > .stat--link:focus-visible { background: var(--c-tint); }
+.hm-proof-row > .stat--link:focus-visible .stat__arrow { color: var(--c-accent-text); }
+
+@media (max-width: 767.98px) {
+  .hm-proof .hm-proof-row {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hm-proof-row > .stat { padding: 18px 16px; }
+  .hm-proof-row > .stat:nth-child(odd) { border-inline-start: 0; }
+  .hm-proof-row > .stat:nth-child(n + 3) { border-top: 1px solid var(--c-hairline); }
+}
+
+/* ── G3 · Tools marquee ────────────────────────────────────────────────── */
+
+.hm-marquee.section { padding-block: 48px 32px; }
+
+.hm-marquee-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+.hm-marquee-label {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--c-muted);
+}
+.hm-marquee-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hm-marquee-toggle .hm-marquee-icon-play { display: none; }
+.hm-marquee-toggle[aria-pressed='true'] .hm-marquee-icon-pause { display: none; }
+.hm-marquee-toggle[aria-pressed='true'] .hm-marquee-icon-play { display: block; }
+
+.hm-marquee-track {
+  margin-top: 28px;
+  padding-block: 8px;
+  overflow: clip;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.hm-marquee-rail {
+  display: flex;
+  width: max-content;
+  animation: hm-marquee calc(var(--dur-marquee) * var(--marquee-reps, 1)) linear infinite;
+}
+.hm-marquee-track:hover .hm-marquee-rail,
+.hm-marquee-track:focus-within .hm-marquee-rail,
+.hm-marquee-track.is-paused .hm-marquee-rail { animation-play-state: paused; }
+@keyframes hm-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.hm-marquee-list {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hm-marquee-item {
+  display: flex;
+  flex: none;
+  align-items: center;
+  font-size: var(--fs-marquee);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: var(--tr-tight);
+  white-space: nowrap;
+  color: var(--c-ink);
+}
+.hm-marquee-glyph {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-inline-end: 14px;
+  opacity: .85;
+}
+.hm-marquee-item .fx-spark {
+  flex: none;
+  margin-inline: 40px;
+  color: var(--c-hot);
+  filter: drop-shadow(0 0 6px rgba(255, 45, 85, .55));
+}
+
+@media (max-width: 767.98px) {
+  .hm-marquee-item .fx-spark { margin-inline: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-marquee-toggle { display: none; }
+  .hm-marquee-track {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .hm-marquee-rail {
+    width: auto;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    animation: none;
+  }
+  .hm-marquee-list {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
+  }
+  .hm-marquee-list[aria-hidden='true'],
+  .hm-marquee-item--rep { display: none; }
+  /* Wrapped rows: plain gaps instead of sparkles, so no row ends on a separator. */
+  .hm-marquee-list { column-gap: 44px; }
+  .hm-marquee-item { font-size: 1.5rem; }
+  .hm-marquee-item .fx-spark { display: none; }
+}
+
+/* The on-page "Pause animations" toggle stops the rail where it is; its own toggle steps aside. */
+html.motion-paused .hm-marquee-rail { animation-play-state: paused; }
+html.motion-paused .hm-marquee-toggle { display: none; }
+
+/* ── G8 · About ────────────────────────────────────────────────────────── */
+
+.hm-about.section {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: center;
+  min-height: 640px;
+  overflow: clip;
+  background:
+    radial-gradient(35% 45% at 12% 30%, rgba(62, 54, 58, .55), transparent 70%),
+    radial-gradient(30% 40% at 88% 65%, rgba(52, 46, 50, .5), transparent 70%),
+    radial-gradient(50% 35% at 60% 8%, rgba(106, 26, 74, .4), transparent 70%),
+    radial-gradient(45% 40% at 28% 96%, rgba(27, 58, 85, .38), transparent 70%),
+    linear-gradient(180deg, #0c0709, #151013 50%, #0a0204);
+}
+/* Concentric stone swirl, blurred like an out-of-focus backdrop. */
+.hm-about::before {
+  content: '';
+  position: absolute;
+  inset: -16px;
+  z-index: 0;
+  background: repeating-radial-gradient(circle at 72% 50%, transparent 0 22px, rgba(106, 26, 74, .2) 24px, transparent 30px);
+  filter: blur(6px);
+  opacity: .8;
+  pointer-events: none;
+}
+/* Vignette over the petals; the faint grain is its own .grain layer beside it. The top and
+   bottom fades melt the band into its neighbours (no hard seam, no half-sliced petals). */
+.hm-about::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, var(--c-bg), transparent 96px),
+    linear-gradient(0deg, var(--c-bg), transparent 96px),
+    var(--g-vignette);
+  pointer-events: none;
+}
+.hm-about-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.hm-about > .container {
+  position: relative;
+  z-index: var(--z-content);
+  width: 100%;
+}
+
+.hm-about-card {
+  display: grid;
+  gap: 40px;
+  max-width: 1040px;
+  margin-inline: auto;
+  padding: clamp(24px, 5vw, 72px);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 20px;
+  background: var(--c-glass-solid);
+  box-shadow: var(--shadow-card);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .hm-about-card {
+    background: var(--c-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+  }
+}
+@media (min-width: 1024px) {
+  .hm-about-card {
+    grid-template-columns: 45% minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+  }
+}
+
+.hm-about-main,
+.hm-about-side { min-width: 0; }
+
+.hm-about-id {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.hm-about-portrait {
+  position: relative;
+  flex: none;
+  width: 112px;
+  height: 112px;
+  margin-inline-start: 12px;
+}
+.hm-about-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.hm-about-ring > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hm-about-photo {
+  position: relative;
+  display: block;
+  width: 112px;
+  height: 112px;
+  object-fit: cover;
+  object-position: 50% 20%;
+  border: 1px solid var(--c-hairline-hot);
+  border-radius: 20px;
+  box-shadow: var(--glow-hot-sm);
+  background: var(--c-surface-2);
+}
+.hm-about-who { min-width: 0; }
+.hm-about-name {
+  margin: 0;
+  font-size: 1.75rem;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: var(--tr-tight);
+  color: var(--c-ink);
+}
+.hm-about-aka {
+  margin: 4px 0 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--c-muted);
+}
+.hm-about-handle { color: var(--c-accent-text); overflow-wrap: anywhere; }
+.hm-about-pronouns {
+  margin: 2px 0 0;
+  font-size: var(--fs-meta);
+  color: var(--c-subtle);
+}
+
+.hm-about .section-head { margin: 32px 0 0; }
+.hm-about .headline {
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  font-style: normal;
+  line-height: 1.05;
+}
+.hm-about-bio { margin-top: 20px; }
+.hm-about-bio p {
+  max-width: 48ch;
+  margin: 0;
+  font-size: 1rem;
+  color: var(--c-text);
+}
+.hm-about-bio p + p { margin-top: 12px; }
+.hm-about-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.hm-about-ctas:empty { display: none; }
+.hm-about-socials { margin-top: 20px; }
+
+.hm-about-avail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.hm-about-avail-detail {
+  margin: 0;
+  font-size: var(--fs-meta);
+  color: var(--c-muted);
+}
+.hm-about-checks {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hm-about-avail + .hm-about-checks { margin-top: 24px; }
+.hm-about-checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-block: 7px;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--c-ink);
+}
+.hm-about-checks .icon {
+  flex: none;
+  color: var(--c-accent-text);
+}
+.hm-about .hm-about-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  margin: 28px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--c-hairline);
+}
+.hm-about-facts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-block: 0;
+  border-top: 0;
+}
+.hm-about-facts dd { font-weight: 500; }
+
+@media (max-width: 479.98px) {
+  .hm-about-id { gap: 14px; }
+  /* Reserve the 160px ring's overhang past the 112px photo so vines stay clear of the name. */
+  .hm-about-portrait { margin-inline-end: 24px; }
+  .hm-about-name { font-size: 1.5rem; }
+}
+/* Narrow phones: the name block drops under the portrait and gets the full card width. */
+@media (max-width: 419.98px) {
+  .hm-about-id { flex-direction: column; align-items: flex-start; gap: 36px; }
+  .hm-about-portrait { margin: 24px 0 0 24px; }
+}
+
+/* ── G9 · Skills fan ───────────────────────────────────────────────────── */
+
+.hm-skills.section {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  /* The top glow (--g-glow-top, centred lower) so it isn't at full strength on the seam. */
+  background: radial-gradient(60% 45% at 50% 18%, rgba(200, 16, 46, .24), transparent 70%), var(--scales), var(--c-stone-2);
+}
+.hm-skills::before,
+.hm-skills::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  z-index: 0;
+  height: 80px;
+  pointer-events: none;
+}
+.hm-skills::before {
+  top: 0;
+  background: linear-gradient(180deg, var(--c-bg), transparent);
+}
+.hm-skills::after {
+  bottom: 0;
+  background: linear-gradient(0deg, var(--c-bg), transparent);
+}
+.hm-skills > .container {
+  position: relative;
+  z-index: var(--z-content);
+}
+
+/* Arrow pair for the scroll strip (720–1099px, or any width with more than five groups). */
+.hm-skills-arrows {
+  display: none;
+  align-items: center;
+}
+.hm-skills-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--c-ink);
+  cursor: pointer;
+  transition: color var(--dur-2) var(--ease-out);
+}
+.hm-skills-arrow:hover { color: var(--c-accent-text); }
+.hm-skills-arrow[aria-disabled='true'] {
+  color: var(--c-subtle);
+  cursor: default;
+}
+.hm-skills-arrows-divider {
+  width: 1px;
+  height: 32px;
+  margin-inline: 4px;
+  background: var(--c-hairline-2);
+}
+
+.hm-fan {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hm-fan-card {
+  --skew: -6deg;
+  position: relative;
+  container-type: inline-size;
+  min-height: 440px;
+  border: 1px solid var(--c-hairline-2);
+  overflow: clip;
+  transition:
+    transform 280ms var(--ease-out),
+    border-color 280ms var(--ease-out),
+    box-shadow 280ms var(--ease-out),
+    opacity 280ms var(--ease-out);
+}
+/* Theme art, always under a dark scrim. */
+.hm-fan-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 2, 4, .35);
+  pointer-events: none;
+}
+.hm-fan-card--lava {
+  background:
+    radial-gradient(120% 55% at 50% 112%, rgba(255, 74, 0, .55), transparent 62%),
+    linear-gradient(180deg, #1c0509, #3d0610);
+}
+.hm-fan-card--dusk { background: linear-gradient(180deg, rgba(27, 58, 85, .9), rgba(74, 31, 79, .9)); }
+.hm-fan-card--crimson { background: var(--g-crimson-fade); }
+.hm-fan-card--violet { background: linear-gradient(170deg, #1a0b2e, #3b1a6e 60%, #6a2fb0); }
+.hm-fan-card--ember {
+  background:
+    radial-gradient(60% 40% at 50% 0, rgba(255, 45, 85, .35), transparent),
+    linear-gradient(180deg, #2a050c, #6b0a18);
+}
+
+.hm-fan-card:hover,
+.hm-fan-card:focus-within {
+  z-index: 2;
+  border-color: var(--c-hairline-hot);
+  box-shadow: var(--glow-hot);
+}
+
+.hm-fan-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 28px 34px;
+  padding-inline: clamp(22px, 15cqi, 34px);
+}
+.hm-fan-watermark {
+  position: absolute;
+  left: -14px;
+  bottom: -18px;
+  width: 180px;
+  height: 180px;
+  color: #fff;
+  opacity: .07;
+  pointer-events: none;
+}
+.hm-fan-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--c-hairline-2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .08);
+  color: var(--c-ink);
+}
+.hm-fan-title {
+  margin: 18px 0 0;
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-size: clamp(16px, 9.5cqi, 24px);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: var(--tr-tight);
+  text-transform: uppercase;
+  color: var(--c-ink);
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.hm-fan-blurb {
+  margin: 8px 0 0;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--c-muted);
+}
+.hm-fan-card--dusk .hm-fan-blurb,
+.hm-fan-card--violet .hm-fan-blurb { color: var(--c-text); }
+
+.hm-fan-items {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* Name and "N uses" share a row when they fit; the count drops under the name when they don't. */
+.hm-fan-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  min-height: 40px;
+  padding-block: 9px;
+  border-bottom: 1px solid var(--c-hairline);
+}
+.hm-fan-name {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--c-ink);
+}
+.hm-fan-level {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  color: var(--c-lava-hi);
+  forced-color-adjust: none;
+}
+.hm-fan-name > .hm-fan-level {
+  align-self: flex-start;
+  margin-top: .42em; /* centred on the first line of a wrapping name */
+}
+.hm-fan-level--core { background: currentColor; }
+.hm-fan-level--working { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.hm-fan-uses {
+  flex: none;
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--c-text);
+}
+.hm-fan-brands {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-self: flex-end;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+  color: var(--c-text);
+}
+.hm-fan-brands .icon { flex: none; }
+
+.hm-skills-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 28px 0 0;
+  font-size: var(--fs-meta);
+  color: var(--c-muted);
+}
+.hm-skills-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.hm-skills-legend-sep { color: var(--c-hairline-3); }
+/* A separator travels with the item after it, so no line ends on '·'. */
+.hm-skills-legend-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+/* ≥1100: arched row of skewed cards. Equal heights, each card shifted by its distance from centre.
+   More than five groups use the scroll strip below instead (cards would get too narrow); a single
+   group is one centred card rather than a full-width slab. */
+@media (min-width: 1100px) {
+  .hm-fan:not(.hm-fan--strip) {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    padding-block: 24px;
+  }
+  .hm-fan:not(.hm-fan--strip) .hm-fan-card {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: clamp(440px, 36vw, 520px);
+    margin-block: calc(var(--d, 0) * 12px) calc((var(--dmax, 0) - var(--d, 0)) * 12px);
+  }
+  .hm-fan.hm-fan--solo:not(.hm-fan--strip) .hm-fan-card { flex: 0 1 420px; margin-inline: auto; }
+  .hm-fan:has(.hm-fan-card:hover) .hm-fan-card:not(:hover) { opacity: .75; }
+  .hm-skills--strip .hm-skills-arrows { display: flex; }
+  .hm-fan--strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(240px, 22%);
+    gap: 24px;
+    margin-inline: -32px;
+    padding: 32px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 32px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-crimson-700) transparent;
+  }
+  .hm-fan--strip .hm-fan-card { min-height: 440px; scroll-snap-align: start; }
+}
+/* The arched cards are narrow: the count always sits on its own line under the name, so rows
+   are even instead of wrapping only where a name happens not to fit. */
+@media (min-width: 1100px) {
+  .hm-fan:not(.hm-fan--strip) .hm-fan-uses { flex-basis: 100%; text-align: end; }
+}
+
+/* 720–1099: scroll-snap strip, padded so skewed corners never clip. No arch. */
+@media (min-width: 720px) and (max-width: 1099.98px) {
+  .hm-skills-arrows { display: flex; }
+  .hm-fan {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 44%;
+    gap: 24px;
+    margin-inline: -32px;
+    padding: 32px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 32px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-crimson-700) transparent;
+  }
+  .hm-fan-card { scroll-snap-align: start; }
+}
+
+@media (min-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .hm-fan-card:hover,
+  .hm-fan-card:focus-within { transform: translateY(-8px) skewX(var(--skew)) scale(1.04); }
+}
+
+/* <720: stacked, unskewed; the slant comes from the clip-path instead. */
+@media (max-width: 719.98px) {
+  .hm-fan {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .hm-fan .hm-fan-card.slant {
+    min-height: 0;
+    border: 0;
+    transform: none;
+    clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+  }
+  .hm-fan .hm-fan-card .slant__unskew { transform: none; }
+  .hm-fan-body { padding: 28px 36px; }
+  .hm-fan-title { font-size: 1.5rem; }
+  .hm-fan-card:hover,
+  .hm-fan-card:focus-within { box-shadow: none; }
+}
+
+/* ── G10 · Education & awards ──────────────────────────────────────────── */
+
+.hm-edu.section { background: var(--c-bg); }
+
+.hm-edu-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+@media (min-width: 1024px) {
+  .hm-edu-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+  .hm-edu-grid--single { grid-template-columns: minmax(0, 1fr); }
+}
+
+.hm-edu-schools {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.hm-edu-card {
+  padding: 0;
+  overflow: clip;
+}
+/* Wraps (dates under the label) when large text sizes can't fit both on one line. */
+.hm-edu-strip { flex-wrap: wrap; padding-inline: 28px; }
+.hm-edu-dates { text-align: end; }
+.hm-edu-body { padding: 28px; }
+.hm-edu-school {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.375rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: var(--tr-tight);
+  text-transform: none;
+  color: var(--c-ink);
+}
+.hm-edu-program {
+  margin: 6px 0 0;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+.hm-edu-location {
+  margin: 2px 0 0;
+  font-size: var(--fs-meta);
+  color: var(--c-subtle);
+}
+.hm-edu-body .hm-edu-gpa { margin-top: 24px; }
+.hm-edu-honors {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hm-edu-honors li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--c-text);
+}
+.hm-edu-honors .icon {
+  flex: none;
+  margin-top: 3px;
+  color: var(--c-lava-hi);
+}
+.hm-edu-micro {
+  margin: 24px 0 10px;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.hm-awards { min-width: 0; }
+.hm-awards-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-h4);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: var(--tr-tight);
+  text-transform: none;
+  color: var(--c-ink);
+}
+.hm-awards-title .icon {
+  flex: none;
+  color: var(--c-lava-hi);
+}
+.hm-awards-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hm-award {
+  display: grid;
+  grid-template-columns: 56px 44px minmax(0, 1fr) auto;
+  grid-template-areas: 'year tile text end';
+  align-items: start;
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid var(--c-hairline);
+}
+.hm-award:last-child { border-bottom: 1px solid var(--c-hairline); }
+.hm-award-year {
+  grid-area: year;
+  padding-top: 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  color: var(--c-subtle);
+}
+.hm-award > .icon-tile {
+  grid-area: tile;
+  justify-self: center;
+}
+.hm-award-text {
+  grid-area: text;
+  min-width: 0;
+}
+.hm-award-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--c-ink);
+}
+.hm-award-sub {
+  margin: 2px 0 0;
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--c-muted);
+}
+.hm-award-more { margin: 8px 0 0; }
+.hm-award-link {
+  grid-area: end;
+  align-self: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 479.98px) {
+  .hm-award {
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas:
+      'tile text'
+      'tile year'
+      'tile end';
+    gap: 6px 14px;
+  }
+  .hm-award-year { padding-top: 0; }
+  .hm-award-link { justify-self: start; }
+}
+
+/* ── G13 · Contact banner ──────────────────────────────────────────────── */
+
+/* Clipped horizontally only, so the thorn seam can straddle the top edge. */
+.hm-contact.section {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  min-height: 600px;
+  padding-block: 0;
+  overflow-x: clip;
+  background: #170609;
+}
+
+.hm-contact-lava {
+  position: absolute;
+  inset: 0 0 0 42%;
+  z-index: 0;
+  overflow: clip;
+  background:
+    radial-gradient(45% 35% at 70% 88%, rgba(255, 176, 0, .4), transparent 70%),
+    radial-gradient(60% 45% at 55% 100%, rgba(255, 74, 0, .55), transparent 70%),
+    linear-gradient(180deg, #1a0306 0%, #3d0610 100%);
+}
+.hm-contact-lava::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* Vignette that leaves the hot bottom-right corner of the fissure clear. */
+  background: radial-gradient(ellipse at 70% 80%, transparent 50%, rgba(0, 0, 0, .45) 100%);
+  pointer-events: none;
+}
+/* Centred on the visible part of the fissure (right of the diagonal). */
+.hm-contact-sigil {
+  position: absolute;
+  z-index: 2;
+  left: calc(64% + 20px);
+  top: 50%;
+  width: 240px;
+  height: 240px;
+  translate: -50% -50%;
+  filter: drop-shadow(0 0 24px rgba(255, 45, 85, .6));
+}
+.hm-contact-sigil > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hm-contact-sigil { animation: hm-spin 90s linear infinite; }
+}
+html.motion-paused .hm-contact-sigil { animation: none; }
+@keyframes hm-spin {
+  to { rotate: 360deg; }
+}
+
+.hm-contact-panel {
+  position: absolute;
+  inset: 0 calc(42% - 80px) 0 0;
+  z-index: 1;
+  background: linear-gradient(160deg, #3d0610, #2a050c 60%, #170609);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 80px) 100%, 0 100%);
+}
+.hm-contact-panel.grain::after { opacity: .06; }
+
+/* The glow lives on the wrapper: clip-path would cut a filter applied to the same element. */
+.hm-contact-seam {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  filter: drop-shadow(0 0 8px #ff3b6b);
+  pointer-events: none;
+}
+.hm-contact-seam::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, #ff3b6b 30%, #ffb000 55%, #ff3b6b 75%, transparent 100%);
+  clip-path: polygon(calc(58% + 78px) 0, calc(58% + 81px) 0, calc(58% + 1px) 100%, calc(58% - 2px) 100%);
+}
+
+.hm-contact-inner {
+  position: relative;
+  z-index: var(--z-content);
+  padding-block: var(--section-y);
+}
+@media (min-width: 1024px) {
+  .hm-contact-body { width: 50%; }
+}
+
+.hm-contact .hm-contact-title {
+  margin: 0;
+  font-size: var(--fs-cta);
+}
+.hm-contact .hm-contact-accent {
+  /* Lighter-bottomed than --g-blackletter so the baseline and descenders keep 3:1 on the panel. */
+  background-image: linear-gradient(180deg, #ffe3e8 0%, #ff9aae 20%, #ff3b5c 50%, #e0173a 100%);
+  font-size: 1.1em;
+  text-transform: none;
+  vertical-align: baseline;
+}
+.hm-contact-blurb {
+  max-width: 44ch;
+  margin: 20px 0 0;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-snug);
+  color: var(--c-muted);
+}
+
+.hm-contact-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hm-contact-tiles > li { display: flex; }
+.hm-contact-tile {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 112px;
+  padding: 18px;
+  border: 1px solid var(--c-hairline);
+  border-radius: 12px;
+  background: rgba(255, 214, 222, .05);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out);
+}
+.hm-contact-tile:hover,
+.hm-contact-tile:focus-within,
+a.hm-contact-tile:focus-visible {
+  border-color: var(--c-hairline-hot);
+  box-shadow: var(--glow-hot-sm);
+}
+a.hm-contact-tile:hover { background: rgba(255, 214, 222, .08); }
+.hm-contact-tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 32px;
+}
+.hm-contact-tile-glyph {
+  flex: none;
+  color: var(--c-accent-text);
+}
+.hm-contact-tile-arrow {
+  flex: none;
+  color: var(--c-muted);
+  transition:
+    color var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+a.hm-contact-tile:hover .hm-contact-tile-arrow { color: var(--c-accent-text); }
+@media (prefers-reduced-motion: no-preference) {
+  a.hm-contact-tile:hover .hm-contact-tile-arrow { transform: translate(2px, -2px); }
+}
+.hm-contact-tile .btn--copy { margin: -6px -8px -6px 0; }
+.hm-contact-tile-label {
+  display: block;
+  margin: 12px 0 0;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+.hm-contact-tile-value {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--c-ink);
+  overflow-wrap: anywhere;
+}
+a.hm-contact-tile-value {
+  text-decoration: underline;
+  text-decoration-color: var(--c-hairline-hot);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+a.hm-contact-tile-value:hover { text-decoration-color: currentColor; }
+
+.hm-contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 32px;
+}
+.hm-contact-actions .hm-contact-cta {
+  --btn-h: 60px;
+  min-width: 240px;
+}
+.hm-contact-response {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--fs-meta);
+  color: var(--c-muted);
+}
+.hm-contact-response .icon { flex: none; }
+
+/* <1024: no diagonal or seam; the panel is the background and the lava a strip across the top. */
+@media (max-width: 1023.98px) {
+  .hm-contact-lava {
+    position: relative;
+    inset: auto;
+    z-index: 1;
+    height: 200px;
+    -webkit-mask-image: linear-gradient(180deg, #000 50%, transparent);
+    mask-image: linear-gradient(180deg, #000 50%, transparent);
+  }
+  .hm-contact-sigil {
+    left: 50%;
+    width: 140px;
+    height: 140px;
+  }
+  .hm-contact-panel {
+    inset: 0;
+    z-index: 0;
+    clip-path: none;
+  }
+  .hm-contact-seam { display: none; }
+  .hm-contact-inner { padding-block: 8px var(--section-y); }
+}
+@media (max-width: 767.98px) {
+  .hm-contact-actions .hm-contact-cta {
+    width: 100%;
+    min-width: 0;
+  }
+}
+@media (max-width: 419.98px) {
+  .hm-contact-tiles { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Forced colours ────────────────────────────────────────────────────── */
+
+@media (forced-colors: active) {
+  .hm-hero-card,
+  .hm-about-card,
+  .hm-fan-card,
+  .hm-contact-tile { border: 1px solid CanvasText; }
+  .hm-fan .hm-fan-card.slant { clip-path: none; }
+  /* The level glyph opts out of forcing; a system colour keeps it visible on light themes too. */
+  .hm-fan-level { color: CanvasText; }
+  .hm-hero-realname::before,
+  .hm-hero-realname::after { background: CanvasText; }
+  .hm-contact-seam { display: none; }
+}
+
+/* ── Print (base.css already whitens the page and hides fx-* / canvases) ─ */
+
+@media print {
+  .hm-hero-card { min-height: 0; border: 0; }
+  .hm-hero-content { padding-block: 0 12pt; }
+  .hm-hero-scrim,
+  .hm-hero-collage,
+  .hm-marquee-toggle,
+  .hm-marquee-list[aria-hidden='true'],
+  .hm-about-grain,
+  .hm-about::before,
+  .hm-about::after,
+  .hm-skills::before,
+  .hm-skills::after,
+  .hm-skills-arrows,
+  .hm-fan-watermark,
+  .hm-contact-lava,
+  .hm-contact-panel,
+  .hm-contact-seam { display: none !important; }
+  .hm-about.section { min-height: 0; }
+  .hm-marquee-track { -webkit-mask-image: none; mask-image: none; }
+  .hm-marquee-rail { width: auto; }
+  .hm-marquee-list { flex-wrap: wrap; gap: 4pt 14pt; }
+  .hm-marquee-item { font-size: 13pt; }
+  .hm-fan {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12pt;
+    margin: 0;
+    padding: 0;
+  }
+  .hm-fan .hm-fan-card.slant { clip-path: none; }
+  .hm-fan-card {
+    min-height: 0;
+    margin: 0;
+    border: 1px solid #999;
+    break-inside: avoid;
+  }
+  .hm-fan-body { padding: 12pt; }
+  .hm-award,
+  .hm-contact-tile { break-inside: avoid; }
+  .hm-contact.section { min-height: 0; }
+  .hm-contact-body { width: auto; }
+  .hm-contact-tile { border-color: #999; }
+}

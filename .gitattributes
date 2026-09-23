@@ -1,0 +1,10 @@
+# Store text with LF everywhere; never rewrite binary files (PDF line endings are part of the format).
+* text=auto eol=lf
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff2 binary

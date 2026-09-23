@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- %…% tokens are filled from src/content.js at build/dev time (vite.config.js) — edit content.js, not this file. -->
+  <title>%SITE_TITLE%</title>
+  <meta name="description" content="%SITE_DESCRIPTION%" />
+  <!-- Unlisted: asks search engines not to index this site or follow its links. Delete this line to appear in search results. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="%SITE_TITLE%" />
+  <meta property="og:description" content="%SITE_DESCRIPTION%" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="theme-color" content="#0a0204" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script>document.documentElement.classList.replace('no-js','js')</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div id="top-sentinel" aria-hidden="true"></div>
+  <header id="nav-root"></header>
+  <main id="main" tabindex="-1"></main>
+  <footer id="footer-root"></footer>
+  <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <noscript><div class="noscript">%NOSCRIPT%</div></noscript>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

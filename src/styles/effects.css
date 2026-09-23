@@ -1,0 +1,429 @@
+/* =============================================================================
+   effects.css: canvases, thorn vines, sigils, reveal (spec §H). All .fx-* styles
+   and every effect keyframe live here.
+   ============================================================================= */
+
+/* ── Canvases: lava + particles ─────────────────────────────────────────────
+   Hosts must be position:relative and clip overflow. The low-res lava buffer is
+   upscaled by the browser's bilinear filter; that softness is the look. */
+.fx-lava,
+.fx-particles {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-fx);
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-4) var(--ease-out);
+}
+
+.fx-lava {
+  image-rendering: auto;
+}
+
+.fx-lava.is-ready,
+.fx-particles.is-ready {
+  opacity: 1;
+}
+
+/* ── Thorn vines ──────────────────────────────────────────────────────────── */
+.fx-vine-svg,
+.fx-thorn-corner,
+.fx-thorn-ring {
+  overflow: visible;
+  pointer-events: none;
+  /* On the SVG box rather than the inner <g>: CSS filters on SVG children are uneven across engines. */
+  filter: drop-shadow(0 0 4px #ff2d55) drop-shadow(0 0 12px rgba(255, 45, 85, 0.6));
+}
+
+.fx-vine-svg {
+  display: block;
+}
+
+.fx-thorn-corner {
+  position: absolute;
+  z-index: var(--z-scrim);
+  width: var(--size, 220px);
+  height: var(--size, 220px);
+}
+
+.fx-thorn-corner--tl {
+  top: 0;
+  left: 0;
+}
+
+.fx-thorn-corner--tr {
+  top: 0;
+  right: 0;
+}
+
+.fx-thorn-corner--br {
+  right: 0;
+  bottom: 0;
+}
+
+.fx-thorn-ring {
+  display: block;
+  width: var(--size, 300px);
+  height: var(--size, 300px);
+}
+
+.fx-vine__stem {
+  fill: none;
+  stroke: var(--c-hot);
+  stroke-width: var(--sw, 1.5px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fx-vine__thorn {
+  fill: var(--c-hot);
+}
+
+/* The "electric arc": a pale jagged duplicate of the stem, broken into crackle
+   segments (pathLength=1), flashing briefly once per 5.5s cycle. */
+.fx-vine__arc {
+  fill: none;
+  stroke: #ffd1dc;
+  stroke-width: 0.75px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 0.07 0.025 0.13 0.04 0.05 0.03 0.1 0.05;
+  opacity: 0;
+}
+
+.fx-sparkg > path {
+  fill: #ffd1dc;
+}
+
+.fx-thorn-ring__orbit {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: fx-spin 14s linear infinite;
+}
+
+/* Draw-in: stems unroll over 1.6s, thorns sprout on a 20ms stagger, sparks follow.
+   `.is-in` comes from the reveal observer. */
+.fx-draw .fx-vine__stem {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+}
+
+.fx-draw.is-in .fx-vine__stem {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition:
+    stroke-dashoffset 1.6s var(--ease-out),
+    opacity 0.2s linear;
+}
+
+.fx-draw .fx-vine__thorn,
+.fx-draw .fx-sparkg {
+  opacity: 0;
+}
+
+.fx-draw.is-in .fx-vine__thorn {
+  opacity: 1;
+  transition: opacity 0.45s var(--ease-out) calc(var(--i, 0) * 20ms + 120ms);
+}
+
+.fx-draw.is-in .fx-sparkg {
+  opacity: 1;
+  transition: opacity 0.6s var(--ease-out) 0.9s;
+}
+
+.fx-draw.is-in .fx-vine__arc {
+  animation: fx-arc 5.5s linear var(--arc-delay, 1.6s) infinite;
+}
+
+/* ── Sparks ───────────────────────────────────────────────────────────────── */
+:where(.fx-spark) {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+  color: #ffd1dc;
+}
+
+.fx-twinkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fx-twinkle 2.4s var(--ease-in-out) infinite;
+}
+
+/* ── Yin-yang + sprig ─────────────────────────────────────────────────────── */
+:where(.fx-yinyang) {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+:where(.fx-sprig) {
+  flex-shrink: 0;
+  color: var(--c-hot);
+}
+
+/* ── Sticker disc ─────────────────────────────────────────────────────────── */
+.fx-sticker {
+  position: absolute;
+  z-index: var(--z-sticker);
+  width: var(--size, 152px);
+  height: var(--size, 152px);
+  border-radius: 50%;
+  box-shadow: var(--glow-hot);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fx-sticker > * {
+  position: absolute;
+}
+
+.fx-sticker__disc,
+.fx-sticker__spin {
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fx-sticker__boost,
+.fx-sticker__ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fx-sticker__spin {
+  animation: fx-spin var(--dur-sticker, 28s) linear infinite;
+}
+
+/* Paused by default; on hover it runs alongside the outer spin (1/28 + 1/7.64 ≈ 1/6),
+   so the ring speeds up to a 6s turn without jumping. */
+.fx-sticker__boost {
+  animation: fx-spin 7.64s linear infinite paused;
+}
+
+@media (hover: hover) {
+  .fx-sticker:hover .fx-sticker__boost {
+    animation-play-state: running;
+  }
+}
+
+.fx-sticker__text {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: pre;
+  fill: #ffd1dc;
+}
+
+.fx-sticker__hair {
+  fill: none;
+  stroke: rgba(255, 209, 220, 0.16);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.fx-sticker__stem {
+  fill: none;
+  stroke: #ff3b6b;
+  stroke-width: 1px;
+  opacity: 0.8;
+}
+
+.fx-sticker__thorns {
+  fill: #ff3b6b;
+  opacity: 0.85;
+}
+
+.fx-sticker__mark {
+  top: 31%;
+  left: 31%;
+  width: 38%;
+  height: 38%;
+  filter: drop-shadow(0 0 8px rgba(255, 45, 85, 0.55));
+}
+
+.fx-sticker__spark {
+  translate: -50% -50%;
+  color: #ffd1dc;
+  filter: drop-shadow(0 0 3px rgba(255, 209, 220, 0.9)) drop-shadow(0 0 8px rgba(255, 45, 85, 0.7));
+  pointer-events: none;
+}
+
+/* ── Thorn seam (top edge of the crimson and contact bands) ──────────────── */
+.fx-thorn-seam {
+  position: absolute;
+  top: -14px;
+  right: 0;
+  left: 0;
+  z-index: var(--z-lift);
+  height: 28px;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28'%3E%3Cpath d='M0 14.5H120' stroke='rgba(255,59,107,.55)'/%3E%3Cpath d='M19.5 14.5L24 10.5L22.5 14.5ZM56 14.5L61.5 21.5L59.5 14.5ZM92.5 14.5L97.5 9.5L95.5 14.5Z' fill='rgba(255,59,107,.8)'/%3E%3C/svg%3E") repeat-x 0 50% / 120px 28px;
+  filter: drop-shadow(0 0 6px rgba(255, 45, 85, 0.5));
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.fx-thorn-seam__gem {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  translate: -50% 0;
+}
+
+.fx-thorn-seam__diamond {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.fx-thorn-seam__mark {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+/* ── Reveal on scroll ────────────────────────────────────────────────────────
+   Hidden only until `.is-in`, so once revealed the component's own opacity and
+   transform (skews, hover lifts) apply again. `.is-done` (added by reveal.js after
+   the rise) hands `transition` back to the component too. */
+html.js .reveal:not(.is-in) {
+  opacity: 0;
+  transform: translateY(var(--reveal-y));
+}
+
+html.js .reveal.is-in:not(.is-done) {
+  transition:
+    opacity var(--dur-4) var(--ease-out) calc(var(--i, 0) * var(--stagger)),
+    transform var(--dur-4) var(--ease-out) calc(var(--i, 0) * var(--stagger));
+}
+
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes fx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fx-twinkle {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.6);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fx-arc {
+  0%,
+  92% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+
+  93% {
+    opacity: 1;
+    stroke-dashoffset: 0.15;
+  }
+
+  95% {
+    opacity: 0.2;
+    stroke-dashoffset: 0.4;
+  }
+
+  96% {
+    opacity: 0.9;
+    stroke-dashoffset: 0.62;
+  }
+
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+}
+
+/* ── Reduced motion: everything drawn, nothing moves ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal:not(.is-in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .fx-draw .fx-vine__stem {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transition: none;
+  }
+
+  .fx-draw .fx-vine__thorn,
+  .fx-draw .fx-sparkg {
+    opacity: 1;
+    transition: none;
+  }
+
+  .fx-vine__arc {
+    opacity: 0;
+    animation: none !important;
+  }
+
+  .fx-twinkle,
+  .fx-thorn-ring__orbit,
+  .fx-sticker__spin,
+  .fx-sticker__boost {
+    animation: none !important;
+  }
+
+  .fx-twinkle {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── On-page pause (motion.js): the looping effects stop, drawn state stays ── */
+html.motion-paused .fx-vine__arc {
+  opacity: 0;
+  animation: none !important;
+}
+
+html.motion-paused :is(.fx-twinkle, .fx-thorn-ring__orbit, .fx-sticker__spin, .fx-sticker__boost) {
+  animation: none !important;
+}
+
+html.motion-paused .fx-twinkle {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Print: content only ──────────────────────────────────────────────────── */
+@media print {
+  .fx-lava,
+  .fx-particles,
+  .fx-thorn-corner,
+  .fx-thorn-ring,
+  .fx-thorn-seam,
+  .fx-sticker {
+    display: none !important;
+  }
+
+  html.js .reveal:not(.is-in) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
