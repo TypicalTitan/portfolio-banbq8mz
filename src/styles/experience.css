@@ -152,6 +152,17 @@ html.js .xp-role.reveal.is-in {
     padding: 60px 20px 28px;
   }
   .xp-role--brief .xp-logo { width: 96px; height: 64px; }
+
+  /* Title + org + dates only: a compact row; the body already names the org. */
+  .xp-role--compact .xp-org { padding: 24px 20px; }
+  .xp-role--compact .xp-org-name { display: none; }
+  .xp-role--compact .xp-body { display: flex; flex-direction: column; justify-content: center; }
+}
+.xp-role--compact .xp-monogram {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  font-size: 1.25rem;
 }
 
 /* ── Role body ─────────────────────────────────────────────────────────── */
@@ -337,6 +348,7 @@ html.js .xp-role.reveal.is-in {
     font-size: 1.5rem;
   }
   .xp-org-name { display: none; } /* the org line directly below names it */
+  .xp-role--compact .xp-org { height: 88px; }
 }
 
 /* ── G11 · Leadership & activities ─────────────────────────────────────── */

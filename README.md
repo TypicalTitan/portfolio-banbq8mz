@@ -2,7 +2,7 @@
 
 This is the personal portfolio of **Stephan Varganov** ([TypicalTitan on GitHub](https://github.com/TypicalTitan)), a cybersecurity and networking student focused on cloud ops. It's a fast, accessible single-page site built with **Vite + vanilla JS** and styled in a crimson / lava / petal look.
 
-It is built on a student-portfolio **template**: the layout stays the same and all content comes from **one file**, `src/content.js`, plus the images in `public/`. Every fact on the site comes from Stephan's own information. Anything not provided yet is either **hidden** (a `null` date, GPA or résumé, or an empty list of labs or testimonials) or, for descriptions he'll write himself, **lorem ipsum**.
+It is built on a student-portfolio **template**: the layout stays the same and all content comes from **one file**, `src/content.js`, plus the images in `public/`. Every fact on the site comes from Stephan's own information (the two project case studies were written from his own session history and checked claim by claim). Anything not provided yet is **hidden**: a `null` date, summary, GPA or résumé, or an empty list of labs or testimonials. There is no placeholder text.
 
 What the template gives you:
 
@@ -14,7 +14,6 @@ What the template gives you:
 - No framework, no CDN and no tracking. It works offline, prints cleanly and respects *reduce motion*
 
 > **Before you publish:** replace what's still a placeholder:
-> - Search `src/content.js` for `ipsum` to find every placeholder description: the project write-ups and the two shorter job summaries.
 > - Swap `img/portrait.svg` for a photo, or set `person.photo: null` to hide the avatar.
 > - Optionally replace the illustrated project covers and org monograms (see [Replacing images](#replacing-images-pdfs-and-data)).
 >

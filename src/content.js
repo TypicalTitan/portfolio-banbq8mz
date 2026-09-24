@@ -287,7 +287,7 @@ const content = {
       type: null,
       location: null,
       start: '2025-06', end: '2025-06',
-      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.',
+      summary: null,                    // one line about the job; null hides
       logo: null,
       achievements: [],
       skills: [],
@@ -301,7 +301,7 @@ const content = {
       type: null,
       location: null,
       start: null, end: null,           // dates unknown → hidden
-      summary: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
+      summary: null,
       logo: null,
       achievements: [],
       skills: [],

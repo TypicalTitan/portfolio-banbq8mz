@@ -455,7 +455,8 @@ experience.forEach((x, i) => {
   const w = `experience[${i}]${isStr(x?.id) ? ` (${x.id})` : ''}`;
   if (!need(x, ['id', 'role', 'org', 'orgUrl', 'type', 'location', 'start', 'end', 'summary', 'logo', 'achievements', 'skills', 'quote'], w)) return;
   slug(x.id, `${w}.id`);
-  for (const k of ['role', 'org', 'summary']) str(x, k, w);
+  for (const k of ['role', 'org']) str(x, k, w);
+  str(x, 'summary', w, { optional: true });
   str(x, 'location', w, { optional: true });
   oneOf(x.type, XP_TYPES, `${w}.type`, { optional: true }); // null hides the type chip
   range(x, w, { unknown: true }); // both null → no date pill, listed after the dated roles

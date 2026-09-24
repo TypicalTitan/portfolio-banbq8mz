@@ -47,10 +47,12 @@ export function renderExperience(content) {
 
 function roleCard(role, index) {
   const titleId = uid('xp-role');
-  // Summary-only roles get a shorter org panel, so the card doesn't sit half empty.
+  // Summary-only roles get a shorter org panel, so the card doesn't sit half empty;
+  // roles with only a title, org and dates collapse further to a compact row.
   const brief = !role.achievements?.length && !role.skills?.length && !role.quote?.text;
+  const compact = brief && !role.summary;
   return h('article', {
-    class: ['xp-role', brief && 'xp-role--brief', 'reveal'],
+    class: ['xp-role', brief && 'xp-role--brief', compact && 'xp-role--compact', 'reveal'],
     style: { '--i': Math.min(index, MAX_STAGGER) },
     'aria-labelledby': titleId,
   },
