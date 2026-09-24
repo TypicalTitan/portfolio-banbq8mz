@@ -68,7 +68,7 @@ const content = {
   person: {
     name: 'Stephan Varganov',            // REAL name — nav, hero, about, footer, page titles
     handle: 'TypicalTitan',              // blackletter display name (hero, footer, drawer); up to ~14 characters looks best
-    pronouns: null,                      // e.g. 'they/them'; null hides
+    pronouns: 'he/him',                  // null hides
     tagline: 'Cybersecurity & networking student focused on cloud ops.',
     pitch: 'Focused on cybersecurity, networking and cloud ops.', // About headline; must contain sections.about.accent — OWNER: rewrite in your own words
     bio: [                               // About paragraphs — 2 short ones read best
@@ -158,69 +158,97 @@ const content = {
       title: 'Rust Dedicated Server',
       subtitle: 'Modded Rust game server on Shockbyte',
       category: 'Servers',                // must be in site.projectCategories
-      year: null,
+      year: 2026,
       featured: true,
       order: 1,
       badges: [],                         // any of 'Featured' | 'Award' | 'Team' | 'Solo' | 'New' | 'In progress'
       icon: 'Server',
       theme: 'lava',
       frame: 'window',
-      role: null,                         // null hides
+      role: 'Owner and admin',            // null hides
       team: null,
       duration: null,
-      context: 'Hosted on Shockbyte',     // null hides
-      summary: 'A dedicated Rust game server hosted on Shockbyte and extended with Oxide/uMod plugins: NTeleportation, Better Loot and Raidable Bases.',
+      context: 'Small community server hosted on Shockbyte', // null hides
+      summary: 'A small community Rust server on Shockbyte running Oxide/uMod plugins. I made the balance and restart calls, and used Claude Code over RCON and SFTP to install plugins, build custom ones and handle rollbacks and wipes.',
       cover: { src: 'img/projects/rust-server/cover.svg', alt: 'Illustrated server console listing the installed Oxide plugins', width: 1600, height: 1000 },
-      tags: ['Shockbyte', 'Oxide / uMod', 'NTeleportation', 'Better Loot', 'Raidable Bases', 'Server admin'],
+      tags: ['Oxide / uMod', 'RCON', 'SFTP', 'Discord API', 'Raidable Bases', 'NTeleportation', 'Better Loot',
+             'Shockbyte', 'Claude Code', 'Server admin'],
       links: { demo: null, repo: null, video: null }, // null hides the button
-      metrics: [],                        // 2–4 { value, unit, label }; [] hides
+      metrics: [                          // 2–4 { value, unit, label }; [] hides
+        { value: '84',  unit: null,  label: 'monuments after a same-seed regen (from 76)' },
+        { value: '131', unit: 'FPS', label: 'server framerate with all plugins on' },
+        { value: '36',  unit: null,  label: 'items restored after a death, no failures' },
+        { value: '19',  unit: null,  label: 'items given 10x stack sizes' },
+      ],
       writeup: {
-        problem: ['Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'],
+        problem: [
+          'I ran a small Rust server on Shockbyte, and the game gives admins little to work with. It keeps no record of what a player was carrying when they died, has no built-in way to carry loot through a map wipe, and some things players ask for, like cheaper explosives, can’t be changed server-side.',
+          'I also wanted a repeatable way to turn player suggestions into live changes, with nothing restarting without my OK.',
+        ],
         process: {
-          intro: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          intro: 'I made the decisions and ran the Shockbyte panel; Claude Code did the hands-on plugin and config work over RCON and SFTP at my direction.',
           steps: [
-            { title: 'Hosted it on Shockbyte', body: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', image: null },
-            { title: 'Added the Oxide/uMod framework', body: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.', image: null },
-            { title: 'Installed NTeleportation, Better Loot and Raidable Bases', body: 'Curabitur pretium tincidunt lacus, nulla gravida orci a odio nullam varius turpis et commodo.', image: null },
+            { title: 'Set up a suggestion-to-change workflow', body: 'Players post suggestions in Discord threads and I vet them. I created a private Discord bot so Claude Code could read a thread, scope the change and post progress back, with a firm rule that nothing restarts without my OK.', image: null },
+            { title: 'Shipped the feasible half of a request', body: 'For a scrap-farming suggestion, instant vending restock went live within the hour. Cheaper explosives were dropped because Rust enforces crafting costs on the client, and at my request an explanation went up in the suggestion thread. I also had a small custom plugin built that raises stack sizes 10x on 19 farming, crafting and raiding items.', image: null },
+            { title: 'Diagnosed outages and a lost base', body: 'When RCON dropped mid-deploy, the Oxide logs showed the server had restarted onto a new Rust/Oxide version with every plugin loading cleanly, so it was a host update and not a plugin fault. When a tugboat base vanished, I stopped the server, we rolled back to an earlier save with backups taken of both, and traced the likely cause to boat decay.', image: null },
+            { title: 'Built admin tools Rust lacks', body: 'I had Claude Code write DeathInventoryLogger, which records a player’s inventory, killer and weapon on death, plus a command to give the loadout back. Its restore command later gave a player back 36 items with no failures.', image: null },
+            { title: 'Protected player loot through a wipe', body: 'Before a map wipe I asked for LootVault, a plugin that snapshots every player inventory and placed container with its owner. After the wipe, which kept blueprints and the same map seed, it put my 29 carried items back and my 103 container items into 3 boxes, and I had a one-time /restore command added for players.', image: null },
           ],
         },
-        outcome: ['Integer malesuada nunc vel risus commodo viverra maecenas accumsan lacus vel facilisis volutpat est velit egestas.'],
-        lessons: [],                      // [] hides "What I learned"
+        outcome: [
+          'The server ran paid plugins like Raidable Bases, Kits and SkillTree alongside the custom ones, and held 131 FPS with Raidable Bases and the drone and supply-drop plugins running. At my request, Claude Code regenerated the map on the same seed to add missing monuments, going from 76 to 84, while keeping all 6 sleeping players and both horse hitches.',
+          'Not everything worked. Rust’s Frontier era crashed players’ workbenches, so after working around panel and config overrides I moved the server to Medieval and then back to vanilla.',
+        ],
+        lessons: [                        // [] hides "What I learned"
+          'Take backups on both sides before any rollback or wipe.',
+          'Check the server logs before assuming your own change broke something.',
+          'When a request can’t be done server-side, explain why publicly.',
+        ],
       },
-      skills: ['Server administration', 'Plugin configuration'],
+      skills: ['Server administration', 'Plugin configuration', 'Log-based incident diagnosis', 'Backup and restore',
+               'Change management', 'AI-assisted development (Claude Code)'],
       gallery: [],                        // [] hides the gallery
     },
     {
       slug: 'pc-builds',
       title: 'Custom PC Builds',
-      subtitle: 'PC building',
+      subtitle: 'My AM4 build: Ryzen 7 5700X3D + RTX 5070',
       category: 'Hardware',
-      year: null,
+      year: 2026,
       featured: true,
       order: 2,
       badges: [],
       icon: 'Cpu',
       theme: 'ember',
       frame: 'plate',
-      role: null,
+      role: 'Builder',
       team: null,
       duration: null,
-      context: null,
-      summary: 'Custom PC builds.',
+      context: 'My own desktop',
+      summary: 'My current build is an AM4 system: a Ryzen 7 5700X3D and an RTX 5070 on an MSI B450 Tomahawk Max with 64 GB of DDR4-3600. In 2026 I used Claude Code to diagnose its crashes, a hard freeze and in-game lag, and to tune it.',
       cover: { src: 'img/projects/pc-builds/cover.svg', alt: 'Illustrated PC tower with a glass side panel and red lighting', width: 1600, height: 1000 },
-      tags: ['PC building', 'Hardware'],
+      tags: ['PC building', 'Windows troubleshooting', 'Crash dump analysis', 'Hardware', 'OpenRGB', 'Claude Code'],
       links: { demo: null, repo: null, video: null },
-      metrics: [],
+      metrics: [
+        { value: '2',     unit: null, label: 'blue screens traced to one driver' },
+        { value: '30-40', unit: '%',  label: 'GPU use in Overwatch while CPU-bound' },
+        { value: '64',    unit: 'GB', label: 'DDR4-3600 memory' },
+      ],
       writeup: {
-        problem: ['Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'],
+        problem: ['Between July and September 2026 my desktop blue-screened several times, froze hard once, ran at low frame rates in Overwatch and lagged in League, even with an RTX 5070.'],
         process: {
-          intro: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-          steps: [],
+          intro: 'I directed Claude Code to pull event logs, crash dumps and live CPU and GPU readings, then acted on what they showed.',
+          steps: [
+            { title: 'Traced two blue screens to one driver', body: 'The July blue screen’s Windows crash report and the August minidump both pointed to Riot Vanguard’s anti-cheat driver (vgk.sys).', image: null },
+            { title: 'Diagnosed a hard freeze from event logs', body: 'After I had to force the PC off, the logs showed Windows had run out of Session 0 desktop heap after almost four days of uptime, with no disk, RAM or GPU faults. I then had Claude Code turn off autostart for several launchers and the Windows setting that kept relaunching them.', image: null },
+            { title: 'Found the real bottleneck in games', body: 'Live readings showed the RTX 5070 at 30-40% use in Overwatch while half of the 5700X3D’s threads were pegged at 85-100%, and League lag came from CPU load, not the network. I had the Mobalytics companion app capped to three cores to free up the rest for League.', image: null },
+            { title: 'Turned off RAM lighting under Memory Integrity', body: 'Claude Code installed OpenRGB with the PawnIO driver, since Memory Integrity blocks the older driver, and set both G.Skill sticks to static black saved to their flash.', image: null },
+          ],
         },
-        outcome: ['Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'],
+        outcome: ['Each problem I looked into ended with a traced cause: a third-party driver for two of the blue screens, a Windows resource limit for the freeze, and the CPU for in-game lag.'],
         lessons: [],
       },
-      skills: ['Hardware assembly'],
+      skills: ['Hardware assembly', 'Windows troubleshooting', 'Crash dump analysis', 'Performance diagnosis'],
       gallery: [],
     },
   ],
