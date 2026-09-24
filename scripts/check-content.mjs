@@ -7,7 +7,8 @@
  *  • required keys are present and enum values are spelled right
  *  • slugs and ids are unique; categories, award → project links and accents resolve
  *  • image width/height match the real file's aspect ratio (prevents layout shift)
- *  • every skill / tool / tag name has a glyph in src/lib/tag-glyphs.js, and each glyph exists
+ *  • every skill / tool / tag name has a logo in src/lib/tag-glyphs.js, each mapped logo file exists
+ *    in src/assets/logos/, and every logo file follows the format rules (viewBox, <title>, currentColor)
  *
  * Exits with code 1 when anything is wrong. Warnings (placeholders still in place,
  * odd-looking values) never fail the check unless you run:  npm run check -- --strict
@@ -495,24 +496,50 @@ skills.forEach((g, i) => {
 });
 if (skills.length && (skills.length < 3 || skills.length > 5)) warn('skills', `the skills fan is designed for 4–5 groups (has ${skills.length})`);
 
-// Skill / tool / tag glyphs: every name the site shows with a glyph should have an entry in
-// src/lib/tag-glyphs.js (unmapped names still render, with a generic Tag glyph), and every entry
-// must point at a brand in BRAND_PATHS / brand-extra.js or a lucide name in the LUCIDE map.
+// Skill / tool / tag logos: every name the site shows with a glyph should have an entry in
+// src/lib/tag-glyphs.js (unmapped names still render, with the generic tag.svg), every entry must
+// name a file in src/assets/logos/, and every logo file must follow the format rules in the README.
 {
-  const { TAG_GLYPHS, tagGlyphSpec } = await import(pathToFileURL(join(ROOT, 'src', 'lib', 'tag-glyphs.js')).href);
-  const { BRAND_EXTRA } = await import(pathToFileURL(join(ROOT, 'src', 'lib', 'brand-extra.js')).href);
-  const iconsSrc = readFileSync(join(ROOT, 'src', 'lib', 'icons.js'), 'utf8');
-  const brandKeys = new Set([
-    ...[...(iconsSrc.match(/const BRAND_PATHS = \{([^}]*)\}/)?.[1] ?? '').matchAll(/^\s*(\w+):/gm)].map((m) => m[1]),
-    ...Object.keys(BRAND_EXTRA),
-  ]);
-  for (const [name, spec] of Object.entries(TAG_GLYPHS)) {
-    if (spec.startsWith('brand:')) {
-      if (!brandKeys.has(spec.slice(6))) err(`tag-glyphs.js "${name}"`, `unknown brand "${spec.slice(6)}" — add it to BRAND_PATHS in src/lib/icons.js or to src/lib/brand-extra.js`);
-    } else if (!LUCIDE.has(spec)) {
-      err(`tag-glyphs.js "${name}"`, `unknown icon "${spec}" — add it to the lucide import and the LUCIDE map in src/lib/icons.js`);
+  const { TAG_GLYPHS, TAG_FALLBACK, tagGlyphSpec } = await import(pathToFileURL(join(ROOT, 'src', 'lib', 'tag-glyphs.js')).href);
+  const LOGO_DIR = join(ROOT, 'src', 'assets', 'logos');
+  const logoFiles = existsSync(LOGO_DIR) ? readdirSync(LOGO_DIR).filter((f) => extname(f).toLowerCase() === '.svg') : [];
+  const logoKeys = new Set(logoFiles.map((f) => f.slice(0, -4)));
+  const LOGO_KEY = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+  for (const file of logoFiles) {
+    const where = `src/assets/logos/${file}`;
+    const key = file.slice(0, -4);
+    if (!LOGO_KEY.test(key)) err(where, 'file names must be lower-case kebab-case (e.g. claude-code.svg), with a lower-case .svg extension');
+    const svg = readFileSync(join(LOGO_DIR, file), 'utf8');
+    const root = svg.match(/<svg\b[^>]*>/)?.[0] ?? '';
+    const attr = (name) => root.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1];
+    if (!root) { err(where, 'is not an SVG file (no <svg> element)'); continue; }
+    if (attr('xmlns') !== 'http://www.w3.org/2000/svg') err(where, 'the <svg> needs xmlns="http://www.w3.org/2000/svg"');
+    const box = (attr('viewBox') ?? '').trim().split(/[\s,]+/).map(Number);
+    if (box.length !== 4 || box.some((n) => !Number.isFinite(n)) || box[2] <= 0 || box[3] <= 0) err(where, 'the <svg> needs a viewBox="x y width height"');
+    if (!/<title>[^<]+<\/title>/.test(svg)) err(where, 'needs a <title> with the product / concept name');
+    const line = attr('fill') === 'none';
+    if (line ? attr('stroke') !== 'currentColor' : attr('fill') !== 'currentColor') {
+      err(where, 'the <svg> needs fill="currentColor" (filled mark) or fill="none" stroke="currentColor" (line glyph)');
     }
+    const colour = svg.match(/\s(?:fill|stroke|stop-color|color)="(?!none"|currentColor")[^"]*"|(?:fill|stroke)\s*:\s*(?!none|currentColor)[^;"]+/i);
+    if (colour) err(where, `hard-coded colour ${colour[0].trim()} — use currentColor so the logo takes the site's colour`);
+    if (/<(script|foreignObject|image)\b|\son\w+=|href="(?!#)/i.test(svg)) err(where, 'must not contain scripts, event handlers, embedded images or external links');
   }
+
+  const used = new Set([TAG_FALLBACK, ...SOCIALS.filter((id) => id !== 'email')]);
+  for (const [name, key] of Object.entries(TAG_GLYPHS)) {
+    used.add(key);
+    if (!logoKeys.has(key)) err(`tag-glyphs.js "${name}"`, `no logo file src/assets/logos/${key}.svg — add the file or fix the key`);
+  }
+  if (!logoKeys.has(TAG_FALLBACK)) err('tag-glyphs.js TAG_FALLBACK', `no logo file src/assets/logos/${TAG_FALLBACK}.svg`);
+  for (const id of SOCIALS) {
+    if (id !== 'email' && !logoKeys.has(id)) err('src/assets/logos', `no logo file ${id}.svg for the "${id}" social link`);
+  }
+  for (const key of logoKeys) {
+    if (!used.has(key)) warn(`src/assets/logos/${key}.svg`, 'is not used — map a name to it in src/lib/tag-glyphs.js, or delete it');
+  }
+
   const list = (v) => (isArr(v) ? v.filter(Boolean) : []);
   const shown = [
     ...list(content.site?.marquee).map((n, i) => [n, `site.marquee[${i}]`]),
@@ -525,7 +552,7 @@ if (skills.length && (skills.length < 3 || skills.length > 5)) warn('skills', `t
     ...list(content.labs).flatMap((l, i) => list(l?.skills).map((n, j) => [n, `labs[${i}].skills[${j}]`])),
   ];
   for (const [name, where] of shown) {
-    if (isStr(name) && !tagGlyphSpec(name)) warn(where, `"${name}" has no glyph mapping, so it shows a generic tag icon — add it to src/lib/tag-glyphs.js`);
+    if (isStr(name) && !tagGlyphSpec(name)) warn(where, `"${name}" has no glyph mapping, so it shows the generic tag.svg — add it to src/lib/tag-glyphs.js`);
   }
 }
 

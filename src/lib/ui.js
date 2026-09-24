@@ -11,7 +11,7 @@ import { sprig } from '../effects/index.js';
 const BTN_ICON = { sm: 16, md: 18, lg: 20 };
 const NEW_TAB = ' (opens in new tab)';
 
-/** Accepts a lucide name, a brand key ('github') or a ready-made SVG node. */
+/** Accepts a lucide name, a logo file key ('github' → src/assets/logos/github.svg) or a ready-made SVG node. */
 function glyph(spec, size, className) {
   if (!spec) return null;
   if (spec instanceof Node) return spec;

@@ -200,13 +200,23 @@ The page `<title>`, the search/link-preview description and the no-JavaScript li
 
 ### Skill and tag glyphs
 
-The marquee, each Skills item and every chip (experience skills, project tags, project "Skills demonstrated") show a small glyph before the name. One table decides which: `TAG_GLYPHS` in `src/lib/tag-glyphs.js`, keyed by the name in lower case.
+The marquee, each Skills item and every chip (experience skills, project tags, project "Skills demonstrated") show a small logo before the name. Every logo is its own file in **`src/assets/logos/`** (68 files: python.svg, aws.svg, network.svg…), which you can open in a browser, edit in Figma or Inkscape, or reuse elsewhere. The site loads them from there: Vite bundles the file text at build time (`src/lib/logos.js`), so they cost no extra requests and stay inline, where they take the colour of the text around them. One table decides which logo each name gets: `TAG_GLYPHS` in `src/lib/tag-glyphs.js`, keyed by the name in lower case, with the file's name (without `.svg`) as the value.
 
 - A real brand mark when the thing has one: *Python*, *C++*, *Git*, *Linux*, *WebRTC*, *Android*, *AWS*, *Windows*, *PowerShell*, *.NET*, *Discord API*, *Claude Code*…
-- The maker's mark for a product line: *RTX 5070* → NVIDIA; *Ryzen 7 5700X3D*, *AM4* → AMD; *Windows admin* → Windows; *UniFi* → Ubiquiti. AWS is the exception: its mark is the "aws" letters plus the smile, and the smile alone is too thin below about 24px, so only *AWS* in the tools strip gets the smile. *AWS EC2*, *AWS SSM*, *GameLift Streams* and *Graviton / ARM64* use icons (Server, CloudCog, MonitorPlay, Cpu).
-- Otherwise a Lucide icon that says what it is: *Subnetting* → Network, *SQL* → Database, *NVMe* → HardDrive, and so on. The Rust-server plugins (Oxide / uMod, NTeleportation, Better Loot, Raidable Bases) and Shockbyte have no official marks, so they use icons too.
+- The maker's mark for a product line: *RTX 5070* → nvidia.svg; *Ryzen 7 5700X3D*, *AM4* → amd.svg; *Windows admin* → windows.svg; *UniFi* → ubiquiti.svg. AWS is the exception: its mark is the "aws" letters plus the smile, and the smile alone is too thin below about 24px, so only *AWS* in the tools strip gets the smile. *AWS EC2*, *AWS SSM*, *GameLift Streams* and *Graviton / ARM64* use icons (server, cloud-cog, monitor-play, cpu).
+- Otherwise a Lucide line icon that says what it is: *Subnetting* → network.svg, *SQL* → database.svg, *NVMe* → hard-drive.svg, and so on. The Rust-server plugins (Oxide / uMod, NTeleportation, Better Loot, Raidable Bases) and Shockbyte have no official marks, so they use icons too.
+- The social links (GitHub, LinkedIn, YouTube, Devpost, itch.io) use github.svg, linkedin.svg, youtube.svg, devpost.svg and itchio.svg from the same folder, named after the social `id`.
 
-To give a new tag a glyph, add a line to `TAG_GLYPHS`: `'my tag': 'brand:python'` for a brand, or `'my tag': 'Rocket'` for a [Lucide](https://lucide.dev/icons) icon (add that icon to the `import` and the `LUCIDE` map in `src/lib/icons.js` too). A name with no entry still shows, with a plain tag icon, and `npm run check` warns about it. Brand keys live in `BRAND_PATHS` in `src/lib/icons.js` (Simple Icons, imported by name) and in `src/lib/brand-extra.js`, which holds the few marks Simple Icons lacks as copied path data. A mark much wider than tall sets `aspect` there (the .NET wave uses 1.4) so it is drawn wider and matches the square marks' weight. Every mark is drawn in one colour (`currentColor`), never the brand's own colours.
+**File names.** Lower-case kebab-case, and the name is the key: brand marks are named after the product (`claude-code.svg`, `raspberry-pi.svg`, `google-sheets.svg`, `dotnet.svg`), line icons keep their [Lucide](https://lucide.dev/icons) name (`server-cog.svg`, `settings-2.svg`). `tag.svg` is the fallback for a name with no entry.
+
+**File format** (`npm run check` enforces all of it):
+
+- A root `<svg>` with `xmlns="http://www.w3.org/2000/svg"` and a `viewBox` that fits the mark (24 on the long edge, like Simple Icons, keeps it at the same optical size as the others).
+- A `<title>` with the product or concept name, so the file makes sense on its own. The site strips it when inlining: the visible name already says it.
+- **One colour, `currentColor`, never the brand's own colours.** A filled mark sets `fill="currentColor"` on the `<svg>`; a line icon sets `fill="none" stroke="currentColor"` plus Lucide's `stroke-width="2" stroke-linecap="round" stroke-linejoin="round"` (the site sets the stroke width per spot: 2 in chips and the Skills fan, 2.25 in the tools strip). No hard-coded colours, scripts, embedded images or external links.
+- `width`/`height` are only for opening the file on its own; the site sets the size. A `viewBox` wider than tall draws the logo that much wider than the square ones so it carries the same weight: that is how the .NET wave (viewBox 1.4 : 1) and the AWS smile (1.5 : 1, plus a 0.4 hairline stroke so it reads) get their size. Crop the `viewBox` to the mark rather than padding it.
+
+**Adding or replacing a logo.** Drop the .svg into `src/assets/logos/` (or overwrite the old one with the same name) and, for a new name, add one line to `TAG_GLYPHS`: `'my tag': 'my-logo'`. Run `npm run check`: it fails when a mapped file is missing or a file breaks the rules above, warns about a shown name with no entry (it still renders, with `tag.svg`) and about a file nothing uses. Good sources for single-colour marks are [Simple Icons](https://simpleicons.org) (download the SVG, then add `fill="currentColor"` and a `<title>`) and [Lucide](https://lucide.dev/icons) (its SVGs already use `currentColor`).
 
 ---
 
@@ -218,8 +228,13 @@ The current placeholders are original illustrations:
 
 - `img/projects/rust-server/cover.svg`: a server console listing the Oxide plugins.
 - `img/projects/pc-builds/cover.svg`: a PC tower with a glass side panel.
-- `img/orgs/playcast.svg`, `camp-zanika-lache.svg` and `raaj-gharana.svg`: simple monograms. They are **not** the organisations' real logos, so they are switched off (`logo: null` in `experience`, which shows plain initials instead). Add the official mark only if you have permission to use it.
+- `img/orgs/camp-zanika-lache.svg` and `raaj-gharana.svg`: simple monograms. They are **not** the organisations' real logos, so they are switched off (`logo: null` in `experience`, which shows plain initials instead). Add the official mark only if you have permission to use it.
 - `img/portrait.svg`: a silhouette.
+
+The Playcast logos are real, not placeholders:
+
+- `img/orgs/playcast.svg`: Playcast's official white mascot mark, from https://playcast.io/logo.svg (paths unchanged). It is shown on the Playcast Experience card.
+- `img/orgs/playcast-wordmark.svg`: the same mascot plus the "PLAYCAST" letters, traced from Playcast's site header logo. It is kept on purpose as a reusable asset and is not used on the page (at card size the letters are too small to read).
 
 Unused files are removed from `public/`, so the lab, résumé and gallery folders below only exist once you add them.
 
@@ -393,7 +408,8 @@ index.html              page shell (title, description and noscript line come fr
 vite.config.js          base: './' for GitHub Pages
 src/content.js          ← all the content
 src/main.js, router.js  wiring and hash routing
-src/lib/                DOM builder, icons (+ tag-glyphs.js, brand-extra.js), formatting, shared UI pieces
+src/lib/                DOM builder, icons (+ logos.js loader, tag-glyphs.js table), formatting, shared UI pieces
+src/assets/logos/       one .svg per skill / tool / social logo (see Skill and tag glyphs)
 src/effects/            lava, particles, thorns, sigils, reveal, scheduler
 src/render/             one renderer per section / page
 src/styles/             tokens, base, chrome, effects and per-section CSS
@@ -404,6 +420,7 @@ scripts/check-content.mjs   npm run check
 ## Credits
 
 - [Inter](https://rsms.me/inter/), [Grenze Gotisch](https://fonts.google.com/specimen/Grenze+Gotisch) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/): SIL Open Font License.
-- Icons: [Lucide](https://lucide.dev) (ISC).
-- Brand glyphs: [Simple Icons](https://simpleicons.org) (CC0); the AWS smile (cut from the AWS mark), Windows and PowerShell marks from [Material Design Icons](https://pictogrammers.com/library/mdi/) (Apache-2.0); the .NET mark from [Devicon](https://devicon.dev) (MIT). The AMD mark is the arrow from Simple Icons' AMD logo. All brands and logos are trademarks of their owners.
-- The placeholder art in `public/` (portrait, project covers, org monograms, favicon) is original and part of this template. The org monograms are not the organisations' logos. Replace any of it freely.
+- UI icons: [Lucide](https://lucide.dev) (ISC).
+- Logos in `src/assets/logos/` (each file names its source in a comment): brand marks from [Simple Icons](https://simpleicons.org) (CC0); the AWS smile (cut from the AWS mark), Windows and PowerShell marks from [Material Design Icons](https://pictogrammers.com/library/mdi/) (Apache-2.0); the .NET mark from [Devicon](https://devicon.dev) (MIT); the AMD mark is the arrow from Simple Icons' AMD logo; the line icons are [Lucide](https://lucide.dev) geometry (ISC). All brands and logos are trademarks of their owners.
+- `img/orgs/playcast.svg`: Playcast mascot, the official white mark from https://playcast.io/logo.svg (paths unchanged). `img/orgs/playcast-wordmark.svg`: the same mascot plus the "PLAYCAST" letters, traced from Playcast's site header logo (https://playcast.io/img/aida/footer-logo.png). Playcast name and logos © Playcast Inc; used to identify a former employer.
+- The placeholder art in `public/` (portrait, project covers, the Camp Zanika Lache and Raaj Gharana monograms, favicon) is original and part of this template. Those two monograms (`camp-zanika-lache.svg`, `raaj-gharana.svg`) are not the organisations' logos. Replace any of it freely.

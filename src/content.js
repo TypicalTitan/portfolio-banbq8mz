@@ -266,13 +266,13 @@ const content = {
       id: 'playcast',
       role: 'QA/DevOps Associate',
       org: 'Playcast Inc',
-      orgUrl: null,                     // company website; null shows the name as plain text
+      orgUrl: 'https://playcast.io/',   // company website; null shows the name as plain text
       type: null,                       // 'internship' | 'job' | 'volunteer' | 'research' | null (hides the chip)
       location: 'Everett, WA',
       start: '2026-01', end: '2026-06',
       summary: 'QA and DevOps work on game streaming and AWS fleet automation.',
       // Logo: a WHITE mark on a transparent background (it sits on a dark crimson panel).
-      logo: null,                       // null shows plain initials; add the official mark only with permission
+      logo: { src: 'img/orgs/playcast.svg', alt: 'Playcast logo', width: 122, height: 100 },
       achievements: [                   // up to 6 shown
         'Built an Android game-streaming pipeline',
         'Wrote AWS SSM fleet automation scripts',
