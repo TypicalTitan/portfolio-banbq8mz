@@ -82,7 +82,7 @@ const content = {
     school: 'Green River College',
     gradYear: null,                      // null hides "Class of …" (hero) and "Graduating" (about)
     focus: 'Cybersecurity · Networking · Cloud ops',
-    interests: ['Ethical hacking', 'PC building', 'Cloud gaming', 'Systems-first game design', 'Climbing'], // About "Interests"; [] hides
+    interests: ['Ethical hacking', 'PC building', 'Music mastering', 'Cloud gaming', 'Systems-first game design', 'Climbing'], // About "Interests"; [] hides
     availability: {
       open: false,                                   // true shows the hero pill + about pill ("Available · season")
       label: null,                                   // hero pill, e.g. 'Open to summer 2027 internships'
@@ -248,7 +248,7 @@ const content = {
           'Gaming: mostly competitive games like Overwatch, League of Legends, Call of Duty and Rust, plus a big Steam library.',
           'Coding and game dev: my own projects, like a voxel FPS and a Magic: The Gathering engine, built with Claude Code in VS Code and Cursor. I work across Python, Node.js, Go, Rust, .NET and Java, use WSL (Ubuntu) for Linux work, and have Unreal Engine and Blender for 3D.',
           'Server and network admin: running my Rust server, the AWS CLI, and Tailscale and WireGuard for my network, with RustDesk for remote access.',
-          'Music: I also record and produce with Pro Tools, Auto-Tune and Melodyne on the MV7+.',
+          'Music: I’m learning to master music in Pro Tools with Auto-Tune and Melodyne, practicing on unfinished tracks.',
         ],
         lessons: [],
       },
