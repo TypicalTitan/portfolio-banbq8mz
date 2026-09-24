@@ -7,6 +7,7 @@
  *  • required keys are present and enum values are spelled right
  *  • slugs and ids are unique; categories, award → project links and accents resolve
  *  • image width/height match the real file's aspect ratio (prevents layout shift)
+ *  • every skill / tool / tag name has a glyph in src/lib/tag-glyphs.js, and each glyph exists
  *
  * Exits with code 1 when anything is wrong. Warnings (placeholders still in place,
  * odd-looking values) never fail the check unless you run:  npm run check -- --strict
@@ -493,6 +494,40 @@ skills.forEach((g, i) => {
   });
 });
 if (skills.length && (skills.length < 3 || skills.length > 5)) warn('skills', `the skills fan is designed for 4–5 groups (has ${skills.length})`);
+
+// Skill / tool / tag glyphs: every name the site shows with a glyph should have an entry in
+// src/lib/tag-glyphs.js (unmapped names still render, with a generic Tag glyph), and every entry
+// must point at a brand in BRAND_PATHS / brand-extra.js or a lucide name in the LUCIDE map.
+{
+  const { TAG_GLYPHS, tagGlyphSpec } = await import(pathToFileURL(join(ROOT, 'src', 'lib', 'tag-glyphs.js')).href);
+  const { BRAND_EXTRA } = await import(pathToFileURL(join(ROOT, 'src', 'lib', 'brand-extra.js')).href);
+  const iconsSrc = readFileSync(join(ROOT, 'src', 'lib', 'icons.js'), 'utf8');
+  const brandKeys = new Set([
+    ...[...(iconsSrc.match(/const BRAND_PATHS = \{([^}]*)\}/)?.[1] ?? '').matchAll(/^\s*(\w+):/gm)].map((m) => m[1]),
+    ...Object.keys(BRAND_EXTRA),
+  ]);
+  for (const [name, spec] of Object.entries(TAG_GLYPHS)) {
+    if (spec.startsWith('brand:')) {
+      if (!brandKeys.has(spec.slice(6))) err(`tag-glyphs.js "${name}"`, `unknown brand "${spec.slice(6)}" — add it to BRAND_PATHS in src/lib/icons.js or to src/lib/brand-extra.js`);
+    } else if (!LUCIDE.has(spec)) {
+      err(`tag-glyphs.js "${name}"`, `unknown icon "${spec}" — add it to the lucide import and the LUCIDE map in src/lib/icons.js`);
+    }
+  }
+  const list = (v) => (isArr(v) ? v.filter(Boolean) : []);
+  const shown = [
+    ...list(content.site?.marquee).map((n, i) => [n, `site.marquee[${i}]`]),
+    ...skills.flatMap((g, i) => list(g?.items).map((it, j) => [it?.name, `skills[${i}].items[${j}]`])),
+    ...list(content.experience).flatMap((x, i) => list(x?.skills).map((n, j) => [typeof n === 'string' ? n : n?.name, `experience[${i}].skills[${j}]`])),
+    ...list(content.projects).flatMap((p, i) => [
+      ...list(p?.tags).map((n, j) => [n, `projects[${i}].tags[${j}]`]),
+      ...list(p?.skills).map((n, j) => [typeof n === 'string' ? n : n?.name, `projects[${i}].skills[${j}]`]),
+    ]),
+    ...list(content.labs).flatMap((l, i) => list(l?.skills).map((n, j) => [n, `labs[${i}].skills[${j}]`])),
+  ];
+  for (const [name, where] of shown) {
+    if (isStr(name) && !tagGlyphSpec(name)) warn(where, `"${name}" has no glyph mapping, so it shows a generic tag icon — add it to src/lib/tag-glyphs.js`);
+  }
+}
 
 // awards
 (content.awards || []).forEach((a, i) => {

@@ -87,7 +87,7 @@ function report(lab) {
     ]] : null,
     hasMethod ? ['Method', [
       lab.method?.summary ? h('p', null, lab.method.summary) : null,
-      materials.length ? [h('h3', { class: 'wk-sub' }, 'Materials'), chipList(materials, { brandKey: null })] : null,
+      materials.length ? [h('h3', { class: 'wk-sub' }, 'Materials'), chipList(materials, { glyph: 'Beaker' })] : null,
       steps.length ? [
         h('h3', { class: 'wk-sub' }, 'Procedure'),
         h('ol', { class: 'wk-method' }, steps.map((step) => h('li', null, step))),
@@ -160,7 +160,7 @@ function labFacts(lab) {
       { term: 'Duration', desc: lab.duration },
     ],
     groups: [
-      { label: 'Skills demonstrated', node: chipList(lab.skills, { brandKey: null }) },
+      { label: 'Skills demonstrated', node: chipList(lab.skills) },
     ],
     actions: fileActions(lab.files, 'wk-facts-btn'),
   });

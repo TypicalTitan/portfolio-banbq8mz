@@ -388,6 +388,8 @@
   margin-inline-end: 14px;
   opacity: .85;
 }
+/* Wide brand marks (the .NET wave, the AWS smile) keep the 28px height and grow sideways. */
+.hm-marquee-glyph.icon--wide { width: calc(28px * var(--glyph-aspect, 1)); }
 .hm-marquee-item .fx-spark {
   flex: none;
   margin-inline: 40px;
@@ -871,17 +873,22 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   white-space: nowrap;
   color: var(--c-text);
 }
-.hm-fan-brands {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-self: flex-end;
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 18px;
-  color: var(--c-text);
+/* Per-item glyph (brand mark or lucide icon): muted, centred on the name's first line, lit on hover. */
+.hm-fan-glyph {
+  flex: none;
+  align-self: flex-start;
+  margin-top: calc((1.3em - 16px) / 2);
+  color: var(--c-muted);
+  transition: color 280ms var(--ease-out);
 }
-.hm-fan-brands .icon { flex: none; }
+/* A wide mark (.NET) is drawn wider than 16px for optical balance; it overhangs evenly into the gaps
+   so its 16px layout slot, and every label after it, lines up with the square glyphs. */
+.hm-fan-glyph.icon--wide {
+  width: calc(16px * var(--glyph-aspect, 1));
+  margin-inline: calc(8px * (1 - var(--glyph-aspect, 1)));
+}
+.hm-fan-card:hover .hm-fan-glyph,
+.hm-fan-card:focus-within .hm-fan-glyph { color: var(--c-ink); }
 
 .hm-skills-legend {
   display: flex;

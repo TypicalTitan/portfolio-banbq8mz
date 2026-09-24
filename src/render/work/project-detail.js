@@ -129,7 +129,7 @@ function projectFacts(p, name) {
     ],
     groups: [
       { label: 'Tech', node: chipList(p.tags) },
-      { label: 'Skills demonstrated', node: chipList(p.skills, { brandKey: null }) },
+      { label: 'Skills demonstrated', node: chipList(p.skills) },
     ],
     actions: projectActions(p, { className: 'wk-facts-btn' }),
   });

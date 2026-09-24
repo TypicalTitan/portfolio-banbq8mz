@@ -4,7 +4,7 @@
  */
 
 import { h } from '../../lib/dom.js';
-import { icon, brand, brandForTag } from '../../lib/icons.js';
+import { icon, tagGlyph } from '../../lib/icons.js';
 import { button, iconButton } from '../../lib/ui.js';
 import { sparkle } from '../../effects/index.js';
 
@@ -67,10 +67,10 @@ function toolList(tools, reps = 1) {
   const names = Array.from({ length: reps }, () => tools).flat();
   return h('ul', { class: 'hm-marquee-list' },
     names.map((name, i) => {
-      const key = brandForTag(name);
       const repeat = i >= tools.length;
       return h('li', { class: ['hm-marquee-item', repeat && 'hm-marquee-item--rep'], 'aria-hidden': repeat ? 'true' : null },
-        key ? brand(key, { size: 28, className: 'hm-marquee-glyph' }) : null,
+        // Brand mark or lucide glyph; the heavier stroke keeps outlines level with the filled marks.
+        tagGlyph(name, { size: 28, strokeWidth: 2.25, className: 'hm-marquee-glyph' }),
         h('span', { class: 'hm-marquee-name' }, name),
         sparkle(14),
       );

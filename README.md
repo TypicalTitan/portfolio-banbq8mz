@@ -78,7 +78,7 @@ Everything the site shows lives in `src/content.js`. **Keep the keys and change 
 - `title` and `description`: the browser tab, the search snippet and link previews (Discord, LinkedIn). They are written into `index.html` for you when the site builds.
 - `updated` and `copyrightYear`: shown in the footer.
 - `currently`: the footer's "Currently" note; `null` hides it.
-- `marquee`: the scrolling tools strip. Names that match a known brand get its logo automatically: *Python*, *C++*, *Git*, *Linux*, *WebRTC*, *UniFi* (or *UniFi / Ubiquiti*, *Ubiquiti*), *Android*, *Claude Code* and more. The full list is `TAG_BRANDS` in `src/lib/icons.js`. Simple Icons has no mark for AWS, PowerShell or Windows, and its .NET mark is itself a ".NET" wordmark that would repeat the label, so those show as text only.
+- `marquee`: the scrolling tools strip. Every name gets a glyph, and so does every Skills item and every tag / skill chip (see **Skill and tag glyphs** below).
 - `projectCategories`: the filter buttons, in order (currently `['Servers', 'Hardware']`). Every `project.category` must be listed.
 - `sections`: the eyebrow, title, accent word and blurb for every section.
 
@@ -130,7 +130,7 @@ Each project has:
   - Any of these can be `null`, which hides that fact. `team: null` also hides the "Team of N" chip.
 - `summary`: 1–2 sentences for cards.
 - `cover` image.
-- `tags`: the tech used. Brand names get logos.
+- `tags`: the tech used. Each tag gets its glyph (a brand logo or a fitting icon).
 - `links`: `{ demo, repo, video }`. Set one to `null` to hide its button. With all three `null`, the only button is **Case study**.
 - `metrics`: 2–4 `{ value, unit, label }` items. `value` is text, so `'2nd'` works. `[]` hides the stats strip on the card, the row and the detail page.
 - `writeup`:
@@ -197,6 +197,16 @@ The page `<title>`, the search/link-preview description and the no-JavaScript li
 - `person.photo: null` hides the avatar.
 - `person.resume: null` hides every Résumé button; the main buttons become "Get in touch".
 - Handles up to about 14 characters look best. Longer ones are scaled down on phones so they still fit.
+
+### Skill and tag glyphs
+
+The marquee, each Skills item and every chip (experience skills, project tags, project "Skills demonstrated") show a small glyph before the name. One table decides which: `TAG_GLYPHS` in `src/lib/tag-glyphs.js`, keyed by the name in lower case.
+
+- A real brand mark when the thing has one: *Python*, *C++*, *Git*, *Linux*, *WebRTC*, *Android*, *AWS*, *Windows*, *PowerShell*, *.NET*, *Discord API*, *Claude Code*…
+- The maker's mark for a product line: *RTX 5070* → NVIDIA; *Ryzen 7 5700X3D*, *AM4* → AMD; *Windows admin* → Windows; *UniFi* → Ubiquiti. AWS is the exception: its mark is the "aws" letters plus the smile, and the smile alone is too thin below about 24px, so only *AWS* in the tools strip gets the smile. *AWS EC2*, *AWS SSM*, *GameLift Streams* and *Graviton / ARM64* use icons (Server, CloudCog, MonitorPlay, Cpu).
+- Otherwise a Lucide icon that says what it is: *Subnetting* → Network, *SQL* → Database, *NVMe* → HardDrive, and so on. The Rust-server plugins (Oxide / uMod, NTeleportation, Better Loot, Raidable Bases) and Shockbyte have no official marks, so they use icons too.
+
+To give a new tag a glyph, add a line to `TAG_GLYPHS`: `'my tag': 'brand:python'` for a brand, or `'my tag': 'Rocket'` for a [Lucide](https://lucide.dev/icons) icon (add that icon to the `import` and the `LUCIDE` map in `src/lib/icons.js` too). A name with no entry still shows, with a plain tag icon, and `npm run check` warns about it. Brand keys live in `BRAND_PATHS` in `src/lib/icons.js` (Simple Icons, imported by name) and in `src/lib/brand-extra.js`, which holds the few marks Simple Icons lacks as copied path data. A mark much wider than tall sets `aspect` there (the .NET wave uses 1.4) so it is drawn wider and matches the square marks' weight. Every mark is drawn in one colour (`currentColor`), never the brand's own colours.
 
 ---
 
@@ -383,7 +393,7 @@ index.html              page shell (title, description and noscript line come fr
 vite.config.js          base: './' for GitHub Pages
 src/content.js          ← all the content
 src/main.js, router.js  wiring and hash routing
-src/lib/                DOM builder, icons, formatting, shared UI pieces
+src/lib/                DOM builder, icons (+ tag-glyphs.js, brand-extra.js), formatting, shared UI pieces
 src/effects/            lava, particles, thorns, sigils, reveal, scheduler
 src/render/             one renderer per section / page
 src/styles/             tokens, base, chrome, effects and per-section CSS
@@ -395,5 +405,5 @@ scripts/check-content.mjs   npm run check
 
 - [Inter](https://rsms.me/inter/), [Grenze Gotisch](https://fonts.google.com/specimen/Grenze+Gotisch) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/): SIL Open Font License.
 - Icons: [Lucide](https://lucide.dev) (ISC).
-- Brand glyphs: [Simple Icons](https://simpleicons.org) (CC0). The brands are trademarks of their owners.
+- Brand glyphs: [Simple Icons](https://simpleicons.org) (CC0); the AWS smile (cut from the AWS mark), Windows and PowerShell marks from [Material Design Icons](https://pictogrammers.com/library/mdi/) (Apache-2.0); the .NET mark from [Devicon](https://devicon.dev) (MIT). The AMD mark is the arrow from Simple Icons' AMD logo. All brands and logos are trademarks of their owners.
 - The placeholder art in `public/` (portrait, project covers, org monograms, favicon) is original and part of this template. The org monograms are not the organisations' logos. Replace any of it freely.

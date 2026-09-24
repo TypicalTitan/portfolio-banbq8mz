@@ -4,7 +4,7 @@
  */
 
 import { h, splitAccent, announce, slugify } from './dom.js';
-import { icon as lucide, brand as brandIcon, brandForTag, hasBrand } from './icons.js';
+import { icon as lucide, brand as brandIcon, hasBrand, tagGlyph } from './icons.js';
 import { asset } from './format.js';
 import { sprig } from '../effects/index.js';
 
@@ -119,12 +119,20 @@ export function copyEmailButton(email, { variant = 'outline', size = 'md' } = {}
 
 /* ── Chips & badges ──────────────────────────────────────────────────────── */
 
-export function chip(text, { variant = 'default', brandKey = undefined } = {}) {
-  const key = brandKey === undefined ? brandForTag(text) : brandKey;
+/**
+ * A tag / skill chip. Every chip leads with a glyph: by default the name's brand mark or lucide icon
+ * (tagGlyph, see tag-glyphs.js). `glyph` overrides it with a lucide name, a brand key or a node
+ * (e.g. 'BookOpen' for coursework); `glyph: null` drops it.
+ */
+export function chip(text, { variant = 'default', glyph: spec = undefined } = {}) {
+  let mark = null;
+  if (spec === undefined) mark = tagGlyph(text, { size: 14, className: 'chip__glyph' });
+  else if (typeof spec === 'string' && !hasBrand(spec)) mark = lucide(spec, { size: 14, strokeWidth: 2, className: 'chip__glyph tag-glyph tag-glyph--line' });
+  else mark = glyph(spec, 14, 'chip__glyph');
   return h(
     'li',
     { class: ['chip', `chip--${variant || 'default'}`] },
-    key ? brandIcon(key, { size: 14, className: 'chip__brand' }) : null,
+    mark,
     h('span', null, text),
   );
 }

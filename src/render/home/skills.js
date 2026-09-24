@@ -4,10 +4,11 @@
  * arrow pair in the section head; below 720px a stack of clip-path slants. Each item shows its
  * level (level: null shows none) and how many projects/labs use it — but only when counts tell a
  * story (at least 3 items have one, or some item is used twice); a lone "1 use" reads as a glitch.
+ * Every item leads with its own glyph (brand mark or lucide icon, see tag-glyphs.js).
  */
 
 import { h } from '../../lib/dom.js';
-import { icon, brand, brandForTag } from '../../lib/icons.js';
+import { icon, tagGlyph } from '../../lib/icons.js';
 import { sectionHead } from '../../lib/ui.js';
 import { reducedMotion } from '../../effects/index.js';
 
@@ -59,7 +60,6 @@ export function renderSkills(content) {
 function fanCard(group, d, uses) {
   const theme = THEMES.includes(group.theme) ? group.theme : 'crimson';
   const items = group.items.map((item) => (typeof item === 'string' ? { name: item } : item)).filter((item) => item?.name);
-  const brands = [...new Set(items.map((item) => brandForTag(item.name)).filter(Boolean))];
 
   return h('li', { class: ['hm-fan-card', `hm-fan-card--${theme}`, 'slant'], style: { '--d': d, '--skew': '-6deg' } },
     h('div', { class: 'slant__unskew hm-fan-body' },
@@ -68,9 +68,6 @@ function fanCard(group, d, uses) {
       h('h3', { class: 'hm-fan-title' }, group.group),
       group.blurb ? h('p', { class: 'hm-fan-blurb' }, group.blurb) : null,
       h('ul', { class: 'hm-fan-items' }, items.map((item) => itemRow(item, uses(item.name)))),
-      brands.length
-        ? h('span', { class: 'hm-fan-brands', 'aria-hidden': 'true' }, brands.map((key) => brand(key, { size: 20 })))
-        : null,
     ),
   );
 }
@@ -80,6 +77,7 @@ function itemRow(item, count) {
   return h('li', { class: 'hm-fan-item' },
     h('span', { class: 'hm-fan-name' },
       level ? levelGlyph(item.level) : null,
+      tagGlyph(item.name, { size: 16, className: 'hm-fan-glyph' }),
       h('span', null, item.name, level ? h('span', { class: 'sr-only' }, ` (${level.sr})`) : null),
     ),
     count ? h('span', { class: 'hm-fan-uses' }, `${count} ${count === 1 ? 'use' : 'uses'}`) : null,

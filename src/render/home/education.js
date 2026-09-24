@@ -68,7 +68,7 @@ function schoolCard(school) {
       school.coursework?.length
         ? [
             h('p', { class: 'hm-edu-micro' }, 'Relevant coursework'),
-            chipList(school.coursework, { brandKey: null }),
+            chipList(school.coursework, { glyph: 'BookOpen' }),
           ]
         : null,
     ),

@@ -432,21 +432,23 @@ dialog { color: inherit; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Items sit on the first line (flex-start) so a label that wraps keeps its glyph beside line one, as in
+   the Skills fan; the block padding centres a single line in the 30px minimum height instead. */
 .chip {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   min-height: 30px;
-  padding: 4px 10px;
+  padding: max(4px, calc((28px - 1.25em) / 2)) 10px;
   border: 1px solid var(--c-hairline);
   border-radius: var(--r-chip);
   background: rgba(255, 255, 255, .035);
   color: var(--c-text);
   font: 500 var(--fs-meta)/1.25 var(--font-sans);
 }
-.chip__brand { color: var(--c-muted); }
+.chip__glyph { flex: none; margin-top: calc((1.25em - 14px) / 2); color: var(--c-muted); }
 .chip--core { border-color: var(--c-hairline-hot); background: var(--c-tint); color: var(--c-ink); }
-.chip--core .chip__brand { color: var(--c-accent-text); }
+.chip--core .chip__glyph { color: var(--c-accent-text); }
 .chip--working { border-color: var(--c-hairline-2); }
 .chip--learning { border-style: dashed; border-color: var(--c-hairline-2); background: transparent; color: var(--c-muted); }
 
