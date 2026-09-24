@@ -63,14 +63,18 @@ export function renderProjectDetail(content, slug) {
 
 /* ── Write-up: 01 Problem · 02 Process · 03 Outcome · 04 What I learned ── */
 
+// Default section names; `writeup.headings` may rename any of them (e.g. a build log's "The parts").
+const HEADINGS = { problem: 'Problem', process: 'Process', outcome: 'Outcome', lessons: 'What I learned' };
+
 function writeup(p) {
   const w = p.writeup ?? {};
+  const name = { ...HEADINGS, ...(w.headings ?? {}) };
   const hasProcess = Boolean(w.process?.intro || w.process?.steps?.length);
   const sections = numberedSections([
-    w.problem?.length ? ['Problem', paragraphs(w.problem)] : null,
-    hasProcess ? ['Process', processBody(w.process, p.gallery ?? [])] : null,
-    w.outcome?.length ? ['Outcome', outcomeBody(w.outcome, p.metrics?.[0])] : null,
-    w.lessons?.length ? ['What I learned', h('ul', { class: 'ember-list' }, w.lessons.map((lesson) => h('li', null, lesson)))] : null,
+    w.problem?.length ? [name.problem, paragraphs(w.problem)] : null,
+    hasProcess ? [name.process, processBody(w.process, p.gallery ?? [])] : null,
+    w.outcome?.length ? [name.outcome, outcomeBody(w.outcome, p.metrics?.[0])] : null,
+    w.lessons?.length ? [name.lessons, h('ul', { class: 'ember-list' }, w.lessons.map((lesson) => h('li', null, lesson)))] : null,
   ]);
   // No write-up yet: the card summary stands in as a one-section overview.
   if (sections.length || !p.summary) return sections;

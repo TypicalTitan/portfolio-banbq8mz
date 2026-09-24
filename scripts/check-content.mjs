@@ -390,7 +390,16 @@ projects.forEach((p, i) => {
   gallery.forEach((g, j) => { image(g, `${w}.gallery[${j}]`, { ratio: g?.wide ? 2.4 : 1.6 }); if (g && !isStr(g.caption)) warn(`${w}.gallery[${j}].caption`, 'a short caption helps'); });
   const wu = p.writeup;
   if (need(wu, ['problem', 'process', 'outcome'], `${w}.writeup`)) {
-    for (const k of ['problem', 'outcome']) if (!isArr(wu[k]) || !wu[k].length) err(`${w}.writeup.${k}`, 'needs at least one paragraph');
+    if (!isArr(wu.problem)) err(`${w}.writeup.problem`, 'must be a list of paragraphs ([] hides the section)');
+    if (!isArr(wu.outcome) || !wu.outcome.length) err(`${w}.writeup.outcome`, 'needs at least one paragraph');
+    // Optional renamed section headings, e.g. { process: 'The parts', outcome: 'Day to day' }.
+    if (wu.headings != null) {
+      if (typeof wu.headings !== 'object' || isArr(wu.headings)) err(`${w}.writeup.headings`, 'must be an object like { process: "The parts" }');
+      else for (const [k, v] of Object.entries(wu.headings)) {
+        if (!['problem', 'process', 'outcome', 'lessons'].includes(k)) err(`${w}.writeup.headings.${k}`, 'is not a section — use problem, process, outcome or lessons');
+        else if (!isStr(v)) err(`${w}.writeup.headings.${k}`, 'must be non-empty text');
+      }
+    }
     if (need(wu.process, ['intro', 'steps'], `${w}.writeup.process`)) {
       (wu.process.steps || []).forEach((s, j) => {
         const sw = `${w}.writeup.process.steps[${j}]`;
