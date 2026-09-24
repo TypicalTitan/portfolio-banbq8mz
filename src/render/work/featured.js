@@ -33,6 +33,8 @@ function featureRow(p, index) {
   const titleId = `wk-row-${p.slug}-title`;
   const href = projectHref(p.slug);
   const watch = p.links?.video || p.links?.demo;
+  // Unknown year / team are null and simply drop out of the meta line.
+  const meta = joinMeta([p.category, p.year, teamLabel(p.team), p.role]);
 
   return h('article', { class: ['wk-row', index % 2 === 1 && 'wk-row--flip'], 'aria-labelledby': titleId },
     h('div', { class: 'wk-row-text reveal', style: { '--i': 0 } },
@@ -40,7 +42,7 @@ function featureRow(p, index) {
         p.icon ? iconTile(p.icon, { variant: 'crimson', size: 64 }) : null,
         h('h3', { id: titleId }, p.title),
       ),
-      h('p', { class: 'wk-row-meta' }, joinMeta([p.year, teamLabel(p.team), p.role])),
+      meta ? h('p', { class: 'wk-row-meta' }, meta) : null,
       p.summary ? h('p', { class: 'wk-row-summary' }, p.summary) : null,
       statRow(p.metrics?.slice(0, 3), { size: 'md', className: 'wk-row-stats' }),
       chipList(p.tags?.slice(0, 5)),

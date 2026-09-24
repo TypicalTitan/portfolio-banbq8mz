@@ -103,6 +103,10 @@
     column-gap: clamp(48px, 6vw, 104px);
     align-items: start;
   }
+  /* Deliberate deviation from DESIGN_SPEC G4 (top-aligned text): rows without a metrics strip are
+     much shorter than the 16:10 shot, so the text centres on it. align-self (not the row's
+     align-items) keeps the media pinned to the top when the text is the taller column. */
+  .wk-row-text { align-self: center; }
   .wk-row--flip {
     grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
     grid-template-areas: "media text";
@@ -298,7 +302,6 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
   gap: 16px;
 }
-.wk-index-empty { color: var(--c-muted); }
 
 /* ── G14 / G15 Detail pages ─────────────────────────────────────────────── */
 
@@ -650,7 +653,8 @@
 .wk-prevnext { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
 @media (min-width: 768px) {
   .wk-prevnext { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .wk-pn--next:only-child { grid-column: 2; }
+  /* Two items in the list: one "Next" tile, centred over the "All projects" button below. */
+  .wk-pn--next:only-child { grid-column: 1 / -1; justify-self: center; width: min(100%, calc(50% - 10px)); }
 }
 
 .wk-pn {

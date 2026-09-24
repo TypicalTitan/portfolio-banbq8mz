@@ -4,10 +4,12 @@
 
 import { h } from '../lib/dom.js';
 import { button, headline } from '../lib/ui.js';
+import { projectsAnchor } from '../lib/sections.js';
+import { sectionHref } from '../router.js';
 import { mountLava, mountParticles } from '../effects/index.js';
 
 export function renderNotFound(content) {
-  const hasProjects = (content?.projects ?? []).length > 0;
+  const projects = projectsAnchor(content);
 
   const lava = h('div', { class: 'nf-lava', 'aria-hidden': 'true' });
   // 'hero' keeps the hot band along the bottom and a cool crust under the centred copy.
@@ -31,7 +33,7 @@ export function renderNotFound(content) {
         'div',
         { class: 'nf-actions' },
         button({ label: 'Back home', href: '#top', variant: 'primary', icon: 'ArrowLeft' }),
-        hasProjects ? button({ label: 'See projects', href: '#projects', variant: 'outline' }) : null,
+        projects ? button({ label: 'See projects', href: sectionHref(projects), variant: 'outline' }) : null,
       ),
     ),
   );

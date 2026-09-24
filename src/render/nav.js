@@ -6,18 +6,20 @@ import { h, focusHeading, trapTab } from '../lib/dom.js';
 import { icon } from '../lib/icons.js';
 import { asset, pad2 } from '../lib/format.js';
 import { breakable, button, iconButton, socialLinks } from '../lib/ui.js';
+import { hasFeatured, hasLabs, projectsAnchor } from '../lib/sections.js';
 import { sectionHref } from '../router.js';
 import { motionPaused, onReducedMotionChange, setMotionPaused } from '../effects/index.js';
 
 const DESKTOP = '(min-width: 1024px)';
 const SPY_MARGIN = '-45% 0px -50% 0px';
 
-function navItems({ projects = [], labs = [], experience = [] }) {
+function navItems(content) {
+  // 'Work' points at the featured rows, or at the project grid when nothing is featured.
+  const work = hasFeatured(content) ? 'work' : projectsAnchor(content);
   return [
-    // 'Work' points at the featured rows, or at the project grid when nothing is featured.
-    { id: projects.some((p) => p?.featured) ? 'work' : 'projects', label: 'Work', show: projects.length > 0 },
-    { id: 'labs', label: 'Labs', show: labs.length > 0 },
-    { id: 'experience', label: 'Experience', show: experience.length > 0 },
+    { id: work, label: 'Work', show: Boolean(work) },
+    { id: 'labs', label: 'Labs', show: hasLabs(content) },
+    { id: 'experience', label: 'Experience', show: (content.experience ?? []).length > 0 },
     { id: 'about', label: 'About', show: true },
     { id: 'contact', label: 'Contact', show: true },
   ].filter((item) => item.show);
@@ -51,7 +53,8 @@ export function renderNav(content) {
   const items = navItems(data);
   const resumeHref = person.resume?.href ? asset(person.resume.href) : null;
   const resumeLabel = person.resume?.label || 'Résumé';
-  const resumeButton = (opts) =>
+  // Primary CTA: the résumé when there is one, otherwise "Get in touch" → the contact banner.
+  const primaryButton = ({ onClick = null, ...opts }) =>
     resumeHref
       ? button({
           label: resumeLabel,
@@ -62,7 +65,7 @@ export function renderNav(content) {
           ariaLabel: `${resumeLabel} (PDF)`,
           ...opts,
         })
-      : null;
+      : button({ label: 'Get in touch', href: sectionHref('contact'), variant: 'primary', icon: 'Mail', onClick, ...opts });
 
   let onHome = true;
 
@@ -120,7 +123,7 @@ export function renderNav(content) {
         { class: 'nav-drawer-foot' },
         email,
         socialLinks(person.socials, { className: 'nav-drawer-socials' }),
-        resumeButton({ size: 'lg', className: 'nav-drawer-resume' }),
+        primaryButton({ size: 'lg', className: 'nav-drawer-resume', onClick: () => onDrawerLink('contact') }),
       ),
     ),
   );
@@ -186,7 +189,7 @@ export function renderNav(content) {
       items.length
         ? h('nav', { class: 'nav-links', 'aria-label': 'Primary' }, h('ul', null, deskLinks.map((a) => h('li', null, a))))
         : null,
-      h('div', { class: 'nav-actions' }, motionToggle(), resumeButton({ size: 'sm', className: 'nav-resume' }), menuBtn),
+      h('div', { class: 'nav-actions' }, motionToggle(), primaryButton({ size: 'sm', className: ['nav-resume', !resumeHref && 'nav-cta--contact'] }), menuBtn),
     ),
     drawer,
   );
@@ -259,6 +262,11 @@ export function renderNav(content) {
     );
     sections.forEach((section) => spy.observe(section));
     if (hero) spy.observe(hero);
+    // Untracked blocks (skills, education, footer…) are watched only so a jump (End key, a tall
+    // scroll step) that skips a tracked section's band still triggers the geometry fallback above.
+    for (const el of document.querySelectorAll('main > section, footer')) {
+      if (el !== hero && !sections.includes(el)) spy.observe(el);
+    }
   };
 
   window.addEventListener('app:route', (e) => {

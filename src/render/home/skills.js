@@ -2,7 +2,8 @@
  * G9 · Skills: the Riot-style slanted fan of skill groups. ≥1100px it is an arched row of skewed
  * cards; 720–1099px (or any width with more than five groups) a scroll-snap strip driven by the
  * arrow pair in the section head; below 720px a stack of clip-path slants. Each item shows its
- * level and how many projects/labs use it.
+ * level (level: null shows none) and how many projects/labs use it — but only when counts tell a
+ * story (at least 3 items have one, or some item is used twice); a lone "1 use" reads as a glitch.
  */
 
 import { h } from '../../lib/dom.js';
@@ -25,7 +26,10 @@ export function renderSkills(content) {
   if (!groups.length) return null;
 
   const copy = content.site?.sections?.skills ?? {};
-  const uses = usageCounter(content);
+  const counter = usageCounter(content);
+  const counts = groups.flatMap((g) => g.items).map((i) => counter(typeof i === 'string' ? i : i?.name));
+  const showUses = counts.filter((n) => n > 0).length >= 3 || counts.some((n) => n >= 2);
+  const uses = showUses ? counter : () => 0;
   const centre = (groups.length - 1) / 2;
 
   const strip = groups.length > FAN_MAX;
@@ -46,7 +50,8 @@ export function renderSkills(content) {
         action: arrowControls(fan),
       }),
       h('div', { class: 'hm-fan-wrap reveal' }, fan),
-      legend(),
+      // The key only earns its place when some item actually shows a level glyph.
+      groups.some((g) => g.items.some((item) => LEVELS[item?.level])) ? legend() : null,
     ),
   );
 }

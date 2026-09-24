@@ -4,6 +4,7 @@
 
 import { h } from '../../lib/dom.js';
 import { statRow } from '../../lib/ui.js';
+import { projectsAnchor } from '../../lib/sections.js';
 
 export function renderProof(content) {
   const stats = Array.isArray(content.stats) ? content.stats.filter(Boolean) : autoStats(content);
@@ -26,7 +27,7 @@ function autoStats(content) {
   const count = (n, one, many, href) => (n ? { value: String(n), unit: null, label: n === 1 ? one : many, href } : null);
 
   return [
-    count(projects.length, 'Project', 'Projects', '#projects'),
+    count(projects.length, 'Project', 'Projects', `#${projectsAnchor(content)}`),
     count(labs.length, 'Lab report', 'Lab reports', '#labs'),
     count(experience.length, 'Role', 'Roles', '#experience'),
     gpa

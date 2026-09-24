@@ -66,12 +66,14 @@ function toNodes(out) {
 /**
  * views: { home(), project(slug), lab(slug), labs(), notFound() } → Node | Node[] | null.
  * homeTitle / personName are optional; they default to the document's initial title and no suffix.
+ * anchorFallbacks maps a section id that may not render to one that does ({ projects: 'work' }), so
+ * old or hand-typed '#projects' links still land somewhere sensible.
  *
  * Scroll memory: the list views (home and #/labs) stamp their scroll offset into their own history
  * entry (history.state.y), so Back / Forward / reload return to the exact spot. An entry without a
  * saved offset is a fresh link, so it scrolls to its '#id' anchor (or the top) instead.
  */
-export function startRouter({ main, views, homeTitle = document.title, personName = '' }) {
+export function startRouter({ main, views, homeTitle = document.title, personName = '', anchorFallbacks = {} }) {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
   let current = null;
@@ -165,8 +167,12 @@ export function startRouter({ main, views, homeTitle = document.title, personNam
   };
 
   /** Returns false when the anchor is not on the page. */
+  const anchorTarget = (anchor) =>
+    document.getElementById(anchor) ??
+    (Object.hasOwn(anchorFallbacks, anchor) ? document.getElementById(anchorFallbacks[anchor]) : null);
+
   const scrollToAnchor = (anchor, { smooth }) => {
-    const target = document.getElementById(anchor);
+    const target = anchorTarget(anchor);
     if (!target) return false;
     if (smooth) target.scrollIntoView({ block: 'start' });
     else jump(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
@@ -265,8 +271,12 @@ export function startRouter({ main, views, homeTitle = document.title, personNam
         restoreY(y);
         return;
       }
-      // A fresh '#id' click was already scrolled by the browser; '#/…' aliases need a manual scroll.
-      if (!location.hash.startsWith('#/')) return;
+      // A fresh '#id' click was already scrolled by the browser (unless the id is missing and only
+      // a fallback exists); '#/…' aliases need a manual scroll.
+      if (!location.hash.startsWith('#/')) {
+        if (route.anchor && !document.getElementById(route.anchor)) scrollToAnchor(route.anchor, { smooth: true });
+        return;
+      }
       if (route.anchor) scrollToAnchor(route.anchor, { smooth: true });
       else window.scrollTo({ top: 0 });
       return;

@@ -6,7 +6,8 @@ import { h, uid } from '../lib/dom.js';
 import { icon } from '../lib/icons.js';
 import { asset, monthYear } from '../lib/format.js';
 import { socialLinks } from '../lib/ui.js';
-import { sectionHref } from '../router.js';
+import { featuredProjects, hasFeatured, hasLabs, hasProjectGrid } from '../lib/sections.js';
+import { projectHref, sectionHref } from '../router.js';
 import { reducedMotion, yinYang } from '../effects/index.js';
 
 function linkColumn(title, links) {
@@ -38,7 +39,7 @@ function linkColumn(title, links) {
 
 export function renderFooter(content) {
   const {
-    site = {}, person = {}, projects = [], labs = [], experience = [], skills = [], education = [], awards = [],
+    site = {}, person = {}, experience = [], skills = [], education = [], awards = [],
   } = content ?? {};
   const social = (id) => (person.socials ?? []).find((s) => s?.id === id && s.url);
   const github = social('github');
@@ -47,10 +48,12 @@ export function renderFooter(content) {
 
   const cols = [
     linkColumn('Work', [
-      projects.some((p) => p.featured) && { label: 'Featured', href: sectionHref('work') },
-      projects.length > 0 && { label: 'All projects', href: sectionHref('projects') },
-      labs.length > 0 && { label: 'Lab notebook', href: sectionHref('labs') },
-      labs.length > 0 && { label: 'Every lab', href: '#/labs' },
+      hasFeatured(content) && { label: 'Featured', href: sectionHref('work') },
+      hasProjectGrid(content) && { label: 'All projects', href: sectionHref('projects') },
+      // No grid means every project is a featured row: link each case study directly instead.
+      ...(hasProjectGrid(content) ? [] : featuredProjects(content.projects).map((p) => ({ label: p.title, href: projectHref(p.slug) }))),
+      hasLabs(content) && { label: 'Lab notebook', href: sectionHref('labs') },
+      hasLabs(content) && { label: 'Every lab', href: '#/labs' },
     ]),
     linkColumn('About', [
       { label: 'About me', href: sectionHref('about') },

@@ -7,17 +7,18 @@ import {
   createElement,
   ArrowDown, ArrowLeft, ArrowRight, ArrowUp, ArrowUpRight, Atom, Award, BadgeCheck, Beaker, Bot,
   Briefcase, Bus, Calendar, CalendarCheck, Check, ChevronLeft, ChevronRight, ChevronsUp, Circle,
-  CircleCheck, CircleDot, CircleX, CircuitBoard, Clock, Code, Copy, Cpu, Dna, Download, Droplets,
+  CircleCheck, CircleDashed, CircleDot, CircleX, CircuitBoard, Clock, Cloud, Code, Copy, Cpu, Dna, Download, Droplets,
   ExternalLink, FileDown, FileText, Flame, FlaskConical, Gamepad2, Gauge, Globe, GraduationCap,
   Hammer, Hand, HeartHandshake, Keyboard, Layers, Lightbulb, Mail, MapPin, Medal, Menu, Microscope,
-  Orbit, Pause, PenTool, Pipette, Play, Plus, Quote, School, Sparkles, Sprout, Store, Table, Target,
-  Terminal, Thermometer, TriangleAlert, Trophy, User, Users, Wrench, X, Zap,
+  Network, Orbit, Pause, PenTool, Pipette, Play, Plus, Quote, School, Server, Sparkles, Sprout, Store,
+  Table, Target, Terminal, Thermometer, TriangleAlert, Trophy, User, Users, Wrench, X, Zap,
 } from 'lucide';
 
 import {
   siGithub, siYoutube, siDevpost, siItchdotio, siPython, siCplusplus, siJavascript, siOpenjdk,
   siHtml5, siCss, siArduino, siEspressif, siVite, siFirebase, siGodotengine, siGit, siFigma,
   siLinux, siKicad, siBlender, siGooglesheets, siOpencv, siAutodesk, siRaspberrypi,
+  siWebrtc, siUbiquiti, siAndroid, siClaude,
 } from 'simple-icons';
 
 import { s } from './dom.js';
@@ -25,11 +26,11 @@ import { s } from './dom.js';
 const LUCIDE = {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUp, ArrowUpRight, Atom, Award, BadgeCheck, Beaker, Bot,
   Briefcase, Bus, Calendar, CalendarCheck, Check, ChevronLeft, ChevronRight, ChevronsUp, Circle,
-  CircleCheck, CircleDot, CircleX, CircuitBoard, Clock, Code, Copy, Cpu, Dna, Download, Droplets,
+  CircleCheck, CircleDashed, CircleDot, CircleX, CircuitBoard, Clock, Cloud, Code, Copy, Cpu, Dna, Download, Droplets,
   ExternalLink, FileDown, FileText, Flame, FlaskConical, Gamepad2, Gauge, Globe, GraduationCap,
   Hammer, Hand, HeartHandshake, Keyboard, Layers, Lightbulb, Mail, MapPin, Medal, Menu, Microscope,
-  Orbit, Pause, PenTool, Pipette, Play, Plus, Quote, School, Sparkles, Sprout, Store, Table, Target,
-  Terminal, Thermometer, TriangleAlert, Trophy, User, Users, Wrench, X, Zap,
+  Network, Orbit, Pause, PenTool, Pipette, Play, Plus, Quote, School, Server, Sparkles, Sprout, Store,
+  Table, Target, Terminal, Thermometer, TriangleAlert, Trophy, User, Users, Wrench, X, Zap,
 };
 
 export const LINKEDIN_PATH =
@@ -60,6 +61,10 @@ const BRAND_PATHS = {
   opencv: siOpencv.path,
   autodesk: siAutodesk.path,
   raspberrypi: siRaspberrypi.path,
+  webrtc: siWebrtc.path,
+  ubiquiti: siUbiquiti.path,
+  android: siAndroid.path,
+  claude: siClaude.path,
   linkedin: LINKEDIN_PATH,
 };
 
@@ -93,6 +98,12 @@ const TAG_BRANDS = {
   blender: 'blender',
   'excel / sheets': 'sheets',
   'google sheets': 'sheets',
+  webrtc: 'webrtc',
+  unifi: 'ubiquiti',
+  'unifi / ubiquiti': 'ubiquiti',
+  ubiquiti: 'ubiquiti',
+  android: 'android',
+  'claude code': 'claude',
 };
 
 const DEV = Boolean(import.meta.env?.DEV);

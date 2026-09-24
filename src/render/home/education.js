@@ -1,6 +1,7 @@
 /**
- * G10 · Education & honors: school cards on the left (dusk-strip header, GPA numerals, honors,
- * coursework), awards and certifications as Playcast-rhythm rows on the right (#awards).
+ * G10 · Education & honors: school cards on the left (dusk-strip header with dates or a status,
+ * GPA numerals, honors, coursework), awards and certifications as Playcast-rhythm rows on the
+ * right (#awards); planned certifications carry a dashed "Planned" tag instead of a year.
  */
 
 import { h } from '../../lib/dom.js';
@@ -48,9 +49,12 @@ function schoolCard(school) {
   return h('article', { class: 'hm-edu-card card' },
     h('div', { class: 'dusk-strip hm-edu-strip' },
       h('span', null, 'Education'),
+      // Dates when known; otherwise the optional status ('In progress') sits in their place.
       school.start || school.end
         ? h('span', { class: 'hm-edu-dates' }, dateRange(school.start, school.end, { expected: Boolean(school.expected) }))
-        : null,
+        : school.status
+          ? h('span', { class: 'hm-edu-status' }, h('span', { class: 'hm-edu-status-dot', 'aria-hidden': 'true' }), school.status)
+          : null,
     ),
     h('div', { class: 'hm-edu-body' },
       h('h3', { class: 'hm-edu-school' }, school.school),
@@ -71,29 +75,53 @@ function schoolCard(school) {
   );
 }
 
-/** Awards first, then certifications; newest first within each. */
+const isPlanned = (award) => award.status === 'planned';
+/** Earned awards show their year; planned ones never do (the "Planned" tag stands in for it). */
+const yearOf = (award) => (isPlanned(award) ? '' : String(award.date ?? '').slice(0, 4));
+
+/**
+ * Rows keep content order (the owner decides what leads). With no dated rows the year column is
+ * dropped; with a mix of earned and planned rows each row carries an Earned / Planned tag.
+ */
 function awardsBlock(awards, projectTitles) {
-  const rank = (a) => (a.kind === 'certification' ? 1 : 0);
-  const sorted = [...awards].sort((a, b) => rank(a) - rank(b) || String(b.date ?? '').localeCompare(String(a.date ?? '')));
+  const dated = awards.some((award) => yearOf(award));
+  const mixed = awards.some(isPlanned) && awards.some((award) => !isPlanned(award));
+  const allCerts = awards.every((award) => award.kind === 'certification');
 
   return h('div', { id: 'awards', class: 'hm-awards reveal', style: { '--i': 1 } },
-    h('h3', { id: 'awards-title', class: 'hm-awards-title' }, icon('Trophy', { size: 22 }), 'Awards & certifications'),
-    h('ul', { class: 'hm-awards-list' }, sorted.map((award) => awardRow(award, projectTitles))),
+    h('h3', { id: 'awards-title', class: 'hm-awards-title' },
+      icon(allCerts ? 'BadgeCheck' : 'Trophy', { size: 22 }),
+      allCerts ? 'Certifications' : 'Awards & certifications'),
+    h('ul', { class: ['hm-awards-list', !dated && 'hm-awards-list--undated'] },
+      awards.map((award) => awardRow(award, projectTitles, { dated, mixed }))),
   );
 }
 
-function awardRow(award, projectTitles) {
+/** Visual twin of the title's sr-only "(planned)" prefix, so it stays out of the a11y tree. */
+function statusTag(planned) {
+  return h('span', { class: ['hm-award-status', planned ? 'hm-award-status--planned' : 'hm-award-status--earned'], 'aria-hidden': 'true' },
+    icon(planned ? 'CircleDashed' : 'Check', { size: 14, strokeWidth: 2.25 }),
+    planned ? 'Planned' : 'Earned');
+}
+
+/** 'AWS CloudOps Engineer – Associate': a no-break space before each spaced en dash, so no line starts with '– …'. */
+const noOrphanDash = (title) => title.replace(/ – /g, ' – ');
+
+function awardRow(award, projectTitles, { dated, mixed }) {
   const cert = award.kind === 'certification';
+  const planned = isPlanned(award);
   const sub = [award.issuer, award.detail].filter(Boolean).join(' · ');
   const projectTitle = award.project ? projectTitles.get(award.project) : null;
-  const year = String(award.date ?? '').slice(0, 4);
+  const year = yearOf(award);
+  const kind = cert ? 'Certification' : 'Award';
 
-  return h('li', { class: 'hm-award' },
-    h('span', { class: 'hm-award-year' }, year ? h('time', { datetime: award.date }, year) : null),
-    iconTile(cert ? 'BadgeCheck' : 'Trophy', { variant: cert ? 'tint' : 'violet', size: 40 }),
+  return h('li', { class: ['hm-award', planned && 'hm-award--planned'] },
+    dated ? h('span', { class: 'hm-award-year' }, year ? h('time', { datetime: award.date }, year) : null) : null,
+    // A goal, not a credential: planned rows get a target instead of the check badge.
+    iconTile(planned ? 'Target' : cert ? 'BadgeCheck' : 'Trophy', { variant: cert || planned ? 'tint' : 'violet', size: 40 }),
     h('div', { class: 'hm-award-text' },
       h('p', { class: 'hm-award-title' },
-        h('span', { class: 'sr-only' }, cert ? 'Certification: ' : 'Award: '), award.title),
+        h('span', { class: 'sr-only' }, planned ? `${kind} (planned): ` : `${kind}: `), noOrphanDash(award.title)),
       sub ? h('p', { class: 'hm-award-sub' }, sub) : null,
       projectTitle
         ? h('p', { class: 'hm-award-more' },
@@ -101,10 +129,15 @@ function awardRow(award, projectTitles) {
               'See project', h('span', { class: 'sr-only' }, `: ${projectTitle}`)))
         : null,
     ),
-    award.url
-      ? h('a', { class: 'link-arrow hm-award-link', href: award.url, target: '_blank', rel: 'noopener' },
-          'Credential',
-          h('span', { class: 'sr-only' }, `: ${award.title} (opens in new tab)`))
+    award.url || planned || mixed
+      ? h('div', { class: 'hm-award-end' },
+          planned || mixed ? statusTag(planned) : null,
+          award.url
+            ? h('a', { class: 'link-arrow hm-award-link', href: award.url, target: '_blank', rel: 'noopener' },
+                'Credential',
+                h('span', { class: 'sr-only' }, `: ${award.title} (opens in new tab)`))
+            : null,
+        )
       : null,
   );
 }

@@ -184,11 +184,27 @@
 }
 .hm-hero-shot--left { left: -4%; --ry: 20deg; }
 .hm-hero-shot--right { right: -4%; --ry: -20deg; }
+/* Two featured projects: a balanced pair turned in toward the centre line, the second a step lower
+   and a touch dimmer so they read as a spread rather than a half-empty trio. */
+.hm-hero-shot--pair-left,
+.hm-hero-shot--pair-right {
+  --rx: 12deg;
+  top: 12%;
+  width: min(40%, 560px);
+}
+.hm-hero-shot--pair-left { right: 51%; --ry: 14deg; z-index: 1; }
+.hm-hero-shot--pair-right {
+  left: 51%;
+  top: 20%;
+  --ry: -14deg;
+  filter: brightness(.88) saturate(.92);
+}
 
 @media (hover: hover) {
   .hm-hero-shot:hover::after { opacity: 1; }
   .hm-hero-shot--left:hover,
-  .hm-hero-shot--right:hover { filter: brightness(.9) saturate(.95); }
+  .hm-hero-shot--right:hover,
+  .hm-hero-shot--pair-right:hover { filter: brightness(.95) saturate(.97); }
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .hm-hero-shot:hover { --lift: -8px; }
@@ -203,12 +219,27 @@
 @media (max-width: 1023.98px) {
   .hm-hero-collage { height: 200px; }
   .hm-hero-shot--left,
-  .hm-hero-shot--right { display: none; }
-  .hm-hero-shot--centre {
+  .hm-hero-shot--right,
+  .hm-hero-shot--pair-right { display: none; }
+  .hm-hero-shot--centre,
+  .hm-hero-shot--pair-left {
     --rx: 8deg;
     /* Capped so tablets still see the subject rise out of the 200px collage, not just the bar. */
     width: min(86%, 460px);
   }
+  /* The pair's lead shot takes the centre slot once the flanks drop out. */
+  .hm-hero-shot--pair-left {
+    --tx: -50%;
+    --ry: 0deg;
+    right: auto;
+    left: 50%;
+    top: 10%;
+  }
+}
+
+/* Tablets: the centred CTA row reaches the sticker's default spot, so the disc steps out and down. */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .hm-hero-card > .fx-sticker { right: 4%; top: 52%; }
 }
 
 @media (max-width: 767.98px) {
@@ -559,11 +590,12 @@ html.motion-paused .hm-marquee-toggle { display: none; }
 .hm-about-ctas {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
   margin-top: 28px;
 }
 .hm-about-ctas:empty { display: none; }
-.hm-about-socials { margin-top: 20px; }
+.hm-about-socials { margin: 0 0 0 4px; }
 
 .hm-about-avail {
   display: flex;
@@ -613,6 +645,7 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   border-top: 0;
 }
 .hm-about-facts dd { font-weight: 500; }
+.hm-about-facts > .facts__row--wide { grid-column: 1 / -1; }
 
 @media (max-width: 479.98px) {
   .hm-about-id { gap: 14px; }
@@ -988,6 +1021,24 @@ html.motion-paused .hm-marquee-toggle { display: none; }
 /* Wraps (dates under the label) when large text sizes can't fit both on one line. */
 .hm-edu-strip { flex-wrap: wrap; padding-inline: 28px; }
 .hm-edu-dates { text-align: end; }
+.hm-edu-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Ember dot, the same marker the experience band uses for a current role: a status, not a date. */
+.hm-edu-status-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-lava-hi);
+  box-shadow: 0 0 0 3px rgba(255, 176, 0, .16), 0 0 10px rgba(255, 176, 0, .75);
+}
+@media (forced-colors: active) {
+  .hm-edu-status-dot { box-sizing: border-box; border: 3px solid CanvasText; box-shadow: none; }
+  .hm-award-status { border-color: CanvasText; }
+}
 .hm-edu-body { padding: 28px; }
 .hm-edu-school {
   margin: 0;
@@ -1105,10 +1156,63 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   color: var(--c-muted);
 }
 .hm-award-more { margin: 8px 0 0; }
-.hm-award-link {
+.hm-award-end {
   grid-area: end;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 16px;
   align-self: center;
+}
+.hm-award-link { white-space: nowrap; }
+
+/* Earned / Planned tags: earned is a solid tint with a check; planned is a dashed outline, so the
+   difference never rests on colour alone. Both keep --c-accent-text / --c-muted (AA on the page). */
+.hm-award-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 3px 10px 3px 8px;
+  border: 1px solid var(--c-hairline-2);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: var(--tr-micro);
+  text-transform: uppercase;
   white-space: nowrap;
+}
+.hm-award-status .icon { flex: none; }
+.hm-award-status--earned {
+  border-color: var(--c-hairline-hot);
+  background: var(--c-tint);
+  color: var(--c-accent-text);
+}
+.hm-award-status--planned {
+  border-style: dashed;
+  border-color: var(--c-hairline-3);
+  color: var(--c-muted);
+}
+/* Planned rows step back: the tile goes hollow and dashed, the title drops from ink to text. */
+.hm-award--planned > .icon-tile {
+  border-style: dashed;
+  border-color: var(--c-hairline-3);
+  background: transparent;
+  color: var(--c-muted);
+}
+.hm-award--planned .hm-award-title {
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+/* No dated rows: the empty year column goes. */
+.hm-awards-list--undated .hm-award {
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-areas: 'tile text end';
+  align-items: center;
 }
 
 @media (max-width: 479.98px) {
@@ -1121,7 +1225,14 @@ html.motion-paused .hm-marquee-toggle { display: none; }
     gap: 6px 14px;
   }
   .hm-award-year { padding-top: 0; }
-  .hm-award-link { justify-self: start; }
+  .hm-award-end { justify-self: start; justify-content: flex-start; }
+  .hm-awards-list--undated .hm-award {
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-areas:
+      'tile text'
+      'tile end';
+    align-items: start;
+  }
 }
 
 /* ── G13 · Contact banner ──────────────────────────────────────────────── */
@@ -1242,6 +1353,8 @@ html.motion-paused .hm-contact-sigil { animation: none; }
   list-style: none;
 }
 .hm-contact-tiles > li { display: flex; }
+/* An odd tile out (e.g. Email + GitHub + Résumé) takes the full last row instead of leaving a hole. */
+.hm-contact-tiles > li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .hm-contact-tile {
   position: relative;
   display: flex;

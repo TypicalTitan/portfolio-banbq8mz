@@ -57,6 +57,7 @@ const VERDICTS = ['supported', 'partial', 'refuted'];
 const XP_TYPES = ['internship', 'job', 'volunteer', 'research'];
 const AWARD_KINDS = ['award', 'certification'];
 const LEVELS = ['core', 'working', 'learning'];
+const AWARD_STATUSES = ['earned', 'planned'];
 const SOCIALS = ['github', 'linkedin', 'youtube', 'devpost', 'itchio', 'email'];
 const SECTION_KEYS = ['work', 'projects', 'labs', 'experience', 'about', 'skills', 'education', 'leadership', 'kindWords', 'contact'];
 
@@ -77,16 +78,33 @@ function str(obj, key, where, { optional = false } = {}) {
 }
 function oneOf(v, list, where, { optional = false } = {}) {
   if (optional && (v === null || v === undefined)) return;
-  if (!list.includes(v)) err(where, `"${v}" is not one of ${list.map((x) => `'${x}'`).join(' | ')}`);
+  if (!list.includes(v)) err(where, `"${v}" is not one of ${list.map((x) => `'${x}'`).join(' | ')}${optional ? ' (or null)' : ''}`);
 }
 function date(v, where, { nullable = false } = {}) {
   if (nullable && v === null) return;
   if (typeof v !== 'string' || !DATE.test(v)) err(where, `"${v}" must be 'YYYY-MM' or 'YYYY-MM-DD'${nullable ? ' (or null for "Present")' : ''}`);
 }
-function range(obj, where) {
+/**
+ * start + end. `unknown: true` also accepts BOTH null ("dates unknown" → hidden); a lone null start
+ * is still an error, because end: null on its own means "Present".
+ */
+function range(obj, where, { unknown = false } = {}) {
+  if (unknown && obj?.start === null && obj?.end === null) return;
+  if (unknown && obj?.start === null) {
+    err(`${where}.start`, `is null but end is "${obj.end}" — give a start date, or set BOTH start and end to null to hide the dates`);
+    return;
+  }
   date(obj?.start, `${where}.start`);
   date(obj?.end, `${where}.end`, { nullable: true });
   if (isStr(obj?.start) && isStr(obj?.end) && obj.end < obj.start) err(where, `end (${obj.end}) is before start (${obj.start})`);
+}
+function year(v, where, { nullable = false } = {}) {
+  if (nullable && v === null) return;
+  if (!Number.isInteger(v) || v < 1900 || v > 2100) err(where, `${JSON.stringify(v)} must be a year number like 2027${nullable ? ' (or null to hide it)' : ''}`);
+}
+function strList(v, where, { what = 'item' } = {}) {
+  if (!isArr(v)) { err(where, 'must be a list ([] hides it)'); return; }
+  v.forEach((x, i) => { if (!isStr(x)) err(`${where}[${i}]`, `each ${what} must be non-empty text`); });
 }
 function icon(v, where) {
   if (!LUCIDE.has(v)) err(where, `unknown icon "${v}" — use a name from the lucide whitelist in src/lib/icons.js (e.g. Bot, Code, Zap)`);
@@ -221,6 +239,32 @@ function image(img, where, { optional = false, ratio = null } = {}) {
   }
 }
 
+/**
+ * Section ids the home page renders for this content, so stat links can be checked. Mirrors
+ * src/lib/sections.js (FEATURED_LIMIT and the rule that folds the grid into the featured rows)
+ * and each renderer's "empty list hides the section" rule.
+ */
+const FEATURED_LIMIT = 3;
+let anchorsCache = null;
+function renderedAnchors() {
+  if (anchorsCache) return anchorsCache;
+  const list = (v) => (isArr(v) ? v.filter(Boolean) : []);
+  const projects = list(content.projects);
+  const grid = projects.length > 0 && !(projects.every((p) => p.featured) && projects.length <= FEATURED_LIMIT);
+  const ids = ['top', 'about', 'contact', 'proof'];
+  if (list(content.site?.marquee).length) ids.push('tools');
+  if (projects.some((p) => p.featured)) ids.push('work');
+  if (grid) ids.push('projects');
+  if (list(content.labs).length) ids.push('labs');
+  if (list(content.experience).length) ids.push('experience');
+  if (list(content.skills).some((g) => g.items?.length)) ids.push('skills');
+  if (list(content.education).length || list(content.awards).length) ids.push('education');
+  if (list(content.awards).length) ids.push('awards');
+  if (list(content.activities).length) ids.push('leadership');
+  if (list(content.testimonials).length) ids.push('kind-words');
+  return (anchorsCache = new Set(ids));
+}
+
 /* ── Checks ───────────────────────────────────────────────────────────────── */
 need(content, ['site', 'person', 'stats', 'education', 'projects', 'labs', 'experience', 'skills', 'awards', 'activities', 'testimonials'], 'content');
 
@@ -246,7 +290,9 @@ if (need(site, ['title', 'description', 'copyrightYear', 'updated', 'currently',
 // person
 const person = content.person || {};
 if (need(person, ['name', 'handle', 'tagline', 'pitch', 'bio', 'photo', 'location', 'school', 'gradYear', 'focus', 'availability', 'email', 'responseTime', 'resume', 'strengths', 'socials'], 'person')) {
-  for (const k of ['name', 'handle', 'tagline', 'pitch', 'location', 'school', 'focus', 'email', 'responseTime']) str(person, k, 'person');
+  for (const k of ['name', 'handle', 'tagline', 'pitch', 'location', 'school', 'focus', 'email']) str(person, k, 'person');
+  str(person, 'responseTime', 'person', { optional: true }); // null hides the contact response-time line
+  if ('interests' in person) strList(person.interests, 'person.interests', { what: 'interest' });
   const shown = String(person.handle || person.name || '');
   if ([...shown].length > 14) warn('person.handle', `"${shown}" is ${[...shown].length} characters — handles over ~14 are scaled down on phones to fit`);
   str(person, 'pronouns', 'person', { optional: true });
@@ -254,10 +300,13 @@ if (need(person, ['name', 'handle', 'tagline', 'pitch', 'bio', 'photo', 'locatio
   if (!isArr(person.bio) || !person.bio.length) err('person.bio', 'needs at least one paragraph');
   image(person.photo, 'person.photo', { optional: true }); // null hides the avatar
   if (person.photo?.src === 'img/portrait.svg') warn('person.photo', 'still the placeholder portrait — add your own photo');
-  if (!Number.isInteger(person.gradYear)) err('person.gradYear', 'must be a year number like 2027');
+  year(person.gradYear, 'person.gradYear', { nullable: true }); // null hides "Class of …" and "Graduating"
   if (need(person.availability, ['open', 'label', 'season', 'detail', 'sticker'], 'person.availability')) {
-    if (typeof person.availability.open !== 'boolean') err('person.availability.open', 'must be true or false');
-    if (person.availability.open) for (const k of ['label', 'season', 'sticker']) str(person.availability, k, 'person.availability');
+    const av = person.availability;
+    if (typeof av.open !== 'boolean') err('person.availability.open', 'must be true or false');
+    // The pill copy is only required when the pills show; the sticker is independent of `open`.
+    if (av.open) for (const k of ['label', 'season']) str(av, k, 'person.availability');
+    for (const k of ['label', 'season', 'detail', 'sticker']) str(av, k, 'person.availability', { optional: true });
   }
   if (isStr(person.email) && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(person.email)) err('person.email', `"${person.email}" doesn't look like an email address`);
   if (/@example\./.test(person.email || '')) warn('person.email', 'still the placeholder address');
@@ -280,16 +329,29 @@ if (need(person, ['name', 'handle', 'tagline', 'pitch', 'bio', 'photo', 'locatio
 // stats
 if (content.stats !== null && content.stats !== undefined) {
   if (!isArr(content.stats) || content.stats.length !== 4) err('stats', 'must be null (automatic) or a list of exactly 4 stats');
-  else content.stats.forEach((s, i) => { need(s, ['value', 'label'], `stats[${i}]`); });
+  else content.stats.forEach((s, i) => {
+    if (!need(s, ['value', 'label'], `stats[${i}]`)) return;
+    if (s.value === null || s.value === undefined || String(s.value).trim() === '') err(`stats[${i}].value`, 'must be text like "3"');
+    str(s, 'label', `stats[${i}]`);
+    const href = s.href;
+    if (href === null || href === undefined || href === '') return;
+    if (typeof href !== 'string' || !href.startsWith('#')) err(`stats[${i}].href`, `"${href}" must be an in-page link like '#experience' (or null)`);
+    else if (!href.startsWith('#/') && !renderedAnchors().has(href.slice(1))) {
+      err(`stats[${i}].href`, `"${href}" points at a section that isn't on the page — use one of ${[...renderedAnchors()].map((a) => `'#${a}'`).join(', ')}`);
+    }
+  });
 }
 
 // education
 (content.education || []).forEach((e, i) => {
   const w = `education[${i}]`;
   if (!need(e, ['school', 'location', 'program', 'start', 'end', 'coursework'], w)) return;
-  str(e, 'school', w); range(e, w);
+  str(e, 'school', w); str(e, 'program', w, { optional: true }); str(e, 'location', w, { optional: true });
+  range(e, w, { unknown: true });
+  str(e, 'status', w, { optional: true }); // e.g. 'In progress' — shown where the dates would be
   if (e.showGpa && e.gpa && !isStr(e.gpa.unweighted)) err(`${w}.gpa.unweighted`, "must be text like '3.92'");
   if (e.honors && !isArr(e.honors)) err(`${w}.honors`, 'must be a list');
+  if (e.showGpa && !e.gpa) err(`${w}.showGpa`, 'is true but gpa is null — set showGpa: false or add the GPA');
   if (!isArr(e.coursework)) err(`${w}.coursework`, 'must be a list');
 });
 
@@ -301,17 +363,18 @@ projects.forEach((p, i) => {
   const w = `projects[${i}]${isStr(p?.slug) ? ` (${p.slug})` : ''}`;
   if (!need(p, ['slug', 'title', 'subtitle', 'category', 'year', 'featured', 'order', 'badges', 'icon', 'theme', 'frame', 'role', 'team', 'duration', 'summary', 'cover', 'tags', 'links', 'metrics', 'writeup', 'skills', 'gallery'], w)) return;
   slug(p.slug, `${w}.slug`);
-  for (const k of ['title', 'subtitle', 'role', 'duration', 'summary']) str(p, k, w);
-  str(p, 'context', w, { optional: true });
+  for (const k of ['title', 'subtitle', 'summary']) str(p, k, w);
+  for (const k of ['role', 'duration', 'context']) str(p, k, w, { optional: true }); // null hides
   if (!site.projectCategories?.includes(p.category)) err(`${w}.category`, `"${p.category}" is not listed in site.projectCategories`);
-  if (!Number.isInteger(p.year)) err(`${w}.year`, 'must be a year number');
+  year(p.year, `${w}.year`, { nullable: true });
   if (typeof p.featured !== 'boolean') err(`${w}.featured`, 'must be true or false');
   if (typeof p.order !== 'number') err(`${w}.order`, 'must be a number (1 = first)');
   (p.badges || []).forEach((b, j) => oneOf(b, BADGES, `${w}.badges[${j}]`));
   icon(p.icon, `${w}.icon`);
   oneOf(p.theme, THEMES, `${w}.theme`);
   oneOf(p.frame, FRAMES, `${w}.frame`);
-  if (need(p.team, ['size', 'members'], `${w}.team`)) {
+  // team: null = unknown, and no "Solo" / "Team of N" is shown.
+  if (p.team !== null && need(p.team, ['size', 'members'], `${w}.team`)) {
     if (!Number.isInteger(p.team.size) || p.team.size < 1) err(`${w}.team.size`, 'must be 1 or more');
     if (!isArr(p.team.members)) err(`${w}.team.members`, 'must be a list of names');
     else if (p.team.members.length !== p.team.size) warn(`${w}.team`, `size is ${p.team.size} but ${p.team.members.length} members are listed`);
@@ -319,8 +382,9 @@ projects.forEach((p, i) => {
   image(p.cover, `${w}.cover`, { ratio: 1.6 });
   if (!isArr(p.tags) || !p.tags.length) err(`${w}.tags`, 'needs at least one tag');
   if (need(p.links, ['demo', 'repo', 'video'], `${w}.links`)) for (const k of ['demo', 'repo', 'video']) url(p.links[k], `${w}.links.${k}`);
-  if (!isArr(p.metrics) || p.metrics.length < 2 || p.metrics.length > 4) err(`${w}.metrics`, 'must have 2–4 items');
-  else p.metrics.forEach((m, j) => { if (need(m, ['value', 'unit', 'label'], `${w}.metrics[${j}]`) && !isStr(String(m.value))) err(`${w}.metrics[${j}].value`, 'must be text'); });
+  if (!isArr(p.metrics) || p.metrics.length > 4) err(`${w}.metrics`, 'must be a list of up to 4 items ([] hides the stats strip)');
+  else if (p.metrics.length === 1) warn(`${w}.metrics`, 'one metric looks lonely in the stats strip — 2–4 read best ([] hides it)');
+  if (isArr(p.metrics)) p.metrics.forEach((m, j) => { if (need(m, ['value', 'unit', 'label'], `${w}.metrics[${j}]`) && !isStr(String(m.value))) err(`${w}.metrics[${j}].value`, 'must be text'); });
   const gallery = isArr(p.gallery) ? p.gallery : [];
   if (!isArr(p.gallery)) err(`${w}.gallery`, 'must be a list ([] hides it)');
   gallery.forEach((g, j) => { image(g, `${w}.gallery[${j}]`, { ratio: g?.wide ? 2.4 : 1.6 }); if (g && !isStr(g.caption)) warn(`${w}.gallery[${j}].caption`, 'a short caption helps'); });
@@ -337,10 +401,13 @@ projects.forEach((p, i) => {
       });
     }
     if (wu.lessons && !isArr(wu.lessons)) err(`${w}.writeup.lessons`, 'must be a list');
+    if (wu.process && !isArr(wu.process.steps)) err(`${w}.writeup.process.steps`, 'must be a list ([] shows the intro only)');
   }
   if (!isArr(p.skills)) err(`${w}.skills`, 'must be a list');
 });
 if (projects.length && !projects.some((p) => p?.featured)) warn('projects', 'no project has featured: true, so the Featured section and hero collage are hidden');
+const usedCategories = new Set(projects.map((p) => p?.category));
+(site.projectCategories || []).forEach((c, i) => { if (!usedCategories.has(c)) warn(`site.projectCategories[${i}]`, `"${c}" has no projects, so it gets no filter pill`); });
 
 // labs
 const labs = content.labs || [];
@@ -388,13 +455,15 @@ experience.forEach((x, i) => {
   const w = `experience[${i}]${isStr(x?.id) ? ` (${x.id})` : ''}`;
   if (!need(x, ['id', 'role', 'org', 'orgUrl', 'type', 'location', 'start', 'end', 'summary', 'logo', 'achievements', 'skills', 'quote'], w)) return;
   slug(x.id, `${w}.id`);
-  for (const k of ['role', 'org', 'location', 'summary']) str(x, k, w);
-  oneOf(x.type, XP_TYPES, `${w}.type`);
-  range(x, w);
+  for (const k of ['role', 'org', 'summary']) str(x, k, w);
+  str(x, 'location', w, { optional: true });
+  oneOf(x.type, XP_TYPES, `${w}.type`, { optional: true }); // null hides the type chip
+  range(x, w, { unknown: true }); // both null → no date pill, listed after the dated roles
   url(x.orgUrl, `${w}.orgUrl`);
   image(x.logo, `${w}.logo`, { optional: true });
   if (!isArr(x.achievements)) err(`${w}.achievements`, 'must be a list');
-  else if (x.achievements.length > 4) warn(`${w}.achievements`, `only the first 4 of ${x.achievements.length} are shown`);
+  else if (x.achievements.length > 6) warn(`${w}.achievements`, `only the first 6 of ${x.achievements.length} are shown`);
+  if (!isArr(x.skills)) err(`${w}.skills`, 'must be a list ([] hides it)');
   if (x.quote !== null && need(x.quote, ['text', 'name', 'title'], `${w}.quote`)) str(x.quote, 'text', `${w}.quote`);
 });
 
@@ -406,7 +475,12 @@ skills.forEach((g, i) => {
   if (!need(g, ['id', 'group', 'icon', 'theme', 'items'], w)) return;
   icon(g.icon, `${w}.icon`);
   oneOf(g.theme, SKILL_THEMES, `${w}.theme`);
-  (g.items || []).forEach((it, j) => { if (need(it, ['name', 'level'], `${w}.items[${j}]`)) oneOf(it.level, LEVELS, `${w}.items[${j}].level`); });
+  if (!isArr(g.items) || !g.items.length) err(`${w}.items`, 'needs at least one item');
+  (g.items || []).forEach((it, j) => {
+    if (!need(it, ['name', 'level'], `${w}.items[${j}]`)) return;
+    str(it, 'name', `${w}.items[${j}]`);
+    oneOf(it.level, LEVELS, `${w}.items[${j}].level`, { optional: true }); // null shows no level glyph
+  });
 });
 if (skills.length && (skills.length < 3 || skills.length > 5)) warn('skills', `the skills fan is designed for 4–5 groups (has ${skills.length})`);
 
@@ -415,8 +489,10 @@ if (skills.length && (skills.length < 3 || skills.length > 5)) warn('skills', `t
   const w = `awards[${i}]`;
   if (!need(a, ['kind', 'title', 'issuer', 'date', 'detail', 'project', 'url'], w)) return;
   oneOf(a.kind, AWARD_KINDS, `${w}.kind`);
-  str(a, 'title', w); str(a, 'issuer', w);
-  date(a.date, `${w}.date`);
+  oneOf(a.status ?? 'earned', AWARD_STATUSES, `${w}.status`); // missing = 'earned'
+  str(a, 'title', w); str(a, 'issuer', w, { optional: true }); str(a, 'detail', w, { optional: true });
+  date(a.date, `${w}.date`, { nullable: true });
+  if (a.status === 'planned' && a.date) warn(`${w}.date`, 'planned items show a "Planned" tag instead of a date, so this date is not displayed');
   if (a.project !== null && !slugs.has(a.project)) err(`${w}.project`, `"${a.project}" doesn't match any project slug`);
   url(a.url, `${w}.url`);
 });

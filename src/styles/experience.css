@@ -144,6 +144,16 @@ html.js .xp-role.reveal.is-in {
   text-shadow: 0 1px 14px rgba(26, 3, 6, .7);
 }
 
+/* Summary-only roles: a shorter panel and a smaller mark (phones already use a fixed strip). */
+@media (min-width: 768px) {
+  .xp-role--brief .xp-org {
+    gap: 8px;
+    min-height: 0;
+    padding: 60px 20px 28px;
+  }
+  .xp-role--brief .xp-logo { width: 96px; height: 64px; }
+}
+
 /* ── Role body ─────────────────────────────────────────────────────────── */
 
 .xp-body {

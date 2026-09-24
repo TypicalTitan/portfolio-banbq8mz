@@ -1,13 +1,17 @@
 /**
  * All projects (spec G5): headline + category filter pills on one row, then a 3-up grid of
  * project cards. Filtering toggles `hidden` (never the URL) and replays the rise animation.
+ * Not rendered when it would only repeat the Featured rows (see hasProjectGrid).
  */
 import { h } from '../../lib/dom.js';
 import { filterGroup, headline } from '../../lib/ui.js';
+import { hasProjectGrid } from '../../lib/sections.js';
 import { sprig } from '../../effects/index.js';
 import { applyFilter, countBy, orderProjects, presetFilter, projectCard, recallFilter, rememberFilter } from './shared.js';
 
 export function renderProjects(content) {
+  // Skipped when every project already has a Featured row (the grid would only repeat them).
+  if (!hasProjectGrid(content)) return null;
   const projects = orderProjects(content?.projects).filter(Boolean);
   if (!projects.length) return null;
 

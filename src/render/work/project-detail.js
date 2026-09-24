@@ -5,7 +5,8 @@
  */
 import { h } from '../../lib/dom.js';
 import { badge, backLink, button, chipList, glassPill, img, shot, stat, statRow } from '../../lib/ui.js';
-import { projectHref } from '../../router.js';
+import { projectsAnchor } from '../../lib/sections.js';
+import { projectHref, sectionHref } from '../../router.js';
 import { renderGallery } from './gallery.js';
 import {
   DETAIL_TITLE_ID, detailHero, factsCard, joinMeta, numberedSections, orderProjects,
@@ -21,9 +22,12 @@ export function renderProjectDetail(content, slug) {
   const badges = (p.badges ?? []).map((kind) => badge(kind)).filter(Boolean);
   const gallery = renderGallery(p.gallery);
   const sections = writeup(p);
+  // Back to the grid when it renders; otherwise to the featured rows that stand in for it.
+  const grid = projectsAnchor(content) === 'projects';
+  const backHref = sectionHref(projectsAnchor(content) ?? 'top');
 
   const root = h('article', { class: 'wk-detail', id: 'view', 'aria-labelledby': DETAIL_TITLE_ID },
-    h('div', { class: 'container wk-detail-back' }, backLink('#projects', 'All projects')),
+    h('div', { class: 'container wk-detail-back' }, backLink(backHref, grid ? 'All projects' : 'Work')),
     detailHero({
       theme: p.theme ?? 'lava',
       seed: p.slug,
@@ -33,7 +37,7 @@ export function renderProjectDetail(content, slug) {
       pills: [
         p.duration ? glassPill(p.duration, { icon: 'Calendar' }) : null,
         p.role ? glassPill(p.role, { icon: 'User' }) : null,
-        glassPill(teamLabel(p.team), { icon: 'Users' }),
+        teamLabel(p.team) ? glassPill(teamLabel(p.team), { icon: 'Users' }) : null,
       ],
       actions: projectActions(p),
       extra: badges.length ? h('div', { class: 'wk-detail-badges' }, badges) : null,
@@ -50,7 +54,7 @@ export function renderProjectDetail(content, slug) {
     gallery ? h('div', { class: 'container wk-detail-gallery' }, gallery) : null,
     h('div', { class: 'container wk-detail-more' },
       prevNext(ordered, ordered.indexOf(p), projectHref, 'project'),
-      h('div', { class: 'wk-detail-all' }, button({ label: 'All projects', href: '#projects', variant: 'outline' })),
+      h('div', { class: 'wk-detail-all' }, button({ label: grid ? 'All projects' : 'Back to work', href: backHref, variant: 'outline' })),
     ),
   );
   root.dataset.title = `${p.title} — Project`;

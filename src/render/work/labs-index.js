@@ -1,6 +1,6 @@
 /**
  * Labs index route `#/labs` (spec G16): every lab report as a row, newest first,
- * filterable by subject.
+ * filterable by subject. With no labs it returns null and the router shows the 404 view.
  */
 import { h } from '../../lib/dom.js';
 import { plural } from '../../lib/format.js';
@@ -9,6 +9,8 @@ import { applyFilter, countBy, labRow, labsByDate, presetFilter, recallFilter, r
 
 export function renderLabsIndex(content) {
   const labs = labsByDate(content?.labs);
+  // No labs: nothing links here, so a stray #/labs gets the 404 view (the router's fallback for null).
+  if (!labs.length) return null;
   const titleId = 'wk-index-title';
   const items = labs.map((lab, i) => ({
     data: lab,
@@ -20,16 +22,13 @@ export function renderLabsIndex(content) {
 
   const root = h('section', { class: 'section wk-index', id: 'view', 'aria-labelledby': titleId },
     h('div', { class: 'container' },
-      // With no labs the home Lab notebook section doesn't render, so the link goes home instead.
-      labs.length ? backLink('#labs', 'Lab notebook') : backLink('#top', 'Home'),
+      backLink('#labs', 'Lab notebook'),
       h('header', { class: 'wk-index-head' },
         title,
         h('p', { class: 'wk-index-count' }, plural(labs.length, 'report', 'reports')),
         subjectFilters(labs, items),
       ),
-      items.length
-        ? h('ul', { class: 'wk-index-grid' }, items.map((item) => item.el))
-        : h('p', { class: 'wk-index-empty' }, 'No lab reports yet.'),
+      h('ul', { class: 'wk-index-grid' }, items.map((item) => item.el)),
     ),
   );
   root.dataset.title = 'All labs';

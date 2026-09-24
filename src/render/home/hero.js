@@ -1,25 +1,36 @@
 /**
  * G1 · Hero: the inset lava card with the blackletter handle, real name, tagline, CTAs, a
- * three-shot project collage rising from the bottom edge and the availability sticker.
+ * project collage rising from the bottom edge (one centred shot, a balanced pair, or a centre
+ * shot flanked by two) and the rotating sticker disc.
  */
 
 import { h } from '../../lib/dom.js';
 import { icon } from '../../lib/icons.js';
 import { asset } from '../../lib/format.js';
 import { button, glassPill, shot } from '../../lib/ui.js';
-import { projectHref } from '../../router.js';
+import { FEATURED_LIMIT, featuredProjects, hasFeatured, hasLabs, projectsAnchor } from '../../lib/sections.js';
+import { projectHref, sectionHref } from '../../router.js';
 import { mountLava, mountParticles, thornCorners, stickerDisc } from '../../effects/index.js';
 
-const COLLAGE_SLOTS = ['centre', 'left', 'right'];
+// Slot names by how many featured shots there are: a lone shot is centred, two stand as a
+// balanced pair either side of the centre line, three are centre + flanks.
+const COLLAGE_SLOTS = {
+  1: ['centre'],
+  2: ['pair-left', 'pair-right'],
+  3: ['centre', 'left', 'right'],
+};
 
 export function renderHero(content) {
   const person = content.person ?? {};
   const availability = person.availability ?? {};
-  const open = availability.open !== false;
-  const featured = featuredProjects(content.projects);
-  const sticker = open && availability.sticker ? stickerDisc({ text: availability.sticker, size: 152 }) : null;
+  const open = availability.open === true;
+  const featured = featuredProjects(content.projects, FEATURED_LIMIT).filter((p) => p.cover?.src);
+  // The sticker is decorative copy, not an availability claim, so it renders whenever it has text.
+  const stickerText = typeof availability.sticker === 'string' ? availability.sticker.trim() : '';
+  const sticker = stickerText ? stickerDisc({ text: availability.sticker, size: 152 }) : null;
   // The work CTA points at the first work section that renders; with none it drops out.
-  const workHref = featured.length ? '#work' : content.projects?.length ? '#projects' : content.labs?.length ? '#labs' : null;
+  const work = hasFeatured(content) ? 'work' : projectsAnchor(content) ?? (hasLabs(content) ? 'labs' : null);
+  const workHref = work ? sectionHref(work) : null;
 
   // Thorn corners draw themselves in (they register with the reveal observer on creation).
   const card = h('div', { class: ['hm-hero-card', sticker && 'hm-hero-card--sticker'] },
@@ -62,28 +73,23 @@ function heroContent(person, statusLabel, workHref) {
     meta.length ? h('ul', { class: 'hm-hero-meta' }, meta.map((parts) => h('li', null, parts))) : null,
     h('div', { class: 'hm-hero-ctas' },
       button({ label: 'View my work', href: workHref, size: 'lg', iconEnd: 'ArrowDown' }),
+      // Secondary CTA: the résumé, or (with none) a way to reach the contact banner.
       resume.href
         ? button({ label: resume.label || 'Résumé', href: asset(resume.href), variant: 'outline', size: 'lg', icon: 'Download', external: true })
-        : null,
+        : button({ label: 'Get in touch', href: sectionHref('contact'), variant: 'outline', size: 'lg', icon: 'Mail' }),
     ),
   );
 }
 
-/** First three featured projects by `order`; they duplicate the Featured rows, so they stay out of the a11y tree. */
-function featuredProjects(projects) {
-  return (projects ?? [])
-    .filter((p) => p?.featured && p.cover?.src)
-    .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity))
-    .slice(0, COLLAGE_SLOTS.length);
-}
-
+/** The featured shots duplicate the Featured rows, so the collage stays out of the a11y tree. */
 function collage(projects) {
   if (!projects.length) return null;
-  return h('div', { class: 'hm-hero-collage', 'aria-hidden': 'true' },
-    projects.map((p, i) => {
+  const slots = COLLAGE_SLOTS[projects.length] ?? COLLAGE_SLOTS[3];
+  return h('div', { class: ['hm-hero-collage', `hm-hero-collage--n${slots.length}`], 'aria-hidden': 'true' },
+    projects.slice(0, slots.length).map((p, i) => {
       const lead = i === 0;
       return h('a', {
-        class: ['hm-hero-shot', `hm-hero-shot--${COLLAGE_SLOTS[i]}`],
+        class: ['hm-hero-shot', `hm-hero-shot--${slots[i]}`],
         href: projectHref(p.slug),
         tabindex: '-1',
         'aria-hidden': 'true',

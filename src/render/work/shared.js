@@ -21,11 +21,8 @@ export function orderProjects(projects) {
   return [...(projects ?? [])].sort((a, b) => rank(b) - rank(a) || year(b) - year(a) || order(a) - order(b));
 }
 
-/** Featured rows (G4): up to `limit` projects flagged `featured`, by `order`. */
-export function featuredProjects(projects, limit = 3) {
-  const order = (p) => (Number.isFinite(p.order) ? p.order : Infinity);
-  return (projects ?? []).filter((p) => p?.featured).sort((a, b) => order(a) - order(b)).slice(0, limit);
-}
+/** Featured rows (G4): up to FEATURED_LIMIT projects flagged `featured`, by `order`. */
+export { featuredProjects } from '../../lib/sections.js';
 
 /** Labs newest first (ISO dates sort correctly as strings). */
 export function labsByDate(labs) {
@@ -45,12 +42,13 @@ export function countBy(list, keyOf) {
 /* ── Text helpers ──────────────────────────────────────────────────────── */
 
 export const joinMeta = (parts) => parts.filter((part) => part != null && part !== '').join(' · ');
-export const teamLabel = (team) => (team?.size > 1 ? `Team of ${team.size}` : 'Solo');
+/** 'Team of 3' | 'Solo'; null when the team is unknown (team: null), so nothing is claimed. */
+export const teamLabel = (team) => (!team ? null : team.size > 1 ? `Team of ${team.size}` : 'Solo');
 export const partnersLabel = (partners) => (partners?.length ? plural(partners.length, 'partner', 'partners') : 'Solo');
 export const monthOf = (date) => (date ? monthYear(String(date).slice(0, 7)) : null);
 export const paragraphs = (text) => [].concat(text ?? []).filter(Boolean).map((line) => h('p', null, line));
 
-/** 'AP PHYSICS 1 · LAB 04' (the lab number is optional). */
+/** 'COURSE 101 · LAB 04' (the lab number is optional). */
 export const labLabel = (lab) =>
   [lab.course?.toUpperCase(), lab.labNumber != null ? `LAB ${pad2(lab.labNumber)}` : null].filter(Boolean).join(' · ');
 
@@ -125,6 +123,7 @@ export function projectCard(p, index = 0) {
   const href = projectHref(p.slug);
   const badges = (p.badges ?? []).map((kind) => badge(kind)).filter(Boolean);
   const repo = p.links?.repo;
+  const meta = joinMeta([p.category, p.year, p.role]);
 
   return h('article', { class: 'wk-card reveal', style: { '--i': index % 3 }, 'aria-labelledby': titleId },
     media(p.theme ?? 'lava',
@@ -134,7 +133,7 @@ export function projectCard(p, index = 0) {
     // After the title in reading order; positioned over the media's top-right corner.
     badges.length ? h('div', { class: 'wk-card-badges' }, badges) : null,
     p.subtitle ? h('p', { class: 'wk-card-sub' }, p.subtitle) : null,
-    h('p', { class: 'wk-card-meta' }, joinMeta([p.category, p.year, p.role])),
+    meta ? h('p', { class: 'wk-card-meta' }, meta) : null,
     p.summary ? h('p', { class: 'wk-card-summary' }, p.summary) : null,
     chipList(p.tags?.slice(0, 4)),
     h('div', { class: 'wk-card-actions' },

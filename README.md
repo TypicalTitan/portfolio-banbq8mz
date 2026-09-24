@@ -1,17 +1,24 @@
-# TypicalTitan — Student Engineer Portfolio (template)
+# TypicalTitan — Stephan Varganov's portfolio
 
-A fast, accessible, single-page portfolio for high-school engineers, built with **Vite + vanilla JS** and styled in a crimson / lava / petal look. It is a **template** for *Stepan Varganov (TypicalTitan)*: every description is lorem ipsum, and the projects, labs, jobs, schools, numbers, images and PDFs are realistic placeholders. You make it yours by editing **one file**, `src/content.js`, and swapping the files in `public/`.
+This is the personal portfolio of **Stephan Varganov** ([TypicalTitan on GitHub](https://github.com/TypicalTitan)), a cybersecurity and networking student focused on cloud ops. It's a fast, accessible single-page site built with **Vite + vanilla JS** and styled in a crimson / lava / petal look.
 
-What you get:
+It is built on a student-portfolio **template**: the layout stays the same and all content comes from **one file**, `src/content.js`, plus the images in `public/`. Every fact on the site comes from Stephan's own information. Anything not provided yet is either **hidden** (a `null` date, GPA or résumé, or an empty list of labs or testimonials) or, for descriptions he'll write himself, **lorem ipsum**.
 
-- A hero with a living lava field, your blackletter handle, and your best three projects rising out of the card
-- A proof strip (projects · labs · roles · GPA), a scrolling tools strip, featured project rows and a filterable project grid
-- A **lab notebook** with full lab-report pages: hypothesis, method, data table, figures, verdict, sources of error
-- Experience, about, a slanted skills fan, education and honors, leadership, references and a contact banner
-- Case-study pages for every project (`#/projects/<slug>`) and every lab (`#/labs/<slug>`)
-- No framework, no CDN, no tracking. It works offline, prints cleanly and respects *reduce motion*
+What the template gives you:
 
-> **Before you publish:** replace the placeholders, then run `npm run check -- --strict`. It flags the placeholders it knows about: the portrait, the email, the LinkedIn link, the placeholder PDFs and any text that still mentions the template's placeholder school (Northgate). Repo and demo links are yours to check by hand.
+- A hero with a living lava field, your blackletter handle, and up to three featured projects rising out of the card (one or two are laid out to look balanced too)
+- A proof strip, a scrolling tools strip and featured project rows. A filterable All projects grid appears once you have more projects than the Featured rows show.
+- Experience, about, a slanted skills fan, education and certifications, and a contact banner
+- Optional sections that stay hidden until you fill them in: a **lab notebook** with full lab-report pages, leadership and activities, and references
+- A case-study page for every project (`#/projects/<slug>`, e.g. `#/projects/rust-server`)
+- No framework, no CDN and no tracking. It works offline, prints cleanly and respects *reduce motion*
+
+> **Before you publish:** replace what's still a placeholder:
+> - Search `src/content.js` for `ipsum` to find every placeholder description: the project write-ups and the two shorter job summaries.
+> - Swap `img/portrait.svg` for a photo, or set `person.photo: null` to hide the avatar.
+> - Optionally replace the illustrated project covers and org monograms (see [Replacing images](#replacing-images-pdfs-and-data)).
+>
+> Then run `npm run check -- --strict`. It flags the placeholders it knows about, such as the placeholder portrait. Check links by hand.
 
 ---
 
@@ -31,8 +38,8 @@ npm run preview    # serve dist/ locally to double-check the build
 
 ```
 ✗ content.js has 2 problems:
-  ✗ projects[4] (crimson-60).category: "Art" is not listed in site.projectCategories
-  ✗ projects[2] (rootsense).cover.src: file not found: public/img/projects/rootsense/cover.jpg
+  ✗ projects[1] (pc-builds).category: "Builds" is not listed in site.projectCategories
+  ✗ projects[0] (rust-server).cover.src: file not found: public/img/projects/rust-server/cover.jpg
 ```
 
 It checks that:
@@ -43,7 +50,7 @@ It checks that:
 - icon names and enum values are spelled right
 - every image's `width`/`height` matches the real file's shape
 
-Warnings (for example "still the placeholder PDF") don't fail the check unless you add `--strict`.
+Warnings (for example "still the placeholder portrait") don't fail the check unless you add `--strict`.
 
 ---
 
@@ -54,12 +61,14 @@ Everything the site shows lives in `src/content.js`. **Keep the keys and change 
 | Rule | Example |
 |---|---|
 | Paths are relative, with **no leading slash** | `'img/portrait.jpg'` → `public/img/portrait.jpg` |
-| Dates are `'YYYY-MM'` or `'YYYY-MM-DD'`; `end: null` means "Present" | `start: '2024-08', end: null` |
-| `slug` becomes the page URL, lowercase-with-dashes, unique | `slug: 'titanbot'` → `#/projects/titanbot` |
-| A headline `accent` is one word that appears **exactly** inside its title | `title: 'Lab notebook', accent: 'notebook'` |
+| Dates are `'YYYY-MM'` or `'YYYY-MM-DD'`; `end: null` means "Present" | `start: '2026-01', end: '2026-06'` |
+| Don't know the dates? Set **both** `start` and `end` to `null` and they're hidden | `start: null, end: null` |
+| Don't know a fact? Use `null` (or `[]` for a list). Never guess. | `gradYear: null`, `pronouns: null` |
+| `slug` becomes the page URL, lowercase-with-dashes, unique | `slug: 'rust-server'` → `#/projects/rust-server` |
+| A headline `accent` is one word that appears **exactly** inside its title | `title: "Things I've built", accent: 'built'` |
 | `null`, `''` or `[]` hides that thing: no empty boxes, no dead buttons | `links: { demo: null, … }` hides "Live demo" |
-| An empty list hides the whole section **and** its nav link | `testimonials: []` |
-| `icon` is a lucide icon name from the whitelist in `src/lib/icons.js` | `'Bot'`, `'Cpu'`, `'FlaskConical'`, `'Zap'` |
+| An empty list hides the whole section **and** its nav link | `labs: []`, `testimonials: []` |
+| `icon` is a lucide icon name from the whitelist in `src/lib/icons.js` | `'Server'`, `'Cpu'`, `'Cloud'`, `'Network'` |
 | To use another [Lucide](https://lucide.dev/icons) icon, add its name to the `import` and to the `LUCIDE` map in `src/lib/icons.js` | `Rocket` |
 | Text with an apostrophe goes in double quotes (or use a curly ’) | `"Things I've built"` |
 | Plain text only, no HTML | |
@@ -70,42 +79,69 @@ Everything the site shows lives in `src/content.js`. **Keep the keys and change 
 - `title` and `description`: the browser tab, the search snippet and link previews (Discord, LinkedIn). They are written into `index.html` for you when the site builds.
 - `updated` and `copyrightYear`: shown in the footer.
 - `currently`: the footer's "Currently" note; `null` hides it.
-- `marquee`: the scrolling tools strip. Names like *Python*, *C++*, *Arduino*, *Fusion 360* and *KiCad* get their logo automatically.
-- `projectCategories`: the filter buttons, in order.
+- `marquee`: the scrolling tools strip. Names that match a known brand get its logo automatically: *Python*, *C++*, *Git*, *Linux*, *WebRTC*, *UniFi* (or *UniFi / Ubiquiti*, *Ubiquiti*), *Android*, *Claude Code* and more. The full list is `TAG_BRANDS` in `src/lib/icons.js`. Simple Icons has no mark for AWS, PowerShell or Windows, and its .NET mark is itself a ".NET" wordmark that would repeat the label, so those show as text only.
+- `projectCategories`: the filter buttons, in order (currently `['Servers', 'Hardware']`). Every `project.category` must be listed.
 - `sections`: the eyebrow, title, accent word and blurb for every section.
 
 **`person`**: you.
-- Identity: `name` (your real name, used everywhere), `handle` (the blackletter display name), `pronouns`.
+- Identity:
+  - `name`: your real name, used everywhere.
+  - `handle`: the blackletter display name.
+  - `pronouns`: `null` hides them.
 - Headline copy: `tagline` (hero), `pitch` (the About headline; it must contain `sections.about.accent`), and 1–2 `bio` paragraphs.
-- `photo`: your portrait.
-- Facts: `location`, `school`, `gradYear`, `focus`.
-- `availability`: the hero pill, the rotating sticker and the About pill. Set `open: false` to hide all three.
-- Contact: `email`, `responseTime` and `resume` (your PDF).
+- `photo`: your portrait; `null` hides the avatar.
+- Facts:
+  - `location`, `school` and `focus`.
+  - `gradYear`: a number, or `null` to hide the hero's "Class of …" chip and the About "Graduating" fact.
+  - `interests`: a list shown as an "Interests" row in the About facts, e.g. `['Ethical hacking', 'PC building', 'Climbing']`. `[]` hides the row.
+- `availability`: the hero pill, the rotating sticker and the About pill.
+  - `open: true` shows the hero pill (`label`) and the About pill (`season`, with `detail` under it).
+  - `open: false` hides the pills and makes no availability claim. `label`, `season` and `detail` can then be `null`.
+  - `sticker` is decorative. The rotating hero disc shows whenever `sticker` is a non-empty string, **whatever `open` is**. `null` hides it.
+- Contact:
+  - `email`.
+  - `responseTime`: e.g. `'I reply within two days.'`. `null` hides the line.
+  - `resume`: `{ href, label, fileInfo }`, e.g. `{ href: 'files/resume.pdf', label: 'Résumé', fileInfo: 'PDF · 1 page' }`. With `resume: null`, every Résumé button and the résumé contact tile disappear. The nav's main button and the hero's second button then become **Get in touch** (→ `#contact`), so there's never an empty slot.
 - `strengths`: exactly 5 checklist lines.
-- `socials`: `github`, `linkedin`, `youtube`, `devpost`, `itchio` or `email`.
+- `socials`: any of `github`, `linkedin`, `youtube`, `devpost`, `itchio` or `email`. One is fine: with only GitHub, the contact banner shows balanced Email + GitHub tiles.
 
-**`stats`**: leave `null` and the proof strip counts your projects, labs and roles, and shows your GPA (or your awards when `showGpa` is `false`). Or supply exactly 4 `{ value, unit, label, href }` items.
+**`stats`**: the proof strip under the hero. You have two options:
+- Leave it `null` to fill it automatically from your projects, labs and roles, plus your GPA (or your awards when `showGpa` is `false`). Lab counts drop out while `labs` is `[]`.
+- Supply exactly 4 `{ value, unit, label, href }` items. Each `href` must point at a section that exists (`'#work'`, `'#experience'`, `'#awards'`). For example: `{ value: '2', unit: null, label: 'Projects', href: '#work' }`.
 
 **`education`**: one entry per school, main school first.
-- `start`/`end`, plus `expected: true` for a future graduation date.
-- `showGpa` and `gpa`: set `showGpa: false` to hide the GPA everywhere.
-- `honors` and `coursework`.
+- `school`, `program`, and `location` (`null` hides it).
+- `start`/`end`, plus `expected: true` for a future graduation date. Set **both** `start` and `end` to `null` to hide the date range.
+- `status`: optional text shown where the dates would be, for example `'In progress'`. `null` hides it.
+- `showGpa` and `gpa`: set `showGpa: false` (and `gpa: null` if you have none) to hide the GPA everywhere.
+- `honors` and `coursework`: `[]` hides each block. Example: `coursework: ['MATH 141 (completed)']`.
 
-**`projects`**: the core of the site. The hero collage and the Featured rows use the first three projects with `featured: true`, sorted by `order`. The All projects grid (and the Previous/Next links on project pages) shows featured projects first, then newest `year` first, then by `order`. Each project needs:
+**`projects`**: the core of the site.
+- The hero collage and the Featured rows use the first three projects with `featured: true`, sorted by `order`. With only one or two featured projects, the collage is laid out for that number, with no empty slot.
+- The All projects grid, and the Previous/Next links on project pages, list featured projects first, then newest `year`, then `order`.
+- The grid (and its nav and footer links) only appears when it adds something. It stays hidden when every project is featured and they all fit in the Featured rows, as with the two projects here.
 
-- Basics: `slug`, `title`, `subtitle`, `category` (must be in `site.projectCategories`), `year`, `badges`.
-- Look: `icon`, `theme` (`lava` · `dusk` · `violet` · `ember`) and `frame`. Use `'window'` for software screenshots and `'plate'` for photos or renders of physical things.
-- People: `role`, `team: { size, members }`, `duration`, `context`.
+Each project has:
+
+- Basics: `slug`, `title`, `subtitle`, `category` (must be in `site.projectCategories`), `year` and `badges`.
+  - `year: null` hides the year wherever it shows. The card meta then reads just `Servers` instead of `Servers · 2026`.
+  - `badges: []` shows none.
+- Look: `icon` (e.g. `'Server'`, `'Cpu'`), `theme` (`lava` · `dusk` · `violet` · `ember`) and `frame`. Use `'window'` for software screenshots and `'plate'` for photos or renders of physical things.
+- People: `role`, `team: { size, members }`, `duration` and `context`.
+  - Any of these can be `null`, which hides that fact. `team: null` also hides the "Team of N" chip.
 - `summary`: 1–2 sentences for cards.
 - `cover` image.
 - `tags`: the tech used. Brand names get logos.
-- `links`: `{ demo, repo, video }`. Set one to `null` to hide its button.
-- `metrics`: 2–4 `{ value, unit, label }` items. `value` is text, so `'2nd'` works.
-- `writeup`: `problem`, `process` (`intro` + `steps`, each step optionally pointing at a `gallery` index), `outcome` and `lessons`.
+- `links`: `{ demo, repo, video }`. Set one to `null` to hide its button. With all three `null`, the only button is **Case study**.
+- `metrics`: 2–4 `{ value, unit, label }` items. `value` is text, so `'2nd'` works. `[]` hides the stats strip on the card, the row and the detail page.
+- `writeup`:
+  - `problem` and `outcome`.
+  - `process`: an `intro` plus `steps`. Each step can point at a `gallery` index. `steps: []` shows the intro on its own, with no empty list.
+  - `lessons`: `[]` hides "What I learned".
 - `skills`: what the project shows about you.
-- `gallery`: images with captions. `wide: true` spans two columns.
+- `gallery`: images with captions. `wide: true` spans two columns. `[]` hides the gallery.
 
-**`labs`**: every lab report gets its own page. Each lab needs:
+**`labs`**: optional lab reports. **`labs: []` hides the whole feature**: the Lab notebook section, its nav link, the footer's "Lab notebook" and "Every lab" links, and the lab stats. `#/labs` then shows the 404 page. When you add labs, each needs:
 
 - Basics: `subject` (the filter on `#/labs`), `course`, `labNumber`, `date`, `instructor`, `partners`, `duration`, `icon`.
 - `featured: true` on the **one** lab shown large on the home page. Without it, the newest lab is shown.
@@ -122,35 +158,61 @@ Everything the site shows lives in `src/content.js`. **Keep the keys and change 
 - `files`: `{ report, data }`, the PDF and CSV download buttons.
 
 **`experience`**: newest first.
-- What and where: `role`, `org`, `orgUrl`, `type` (`internship` · `job` · `volunteer` · `research`), `location`.
-- Dates: `start`/`end`.
+- What and where:
+  - `role` and `org`.
+  - `orgUrl`: a link on the org name; `null` for plain text.
+  - `type`: `internship` · `job` · `volunteer` · `research`.
+  - `location`: `null` hides it.
+- Dates: `start`/`end`. With **both** set to `null`, there's no date pill and the role sorts after the dated ones.
 - `summary`.
-- `logo`: a **white mark on a transparent background**.
-- Up to 4 `achievements`. Lead with numbers.
-- `skills`, plus an optional `quote`.
+- `logo`: a **white mark on a transparent background**, 256 × 192. It sits on a dark crimson panel.
+- `achievements`: up to 6 are shown. Lead with what you did. `[]` hides the block.
+- `skills` (`[]` hides the chips), plus an optional `quote` (`null` hides it).
 
 **`skills`**: 4–5 groups, shown as the slanted fan.
-- Each group has `group`, `icon`, `theme` (`lava` · `dusk` · `crimson` · `violet` · `ember`) and `blurb`.
-- Each item has a `name` and a `level` (`core` · `working` · `learning`).
-- Each item's "uses" count is automatic: the projects whose `tags` include it plus the labs whose `skills` include it (case-insensitive). Spell skill items exactly like your tags.
+- Each group has `group`, `icon` (e.g. `'Cloud'`, `'Code'`, `'Network'`, `'Gauge'`), `theme` (`lava` · `dusk` · `crimson` · `violet` · `ember`) and `blurb`.
+- Each item has a `name` and a `level`:
+  - `core`, `working` or `learning`.
+  - `null` shows no level glyph. When no item in any group has a level, the level legend is hidden too.
+- Each item's "uses" count is automatic: the projects whose `tags` include it, plus the labs whose `skills` include it (case-insensitive). A count of 0 isn't shown. Spell skill items exactly like your tags.
 
-**`awards`**: `kind` (`award` · `certification`), `title`, `issuer`, `date`, `detail`, `project` (a project slug adds a "See project" link) and `url` (adds a "Credential" link).
+**`awards`**: certifications and awards, shown in the order you list them. Each has:
+- `kind`: `award` · `certification`.
+- `status`: `'earned'` (the default) or `'planned'`. A planned item shows a **Planned** tag in place of a date, styled so it can't be mistaken for an earned one. The check warns if a planned item has a `date`, because that date isn't shown.
+- `title`, `issuer` and `date`. `issuer: null` and `date: null` hide those lines, including on earned items.
+- `detail`.
+- `project`: a project slug, which adds a "See project" link.
+- `url`: adds a "Credential" link.
 
-**`activities`**: leadership and clubs. Each entry has `role`, `org`, `start`/`end`, `description` and `icon`.
+For example, `{ kind: 'certification', status: 'planned', title: 'Security+', issuer: 'CompTIA', date: null, … }`.
 
-**`testimonials`**: optional quotes, each with `quote`, `name`, `role` and `relationship`. Only quote people who agreed to it, word for word.
+**`activities`**: leadership and clubs. Each entry has `role`, `org`, `start`/`end`, `description` and `icon`. `[]` hides the section.
+
+**`testimonials`**: optional quotes, each with `quote`, `name`, `role` and `relationship`. Only quote people who agreed to it, word for word. `[]` hides the section.
 
 ### `index.html` fills itself in
 
-The page `<title>`, the search/link-preview description and the no-JavaScript line are generated from `site.title`, `site.description`, your name, email and résumé in `content.js` whenever the site builds (see `vite.config.js`). There is nothing to edit in `index.html`.
+The page `<title>`, the search/link-preview description and the no-JavaScript line are generated from `content.js` whenever the site builds (see `vite.config.js`). They use `site.title`, `site.description`, your name, your email and, when it's set, your résumé. There is nothing to edit in `index.html`.
 
-**Optional things:** `person.photo: null` hides the avatar, and `person.resume: null` hides every Résumé button. Handles up to about 14 characters look best; longer ones are scaled down on phones so they still fit.
+**Optional things:**
+- `person.photo: null` hides the avatar.
+- `person.resume: null` hides every Résumé button; the main buttons become "Get in touch".
+- Handles up to about 14 characters look best. Longer ones are scaled down on phones so they still fit.
 
 ---
 
 ## Replacing images, PDFs and data
 
-Every placeholder lives in `public/`. Replace a file with your own, **or** point `content.js` at a new file name (remember to change the extension: `cover.svg` → `cover.jpg`). Then set `width`/`height` to the new file's real pixel size and run `npm run check`.
+Every image lives in `public/`. Replace a file with your own, **or** point `content.js` at a new file name. If you switch format, change the extension too: `cover.svg` → `cover.jpg`. Then set `width`/`height` to the new file's real pixel size and run `npm run check`.
+
+The current placeholders are original illustrations:
+
+- `img/projects/rust-server/cover.svg`: a server console listing the Oxide plugins.
+- `img/projects/pc-builds/cover.svg`: a PC tower with a glass side panel.
+- `img/orgs/playcast.svg`, `camp-zanika-lache.svg` and `raaj-gharana.svg`: simple monograms. They are **not** the organisations' real logos, so they are switched off (`logo: null` in `experience`, which shows plain initials instead). Add the official mark only if you have permission to use it.
+- `img/portrait.svg`: a silhouette.
+
+Unused files are removed from `public/`, so the lab, résumé and gallery folders below only exist once you add them.
 
 | What | Where | Required shape | Tips |
 |---|---|---|---|
@@ -159,7 +221,7 @@ Every placeholder lives in `public/`. Replace a file with your own, **or** point
 | Gallery image | `img/projects/<slug>/gallery-N.*` | 16:10 (1600 × 1000), or 2400 × 1000 for `wide` | Give each one a caption. |
 | Lab figure | `img/labs/<slug>/fig-N.*` | **16:9 landscape**, e.g. 1600 × 900 | Export charts at 2× from Sheets, Logger Pro or matplotlib. |
 | Org logo | `img/orgs/<id>.*` | 256 × 192 | A white mark on transparent (SVG or PNG). It sits on a dark crimson panel. |
-| Résumé | `files/resume.pdf` | 1 page | Or change `person.resume.href`. |
+| Résumé | `files/resume.pdf` | 1 page | Add the file, then set `person.resume` (it's `null` now, which hides every Résumé button). |
 | Lab report | `files/labs/<slug>.pdf` | any | `files.report: null` hides the button. |
 | Raw data | `files/labs/<slug>.csv` | any | `files.data: null` hides the button. |
 | Favicon | `favicon.svg` | 40 × 40 | The yin-yang sigil. Replace it with your own mark if you like. |
@@ -169,14 +231,14 @@ Image tips:
 - **JPG** suits photos, **PNG** suits screenshots, **SVG** suits diagrams and logos. iPhone **HEIC** photos don't show in Chrome or Edge — export them as JPG (Settings → Camera → Formats → Most Compatible). `npm run check` catches this.
 - Keep each file under about 300 KB and about 1600 px wide. [Squoosh](https://squoosh.app) is free and easy. The check warns about files over 500 KB.
 - Keep file names **lowercase** and type them exactly: GitHub Pages treats `Cover.JPG` and `cover.jpg` as different files, even though Windows doesn't. (Turn on **View → File name extensions** in Explorer to see the real name.)
-- Write `alt` text that says what the image shows ("CAD render of the tracking-wheel module"), not "image of…".
+- Write `alt` text that says what the image shows ("Illustrated server console listing the installed Oxide plugins"), not "image of…".
 - Images below the fold are lazy-loaded, and `width`/`height` reserve their space so the page never jumps.
 
 ---
 
 ## Deploying to GitHub Pages
 
-`vite.config.js` uses `base: './'` and the site uses **hash routing** (`#/projects/titanbot`). Together these mean the build works from any sub-path, such as `https://<you>.github.io/School-Portfolio/`. Refreshing or sharing a deep link also works, with no 404 tricks needed.
+`vite.config.js` uses `base: './'` and the site uses **hash routing** (`#/projects/rust-server`). Together these mean the build works from any sub-path, such as `https://<you>.github.io/School-Portfolio/`. Refreshing or sharing a deep link also works, with no 404 tricks needed.
 
 ### Option A: GitHub Actions (recommended)
 
@@ -252,7 +314,7 @@ GitHub Pages sites are always public: anyone who has the URL can open the site. 
 
 ## Design system
 
-The look is a black stage lit by the student's own fire. Atmosphere lives in colour, texture, type and edge effects, while the content stays structured like a résumé: role, dates, evidence. All tokens live in `src/styles/tokens.css`.
+The look is a black stage lit by its own fire. Atmosphere lives in colour, texture, type and edge effects, while the content stays structured like a résumé: role, dates, evidence. All tokens live in `src/styles/tokens.css`.
 
 ### Palette
 
@@ -320,13 +382,13 @@ Performance:
 ```
 index.html              page shell (title, description and noscript line come from content.js)
 vite.config.js          base: './' for GitHub Pages
-src/content.js          ← all your content
+src/content.js          ← all the content
 src/main.js, router.js  wiring and hash routing
 src/lib/                DOM builder, icons, formatting, shared UI pieces
 src/effects/            lava, particles, thorns, sigils, reveal, scheduler
 src/render/             one renderer per section / page
 src/styles/             tokens, base, chrome, effects and per-section CSS
-public/                 images, PDFs and CSVs (copied as-is into dist/)
+public/                 images and files (copied as-is into dist/)
 scripts/check-content.mjs   npm run check
 ```
 
@@ -335,4 +397,4 @@ scripts/check-content.mjs   npm run check
 - [Inter](https://rsms.me/inter/), [Grenze Gotisch](https://fonts.google.com/specimen/Grenze+Gotisch) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/): SIL Open Font License.
 - Icons: [Lucide](https://lucide.dev) (ISC).
 - Brand glyphs: [Simple Icons](https://simpleicons.org) (CC0). The brands are trademarks of their owners.
-- The placeholder art in `public/` is original and part of this template. Replace it freely.
+- The placeholder art in `public/` (portrait, project covers, org monograms, favicon) is original and part of this template. The org monograms are not the organisations' logos. Replace any of it freely.

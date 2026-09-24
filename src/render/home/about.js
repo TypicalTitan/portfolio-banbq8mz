@@ -23,8 +23,9 @@ export function renderAbout(content) {
         person.resume?.href
           ? button({ label: person.resume.label || 'Résumé', href: asset(person.resume.href), variant: 'outline', icon: 'Download', external: true })
           : null,
+        // Socials share the CTA row so a single icon doesn't sit alone on its own line.
+        person.socials?.length ? socialLinks(person.socials, { size: 40, className: 'hm-about-socials' }) : null,
       ),
-      person.socials?.length ? socialLinks(person.socials, { size: 40, className: 'hm-about-socials' }) : null,
     ),
     h('div', { class: 'hm-about-side' },
       availabilityBlock(person.availability),
@@ -71,12 +72,22 @@ function availabilityBlock(availability) {
   );
 }
 
+/**
+ * Two-column facts grid. Interests always take a full row (a list reads badly in half a column);
+ * when the short facts leave an odd one out, that last one spans the row too, so no cell sits empty.
+ */
 function quickFacts(person, school) {
   const graduating = school?.end ? monthYear(school.end) : person.gradYear ? String(person.gradYear) : null;
-  return [
+  const interests = (person.interests ?? []).map((item) => String(item ?? '').trim()).filter(Boolean);
+  const short = [
     { term: 'Location', desc: person.location },
     { term: 'School', desc: person.school },
     { term: 'Graduating', desc: graduating },
     { term: 'Focus', desc: person.focus },
+  ].filter((pair) => pair.desc);
+  if (short.length % 2 === 1) short[short.length - 1].wide = true;
+  return [
+    ...short,
+    interests.length ? { term: 'Interests', desc: interests.join(' · '), wide: true } : null,
   ];
 }

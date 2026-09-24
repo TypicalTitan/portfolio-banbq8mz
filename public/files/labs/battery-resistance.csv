@@ -1,9 +1,0 @@
-load_ohm,current_A,terminal_voltage_V,used_in_fit
-open_circuit,0.000,9.462,no
-94.2,0.100,9.416,yes
-37.4,0.250,9.357,yes
-23.2,0.400,9.289,yes
-16.8,0.550,9.232,yes
-13.1,0.700,9.163,yes
-10.7,0.850,9.106,yes
-9.0,1.000,8.990,no

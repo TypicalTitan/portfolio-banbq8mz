@@ -18,6 +18,7 @@ import { renderHero, renderProof, renderMarquee, renderAbout, renderSkills, rend
 import { renderFeatured, renderProjects, renderLabs, renderLabsIndex, renderProjectDetail, renderLabDetail } from './render/work/index.js';
 import { renderExperience, renderLeadership, renderTestimonials } from './render/experience/index.js';
 import { startRouter } from './router.js';
+import { anchorFallbacks } from './lib/sections.js';
 
 const HOME = [renderHero, renderProof, renderMarquee, renderFeatured, renderProjects, renderLabs,
               renderExperience, renderAbout, renderSkills, renderEducation, renderLeadership,
@@ -39,4 +40,5 @@ startRouter({
   },
   homeTitle: content.site.title,   // D5: home uses site.title; other views append ' · ' + person.name
   personName: content.person.name,
+  anchorFallbacks: anchorFallbacks(content), // e.g. '#projects' → '#work' when the grid is folded away
 });

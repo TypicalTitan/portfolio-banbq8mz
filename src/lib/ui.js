@@ -67,8 +67,8 @@ export function iconButton({
 }
 
 /**
- * 'stepan.varganov.dev@example.com' → <wbr> before the '@' and the dots of the local part, so a long
- * address wraps as 'stepan.varganov.dev' / '@example.com' — never mid-word, never a lone '.com'.
+ * 'first.last.dev@example.com' → <wbr> before the '@' and the dots of the local part, so a long
+ * address wraps as 'first.last.dev' / '@example.com' — never mid-word, never a lone '.com'.
  */
 export function breakable(email) {
   const at = email.lastIndexOf('@');
@@ -355,12 +355,13 @@ export function backLink(href, label) {
   );
 }
 
+/** pairs: [{ term, desc, wide? }]; empty descs drop out. `wide` rows get .facts__row--wide (full row in grid layouts). */
 export function dlList(pairs, { className = '' } = {}) {
   const rows = (pairs ?? []).filter((pair) => pair && pair.desc !== null && pair.desc !== undefined && pair.desc !== '' && pair.desc !== false);
   if (!rows.length) return null;
   return h(
     'dl',
     { class: ['facts', className] },
-    rows.map(({ term, desc }) => h('div', null, h('dt', null, term), h('dd', null, desc))),
+    rows.map(({ term, desc, wide }) => h('div', { class: wide ? 'facts__row--wide' : null }, h('dt', null, term), h('dd', null, desc))),
   );
 }

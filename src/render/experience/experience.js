@@ -16,11 +16,13 @@ const TYPES = {
   research:   { label: 'Research',   icon: 'Microscope' },
 };
 
-const MAX_ACHIEVEMENTS = 4;
+const MAX_ACHIEVEMENTS = 6;
 const MAX_STAGGER = 5;
 
 export function renderExperience(content) {
-  const roles = (content?.experience ?? []).filter(Boolean);
+  // Content order (newest first), except roles with unknown dates always follow the dated ones.
+  const undated = (role) => (role.start || role.end ? 0 : 1);
+  const roles = (content?.experience ?? []).filter(Boolean).sort((a, b) => undated(a) - undated(b));
   if (!roles.length) return null;
 
   const sec = content.site?.sections?.experience ?? {};
@@ -45,8 +47,10 @@ export function renderExperience(content) {
 
 function roleCard(role, index) {
   const titleId = uid('xp-role');
+  // Summary-only roles get a shorter org panel, so the card doesn't sit half empty.
+  const brief = !role.achievements?.length && !role.skills?.length && !role.quote?.text;
   return h('article', {
-    class: 'xp-role reveal',
+    class: ['xp-role', brief && 'xp-role--brief', 'reveal'],
     style: { '--i': Math.min(index, MAX_STAGGER) },
     'aria-labelledby': titleId,
   },

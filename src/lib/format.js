@@ -38,11 +38,14 @@ export function fullDate(value) {
   return monthYear(value);
 }
 
-/** 'Jun 2025 – Aug 2025' | 'Jan 2024 – Present' | 'Aug 2023 – May 2027 (expected)'. */
+/**
+ * 'Jun 2025 – Aug 2025' | 'Jan 2024 – Present' | 'Aug 2023 – May 2027 (expected)'.
+ * A range that starts and ends in the same month collapses to that month: 'Jun 2025'.
+ */
 export function dateRange(start, end, { expected = false } = {}) {
   const from = monthYear(start);
   const to = end ? monthYear(end) : 'Present';
-  const range = from ? `${from}${DASH}${to}` : to;
+  const range = from && from !== to ? `${from}${DASH}${to}` : from || to;
   return expected && end ? `${range} (expected)` : range;
 }
 
