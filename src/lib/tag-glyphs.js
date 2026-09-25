@@ -92,6 +92,9 @@ export const TAG_GLYPHS = {
   'backup and restore': 'archive-restore',
   'change management': 'clipboard-check',
   'log-based incident diagnosis': 'scroll-text',
+  'throwaway scripting': 'terminal',
+  'single-use plugins': 'wrench',
+  'plugin version compatibility': 'list-checks',
 
   // ── Rust game server (no official marks exist for these; never the Rust language logo) ──
   shockbyte: 'server',

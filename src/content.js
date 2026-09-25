@@ -169,7 +169,7 @@ const content = {
       team: null,
       duration: null,
       context: 'Small community server hosted on Shockbyte', // null hides
-      summary: 'A small community Rust server on Shockbyte running Oxide/uMod plugins. I made the balance and restart calls, and used Claude Code over RCON and SFTP to install plugins, build custom ones and handle rollbacks and wipes.',
+      summary: 'A small community Rust server on Shockbyte running Oxide/uMod plugins. When something broke or a player wanted something new, I solved it with short throwaway scripts and single-use plugins, and kept paid and custom plugins working across game and Oxide updates. Claude Code did the hands-on work over RCON and SFTP at my direction.',
       cover: { src: 'img/projects/rust-server/cover.svg', alt: 'Illustrated server console listing the installed Oxide plugins', width: 1600, height: 1000 },
       tags: ['Oxide / uMod', 'RCON', 'SFTP', 'Discord API', 'Raidable Bases', 'NTeleportation', 'Better Loot',
              'Shockbyte', 'Claude Code', 'Server admin'],
@@ -183,30 +183,32 @@ const content = {
       writeup: {
         problem: [
           'I ran a small Rust server on Shockbyte, and the game gives admins little to work with. It keeps no record of what a player was carrying when they died, has no built-in way to carry loot through a map wipe, and some things players ask for, like cheaper explosives, can’t be changed server-side.',
-          'I also wanted a repeatable way to turn player suggestions into live changes, with nothing restarting without my OK.',
+          'On top of that, the server is a stack of paid and custom plugins that all depend on Oxide, and Rust updates can land at any time. Every fix had to work without breaking something else, and nothing could restart without my OK.',
         ],
         process: {
-          intro: 'I made the decisions and ran the Shockbyte panel; Claude Code did the hands-on plugin and config work over RCON and SFTP at my direction.',
+          intro: 'Most problems didn’t need a permanent system. I used the smallest tool that would do the job, whether that was a one-off script, a plugin built for one event or a config change, then threw it away once it had. I made the calls and ran the Shockbyte panel; Claude Code wrote and ran the code over RCON and SFTP.',
           steps: [
-            { title: 'Set up a suggestion-to-change workflow', body: 'Players post suggestions in Discord threads and I vet them. I created a private Discord bot so Claude Code could read a thread, scope the change and post progress back, with a firm rule that nothing restarts without my OK.', image: null },
-            { title: 'Shipped the feasible half of a request', body: 'For a scrap-farming suggestion, instant vending restock went live within the hour. Cheaper explosives were dropped because Rust enforces crafting costs on the client, and at my request an explanation went up in the suggestion thread. I also had a small custom plugin built that raises stack sizes 10x on 19 farming, crafting and raiding items.', image: null },
-            { title: 'Diagnosed outages and a lost base', body: 'When RCON dropped mid-deploy, the Oxide logs showed the server had restarted onto a new Rust/Oxide version with every plugin loading cleanly, so it was a host update and not a plugin fault. When a tugboat base vanished, I stopped the server, we rolled back to an earlier save with backups taken of both, and traced the likely cause to boat decay.', image: null },
-            { title: 'Built admin tools Rust lacks', body: 'I had Claude Code write DeathInventoryLogger, which records a player’s inventory, killer and weapon on death, plus a command to give the loadout back. Its restore command later gave a player back 36 items with no failures.', image: null },
-            { title: 'Protected player loot through a wipe', body: 'Before a map wipe I asked for LootVault, a plugin that snapshots every player inventory and placed container with its owner. After the wipe, which kept blueprints and the same map seed, it put my 29 carried items back and my 103 container items into 3 boxes, and I had a one-time /restore command added for players.', image: null },
+            { title: 'Scoped each request before building', body: 'Players post suggestions in Discord threads. I set up a private Discord bot so Claude Code could read a thread and work out what was actually possible server-side before anything was written. For a scrap-farming request, instant vending restock went live within the hour, while cheaper explosives were ruled out because Rust enforces crafting costs on the client, and an explanation went up in the thread.', image: null },
+            { title: 'Used throwaway scripts for one-off jobs', body: 'Jobs that only had to happen once, like taking backups before a rollback, checking save files or regenerating the map on the same seed, got a short script written for that task instead of a lot of manual RCON and SFTP work. The map regen took the server from 76 to 84 monuments and kept all 6 sleeping players and both horse hitches in place.', image: null },
+            { title: 'Wrote single-use plugins for single events', body: 'Before a map wipe, LootVault snapshotted every player inventory and placed container with its owner. After the wipe it put my 29 carried items back and my 103 container items into 3 boxes, and players got a one-time /restore command. Once it had done its job it came out, so it wasn’t left running as another thing to maintain.', image: null },
+            { title: 'Kept plugins compatible through updates', body: 'Paid plugins like Raidable Bases, Kits and SkillTree ran alongside custom ones, all on the same Oxide version. When RCON dropped mid-deploy, the Oxide logs showed a host update to a new Rust/Oxide build, and every plugin had loaded cleanly against it, so the problem wasn’t one of my changes. When a game mode didn’t hold up, I rolled back instead of stacking fixes: Rust’s Frontier era crashed players’ workbenches, so after panel and config workarounds failed I moved the server to Medieval and then back to vanilla.', image: null },
+            { title: 'Built small tools where Rust had gaps', body: 'Some gaps needed a plugin that stayed. DeathInventoryLogger records a player’s inventory, killer and weapon on death, with a command to give the loadout back, and it later restored 36 items to a player with no failures. A small stack-size plugin raised 19 farming, crafting and raiding items to 10x.', image: null },
+            { title: 'Worked out causes from evidence', body: 'When a tugboat base vanished, I stopped the server, backed up both the current and the earlier save, then rolled back. The likely cause turned out to be boat decay, not a plugin bug.', image: null },
           ],
         },
         outcome: [
-          'The server ran paid plugins like Raidable Bases, Kits and SkillTree alongside the custom ones, and held 131 FPS with Raidable Bases and the drone and supply-drop plugins running. At my request, Claude Code regenerated the map on the same seed to add missing monuments, going from 76 to 84, while keeping all 6 sleeping players and both horse hitches.',
-          'Not everything worked. Rust’s Frontier era crashed players’ workbenches, so after working around panel and config overrides I moved the server to Medieval and then back to vanilla.',
+          'The server held 131 FPS with Raidable Bases and the drone and supply-drop plugins running, and players got features Rust doesn’t ship with, like death-loadout restores and loot that survived a wipe.',
+          'Because one-off problems got one-off tools, the plugins left running were only the ones the server needed long term.',
         ],
         lessons: [                        // [] hides "What I learned"
+          'Match the tool to the problem: a script or single-use plugin is often enough.',
+          'After any game or Oxide update, check that every plugin still loads before touching anything else.',
           'Take backups on both sides before any rollback or wipe.',
-          'Check the server logs before assuming your own change broke something.',
           'When a request can’t be done server-side, explain why publicly.',
         ],
       },
-      skills: ['Server administration', 'Plugin configuration', 'Log-based incident diagnosis', 'Backup and restore',
-               'Change management', 'AI-assisted development (Claude Code)'],
+      skills: ['Server administration', 'Throwaway scripting', 'Single-use plugins', 'Plugin version compatibility', 'Log-based incident diagnosis',
+               'Backup and restore', 'AI-assisted development (Claude Code)'],
       gallery: [],                        // [] hides the gallery
     },
     {
