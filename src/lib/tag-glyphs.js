@@ -15,6 +15,7 @@
 export const TAG_GLYPHS = {
   // ── Languages, frameworks, dev tools ──
   python: 'python',
+  'c#': 'dotnet',
   'c++': 'cplusplus',
   javascript: 'javascript',
   js: 'javascript',
@@ -92,13 +93,15 @@ export const TAG_GLYPHS = {
   'backup and restore': 'archive-restore',
   'change management': 'clipboard-check',
   'log-based incident diagnosis': 'scroll-text',
+  'python scripting': 'python',
+  'c# plugin development': 'dotnet',
+  'dependency management': 'list-checks',
 
   // ── Rust game server (no official marks exist for these; never the Rust language logo) ──
   shockbyte: 'server',
   'oxide / umod': 'puzzle',
   'plugin configuration': 'settings-2',
-  nteleportation: 'waypoints',
-  'better loot': 'package-open',
+  copypaste: 'package-open',
   'raidable bases': 'castle',
 
   // ── Hardware & making (older template tags, kept so they keep their marks) ──
@@ -112,6 +115,24 @@ export const TAG_GLYPHS = {
   blender: 'blender',
   'excel / sheets': 'google-sheets',
   'google sheets': 'google-sheets',
+
+  // ── Projects added from the evidence report (MTG engine, FOG dashboard, Playcast Companion) ──
+  typescript: 'typescript',
+  'node.js': 'nodejs',
+  'c# / .net': 'dotnet',
+  'asp.net core': 'dotnet',
+  blazor: 'blazor',
+  sqlite: 'sqlite',
+  'github actions': 'github-actions',
+  'ci/cd': 'github-actions',
+  fog: 'hard-drive',
+  'network services (pxe imaging)': 'network',
+  'windows apis': 'windows',
+  testing: 'list-checks',
+  'automated testing': 'list-checks',
+  'ai agent orchestration': 'workflow',
+  'technical writing': 'scroll-text',
+  'web development': 'html',
 };
 
 /** Logo for a name with no entry (tag.svg), so no chip or skill row is ever glyph-less. */

@@ -42,13 +42,13 @@ const content = {
     currently: 'Working toward an AAS-T in Cybersecurity & Networking', // footer "Currently"; null hides
     // Scrolling tools strip under the hero. Names that match a known brand get its logo
     // automatically (Python, C++, Git, Linux, WebRTC, UniFi…).
-    marquee: ['AWS', 'Linux', 'PowerShell', 'Python', 'C++', '.NET', 'SQL', 'Git', 'REST APIs',
-              'WebRTC', 'UniFi', 'Windows'],
-    projectCategories: ['Servers', 'Hardware'], // filter order; every project.category must be listed
+    marquee: ['AWS', 'Linux', 'PowerShell', 'Python', 'C++', 'C#', '.NET', 'TypeScript', 'SQL', 'Git', 'REST APIs',
+              'WebRTC', 'UniFi', 'Windows', 'Claude Code'],
+    projectCategories: ['Servers', 'Games', 'Tools', 'Hardware'], // filter order; every project.category must be listed
     // Section headings. `accent` must be a word that appears in `title` (case-sensitive).
     sections: {
       work:       { eyebrow: 'Featured', title: "Things I've built", accent: 'built',
-                    blurb: 'A modded Rust game server and custom PC builds.' },
+                    blurb: 'A modded Rust game server, a Magic: The Gathering rules engine and a dashboard for imaging a lab fleet.' },
       projects:   { eyebrow: 'Archive', title: 'All projects', accent: 'projects', blurb: null },
       labs:       { eyebrow: 'Labs', title: 'Lab notebook', accent: 'notebook', blurb: null },
       experience: { eyebrow: 'Experience', title: "Where I've worked", accent: 'worked',
@@ -73,7 +73,7 @@ const content = {
     pitch: 'Focused on cybersecurity, networking and cloud ops.', // About headline; must contain sections.about.accent — OWNER: rewrite in your own words
     bio: [                               // About paragraphs — 2 short ones read best
       "I'm working toward an AAS-T in Cybersecurity & Networking at Green River College. From January to June 2026 I was a QA/DevOps Associate at Playcast, where I built an Android game-streaming pipeline and wrote AWS SSM fleet automation scripts.",
-      "I'm focused on cybersecurity, networking and cloud operations. I'm considering a career path in government cyberwork.",
+      "I'm focused on cybersecurity, networking and cloud operations. I'm considering a career path in government cyberwork. Outside school I run a modded Rust game server and build software by directing Claude Code, from a Magic: The Gathering rules engine to a dashboard for imaging a lab fleet.",
     ],
     // Your photo. A 4:5 portrait works best; it is shown small and rounded in the About card.
     // photo: null hides the avatar.
@@ -107,11 +107,11 @@ const content = {
 
   /* ── Proof strip under the hero. null = auto (projects, labs, roles, GPA) ── */
   stats: [                               // exactly 4
-    { value: '2', unit: null, label: 'Projects', href: '#work' },
+    { value: '5', unit: null, label: 'Projects', href: '#projects' },
     { value: '3', unit: null, label: 'Roles', href: '#experience' },
     { value: '6', unit: 'mo', label: 'QA/DevOps at Playcast', href: '#experience' },
-    // 22 = total items in `skills` below (7 + 7 + 3 + 5). Hard-coded: update it whenever skills change.
-    { value: '22', unit: null, label: 'Tools & skills', href: '#skills' },
+    // 26 = total items in `skills` below (7 + 10 + 4 + 5). Hard-coded: update it whenever skills change.
+    { value: '26', unit: null, label: 'Tools & skills', href: '#skills' },
   ],
 
   /* ── Education (main school first) ─────────────────────────────────────── */
@@ -169,54 +169,195 @@ const content = {
       team: null,
       duration: null,
       context: 'Small community server hosted on Shockbyte', // null hides
-      summary: 'A small community Rust server on Shockbyte running Oxide/uMod plugins. I made the balance and restart calls, and used Claude Code over RCON and SFTP to install plugins, build custom ones and handle rollbacks and wipes.',
+      summary: 'A small community Rust server on Shockbyte running 22 Oxide/uMod plugins. I solved problems with the smallest tool that would work: throwaway scripts for one-off jobs, single-use plugins that were loaded once and deleted, and installs in dependency order so paid and custom plugins kept working together. Claude Code did the hands-on work over RCON and SFTP at my direction.',
       cover: { src: 'img/projects/rust-server/cover.svg', alt: 'Illustrated server console listing the installed Oxide plugins', width: 1600, height: 1000 },
-      tags: ['Oxide / uMod', 'RCON', 'SFTP', 'Discord API', 'Raidable Bases', 'NTeleportation', 'Better Loot',
+      tags: ['Oxide / uMod', 'RCON', 'SFTP', 'Python', 'C#', 'Discord API', 'Raidable Bases', 'CopyPaste',
              'Shockbyte', 'Claude Code', 'Server admin'],
       links: { demo: null, repo: null, video: null }, // null hides the button
       metrics: [                          // 2–4 { value, unit, label }; [] hides
+        { value: '20+', unit: null,  label: 'single-use plugins written, run and deleted' },
         { value: '84',  unit: null,  label: 'monuments after a same-seed regen (from 76)' },
         { value: '131', unit: 'FPS', label: 'server framerate with all plugins on' },
         { value: '36',  unit: null,  label: 'items restored after a death, no failures' },
-        { value: '19',  unit: null,  label: 'items given 10x stack sizes' },
       ],
       writeup: {
         problem: [
           'I ran a small Rust server on Shockbyte, and the game gives admins little to work with. It keeps no record of what a player was carrying when they died, has no built-in way to carry loot through a map wipe, and some things players ask for, like cheaper explosives, can’t be changed server-side.',
-          'I also wanted a repeatable way to turn player suggestions into live changes, with nothing restarting without my OK.',
+          'The server was also a stack of paid, free and custom plugins, several of which depend on others, running on a game that can update without warning. Every fix had to work without breaking something else, and nothing could restart without my OK.',
         ],
         process: {
-          intro: 'I made the decisions and ran the Shockbyte panel; Claude Code did the hands-on plugin and config work over RCON and SFTP at my direction.',
+          intro: 'I made the calls and ran the Shockbyte panel; Claude Code wrote and ran the code over RCON and SFTP. My rule was to use the smallest tool that would solve the problem and only keep what the server needed long term.',
           steps: [
-            { title: 'Set up a suggestion-to-change workflow', body: 'Players post suggestions in Discord threads and I vet them. I created a private Discord bot so Claude Code could read a thread, scope the change and post progress back, with a firm rule that nothing restarts without my OK.', image: null },
-            { title: 'Shipped the feasible half of a request', body: 'For a scrap-farming suggestion, instant vending restock went live within the hour. Cheaper explosives were dropped because Rust enforces crafting costs on the client, and at my request an explanation went up in the suggestion thread. I also had a small custom plugin built that raises stack sizes 10x on 19 farming, crafting and raiding items.', image: null },
-            { title: 'Diagnosed outages and a lost base', body: 'When RCON dropped mid-deploy, the Oxide logs showed the server had restarted onto a new Rust/Oxide version with every plugin loading cleanly, so it was a host update and not a plugin fault. When a tugboat base vanished, I stopped the server, we rolled back to an earlier save with backups taken of both, and traced the likely cause to boat decay.', image: null },
-            { title: 'Built admin tools Rust lacks', body: 'I had Claude Code write DeathInventoryLogger, which records a player’s inventory, killer and weapon on death, plus a command to give the loadout back. Its restore command later gave a player back 36 items with no failures.', image: null },
-            { title: 'Protected player loot through a wipe', body: 'Before a map wipe I asked for LootVault, a plugin that snapshots every player inventory and placed container with its owner. After the wipe, which kept blueprints and the same map seed, it put my 29 carried items back and my 103 container items into 3 boxes, and I had a one-time /restore command added for players.', image: null },
+            { title: 'Scoped each request before building', body: 'Players suggest changes in Discord threads. Small Python scripts let Claude Code read a thread I had vetted and post status updates back as a bot, with nothing left running. Instant vending restock went live about 30 minutes after I shared the thread. Cheaper explosives were dropped because Rust enforces crafting costs on the client, and the reason was posted in the thread.', image: null },
+            { title: 'Wrote throwaway scripts for one-off jobs', body: 'Jobs that only needed doing once got a short Python script instead of a pile of manual commands: a bulk uploader that installed the first 90 plugin and config files in dependency order, backup scripts that pulled saves, the map and player databases into dated folders before a map regen and a wipe, and pollers that waited until a restarted server had fully booted. When the basic RCON client only caught the first line of a reply, a quick script that listened for every line fixed it. Most were deleted after use; the few I kept reaching for stayed.', image: null },
+            { title: 'Built single-use plugins for in-game tasks', body: 'When I needed something done inside the game, Claude Code wrote a tiny C# plugin, uploaded it, loaded it, ran it and deleted it. More than 20 were made this way. One gave a player items silently, since the console command announces every give to the whole server. Another priced a 248-block base, and another found a corpse a player thought had vanished. Asking the live game also beat trusting wikis: a kit gave no chocolate because a wiki had the item name wrong, and a lookup plugin found the right one.', image: null },
+            { title: 'Managed plugin dependencies and versions', body: 'Raidable Bases needs CopyPaste at a minimum version, so I updated CopyPaste first. Kits, ServerPanel and Skill Tree all need ImageLibrary for their menus. When the server restarted onto a new Rust/Oxide build mid-deploy, the Oxide log showed every plugin compiling cleanly, so the outage wasn’t one of my changes. Custom plugins were compiled on the live server, so when Rust’s API had changed, the compile errors showed exactly what to fix.', image: null },
+            { title: 'Kept the tools that filled real gaps', body: 'Some problems needed a plugin that stayed. DeathInventoryLogger records a player’s inventory, killer and weapon on death, and a companion command later gave a player back 36 items with no failures. LootVault snapshots every player inventory and owned container before a wipe; afterward it put my 29 carried items back and my 103 container items into 3 boxes, and players got a one-time /restore that is used up before items are given, so it can’t be run twice.', image: null },
+            { title: 'Found root causes before changing course', body: 'When a tugboat base vanished, I stopped the server, the current and earlier saves were copied locally, and we rolled back; the likely cause was boat decay, not a plugin bug. When the Frontier era wouldn’t stick, the causes turned out to be a misspelling in the host panel’s dropdown and a game-mode setting that forced a different era at boot. Once it did stick, Frontier crashed players’ workbenches on the client, so I moved to Medieval and then back to vanilla instead of piling on workarounds.', image: null },
           ],
         },
         outcome: [
-          'The server ran paid plugins like Raidable Bases, Kits and SkillTree alongside the custom ones, and held 131 FPS with Raidable Bases and the drone and supply-drop plugins running. At my request, Claude Code regenerated the map on the same seed to add missing monuments, going from 76 to 84, while keeping all 6 sleeping players and both horse hitches.',
-          'Not everything worked. Rust’s Frontier era crashed players’ workbenches, so after working around panel and config overrides I moved the server to Medieval and then back to vanilla.',
+          'The last plugin listing showed 22 plugins loaded, and the server held 131 FPS with Raidable Bases and the drone and supply-drop plugins running. Regenerating the map on the same seed took it from 76 to 84 monuments while keeping all 6 sleeping players and both horse hitches, with a full backup and a rollback path ready.',
+          'A crash during a routine upload led to a standing rule: nothing that could take the server down happens without my OK.',
         ],
         lessons: [                        // [] hides "What I learned"
+          'Match the tool to the problem: a throwaway script or single-use plugin is often enough.',
+          'Check what the live game says, not a wiki.',
+          'Read the logs before assuming your own change broke something.',
           'Take backups on both sides before any rollback or wipe.',
-          'Check the server logs before assuming your own change broke something.',
-          'When a request can’t be done server-side, explain why publicly.',
         ],
       },
-      skills: ['Server administration', 'Plugin configuration', 'Log-based incident diagnosis', 'Backup and restore',
-               'Change management', 'AI-assisted development (Claude Code)'],
+      skills: ['Server administration', 'Python scripting', 'C# plugin development', 'Dependency management',
+               'Log-based incident diagnosis', 'Backup and restore', 'AI-assisted development (Claude Code)'],
       gallery: [],                        // [] hides the gallery
     },
     {
+      slug: 'mtg-rules-engine',
+      title: 'MTG Rules Engine',
+      subtitle: 'A Magic: The Gathering rules engine in TypeScript',
+      category: 'Games',
+      year: 2026,
+      featured: true,
+      order: 2,
+      badges: ['In progress'],
+      icon: 'Code',
+      theme: 'violet',
+      frame: 'window',
+      role: 'Lead, directing Claude Code agents',
+      team: null,
+      duration: null,
+      context: 'Private repo, built in waves of multi-agent Claude Code runs',
+      summary: 'An embeddable rules engine for Magic: The Gathering, built against the current Comprehensive Rules. I planned and reviewed 19 waves of multi-agent Claude Code runs; at the latest commit 22,676 of 38,626 cards are fully supported and all 7,672 tests pass.',
+      cover: { src: 'img/projects/mtg-rules-engine/cover.svg', alt: 'Terminal running the rules engine test suite beside card-coverage stats', width: 1600, height: 1000 },
+      tags: ['TypeScript', 'Node.js', 'Claude Code', 'AI agent orchestration', 'Testing'],
+      links: { demo: null, repo: null, video: null },
+      metrics: [
+        { value: '58.7', unit: '%', label: 'of 38,626 cards fully supported' },
+        { value: '7,672', unit: null, label: 'tests, none failing or skipped' },
+        { value: '751', unit: null, label: 'commits in about a month' },
+        { value: '13×', unit: null, label: 'lower cost per card from workflow changes' },
+      ],
+      writeup: {
+        problem: [
+          'Magic: The Gathering has a rulebook hundreds of pages long and nearly 39,000 cards, and many of those cards bend the rules. I wanted an engine another program could embed that plays the real game correctly, including hidden information like each player’s hand.',
+        ],
+        process: {
+          intro: 'I set the direction, planned each wave of work and reviewed the results; Claude Code agents wrote most of the code. The work ran as 19 waves over about a month, from August to September 2026.',
+          steps: [
+            { title: 'Hand-written cards plus an importer', body: '456 cards are defined by hand. An importer parses the rules text of all 38,626 cards and compiles what it understands, and at the latest commit 22,676 of them (58.7%) are fully supported.', image: null },
+            { title: 'Caught cards that passed but were wrong', body: 'Some cards imported as fully supported but behaved wrong. Taking a snapshot of each card’s compiled program and comparing snapshots between runs, then checking every changed card against its printed text, found 6 cards shipping wrong in one afternoon. One wave corrected 239.', image: null },
+            { title: 'Cut the cost per card 13×', body: 'Changing how the agent workflow was structured, not the model, took the cost of adding a card from about 191,000 tokens to 43,000 and then 14,300.', image: null },
+            { title: 'Tested and documented it', body: 'All 7,672 tests pass with none skipped. The engine has 13 command-line game modes and keeps each player’s private information hidden; one example server checks its own network traffic for leaks. INTEGRATING.md (1,182 lines) explains how to embed it, and CONFORMANCE.md (6,763 lines) lists what is known to be wrong, by rule number.', image: null },
+          ],
+        },
+        outcome: [
+          'About 138,600 lines of TypeScript in the engine and 183,200 in tests, MIT-licensed. The repo is private for now. The card data and rulebook belong to Wizards of the Coast, so the engine downloads them instead of storing them in the repo.',
+        ],
+        lessons: [
+          'A test suite can pass while the behavior is wrong; comparing snapshots catches what tests miss.',
+          'How the workflow was structured changed the cost more than anything else.',
+          'Write down what is known to be wrong, not just what works.',
+        ],
+      },
+      skills: ['TypeScript', 'Automated testing', 'AI agent orchestration', 'Technical writing'],
+      gallery: [],
+    },
+    {
+      slug: 'fog-dashboard',
+      title: 'FOG Unified Dashboard',
+      subtitle: 'A web dashboard for imaging and managing a lab fleet',
+      category: 'Servers',
+      year: 2026,
+      featured: true,
+      order: 3,
+      badges: [],
+      icon: 'Network',
+      theme: 'dusk',
+      frame: 'window',
+      role: 'Builder, with Claude Code',
+      team: null,
+      duration: null,
+      context: 'Internal tool for a lab team',
+      summary: 'A LAN dashboard for a lab of PCs that pulls the host list from FOG, the network-boot imaging server, and finds each machine’s live IP by matching MAC addresses against the UniFi controller. From one page you can reserve, reimage and capture machines and manage images.',
+      cover: { src: 'img/projects/fog-dashboard/cover.svg', alt: 'Fleet dashboard table of lab machines with live IPs and imaging actions', width: 1600, height: 1000 },
+      tags: ['.NET', 'ASP.NET Core', 'Blazor', 'SQLite', 'UniFi / Ubiquiti', 'FOG'],
+      links: { demo: null, repo: null, video: null },
+      metrics: [],
+      writeup: {
+        problem: [
+          'The lab’s PCs were reimaged with FOG, but FOG doesn’t know each machine’s current IP address. Finding one meant checking the UniFi network controller separately and matching machines by hand.',
+        ],
+        process: {
+          intro: 'I built it with Claude Code for a lab team.',
+          steps: [
+            { title: 'Started with a read-only proof of concept', body: 'A small Python script read from FOG and UniFi without changing anything, to prove the two could be joined before building on them.', image: null },
+            { title: 'Joined FOG and UniFi by MAC address', body: 'Each FOG host is matched to its UniFi client record by MAC address, which gives its live IP.', image: null },
+            { title: 'Built the dashboard', body: 'An ASP.NET Core Blazor Server app with Entity Framework Core and SQLite for reservations, and SignalR for live updates. It can reserve, reimage and capture machines and manage images.', image: null },
+          ],
+        },
+        outcome: [
+          'The lab team gets one page on the LAN for the whole fleet, instead of switching between the imaging server and the network controller.',
+        ],
+        lessons: [
+          'Prove the integration read-only before writing anything that changes machines.',
+        ],
+      },
+      skills: ['Network services (PXE imaging)', 'UniFi / Ubiquiti', 'C# / .NET', 'Web development'],
+      gallery: [],
+    },
+    {
+      slug: 'playcast-companion',
+      title: 'Playcast Companion',
+      subtitle: 'A tray app that turns off RGB lighting during cloud-gaming sessions',
+      category: 'Tools',
+      year: 2026,
+      featured: false,
+      order: 4,
+      badges: [],
+      icon: 'Sparkles',
+      theme: 'dusk',
+      frame: 'window',
+      role: 'Creator, built with Claude Code',
+      team: null,
+      duration: null,
+      context: 'Open source (MIT). Unofficial and not affiliated with Playcast.',
+      summary: 'While a guest is signed in to a cloud-gaming session on a host PC, this tray app switches off the RGB lighting from six vendors and turns it back on when the session ends. There are two public versions: .NET 10 and a native C++20 port of about 0.9 MB with no external dependencies.',
+      cover: { src: 'img/projects/playcast-companion/cover.svg', alt: 'Tray app session log listing six RGB lighting backends switched off and restored', width: 1600, height: 1000 },
+      tags: ['C++', '.NET', 'C#', 'Windows', 'GitHub Actions'],
+      links: { demo: null, repo: null, video: null },
+      metrics: [
+        { value: '6', unit: null, label: 'lighting systems supported' },
+        { value: '0.9', unit: 'MB', label: 'native build, no dependencies' },
+        { value: '2', unit: null, label: 'versions: .NET 10 and C++20' },
+      ],
+      writeup: {
+        problem: [
+          'On a PC that hosts cloud-gaming sessions, the RGB lighting keeps glowing while a guest plays remotely. Each vendor has its own app and API, and nothing turns them all off for a session and back on afterward.',
+        ],
+        process: {
+          intro: 'I designed it and tested it on my own hardware; Claude Code wrote most of the code.',
+          steps: [
+            { title: 'Six lighting backends', body: 'Razer Chroma, Windows Dynamic Lighting (LampArray), SteelSeries, Logitech, Corsair iCUE and OpenRGB all go dark while a guest session is signed in, and everything is restored when it ends. Discord Rich Presence is optional.', image: null },
+            { title: 'Rewrote it in native C++20', body: 'The first version is a .NET 10 WinForms tray app. The C++20 port is about 0.9 MB with no external dependencies and builds in GitHub Actions; it’s at v3.1.0.', image: null },
+            { title: 'Documented it', body: 'Each repo has a README, and there are INTEGRATION.md and PORTING.md guides for anyone extending it.', image: null },
+          ],
+        },
+        outcome: [
+          'Both versions are public under the MIT license with an “Unofficial / not affiliated” notice.',
+        ],
+        lessons: [],
+      },
+      skills: ['C++', 'C# / .NET', 'Windows APIs', 'CI/CD'],
+      gallery: [],
+    },
+    {
       slug: 'pc-builds',
-      title: 'Custom PC Builds',
+      title: 'Custom PC Build',
       subtitle: 'My AM4 build: Ryzen 7 5700X3D + RTX 5070',
       category: 'Hardware',
       year: null,
-      featured: true,
-      order: 2,
+      featured: false,
+      order: 10,
       badges: [],
       icon: 'Cpu',
       theme: 'ember',
@@ -246,8 +387,8 @@ const content = {
         },
         outcome: [
           'Gaming: mostly competitive games like Overwatch, League of Legends, Call of Duty and Rust, plus a big Steam library.',
-          'Coding and game dev: my own projects, like a voxel FPS and a Magic: The Gathering engine, built with Claude Code in VS Code and Cursor. I work across Python, Node.js, Go, Rust, .NET and Java, use WSL (Ubuntu) for Linux work, and have Unreal Engine and Blender for 3D.',
-          'Server and network admin: running my Rust server, the AWS CLI, and Tailscale and WireGuard for my network, with RustDesk for remote access.',
+          'Coding and game dev: my own projects, like a Magic: The Gathering rules engine, built with Claude Code in VS Code and Cursor. I work across Python, Node.js, Go, Rust, .NET and Java, use WSL (Ubuntu) for Linux work, and have Unreal Engine and Blender for 3D.',
+          'Server and network admin: running my Rust server, the AWS CLI, and a Tailscale network across my devices.',
           'Music: I’m learning to master music in Pro Tools with Auto-Tune and Melodyne, practicing on unfinished tracks.',
         ],
         lessons: [],
@@ -270,10 +411,11 @@ const content = {
       type: null,                       // 'internship' | 'job' | 'volunteer' | 'research' | null (hides the chip)
       location: 'Everett, WA',
       start: '2026-01', end: '2026-06',
-      summary: 'QA and DevOps work on game streaming and AWS fleet automation.',
+      summary: 'QA and DevOps work on cloud-gaming host machines, game streaming and AWS fleet automation.',
       // Logo: a WHITE mark on a transparent background (it sits on a dark crimson panel).
       logo: { src: 'img/orgs/playcast.svg', alt: 'Playcast logo', width: 122, height: 100 },
       achievements: [                   // up to 6 shown
+        'Tested that host machines locked into guest mode correctly, and that a shutdown mid-uninstall didn’t break any driver',
         'Built an Android game-streaming pipeline',
         'Wrote AWS SSM fleet automation scripts',
         'Reverse-engineered OAuth endpoints',
@@ -327,10 +469,12 @@ const content = {
       blurb: 'Scripting, apps, databases and APIs.',
       items: [ { name: 'PowerShell', level: null }, { name: 'Python', level: null }, { name: 'C++', level: null },
                { name: '.NET', level: null }, { name: 'SQL', level: null }, { name: 'Git', level: null },
-               { name: 'REST APIs', level: null } ] },
+               { name: 'REST APIs', level: null }, { name: 'TypeScript', level: null }, { name: 'C#', level: null },
+               { name: 'Claude Code', level: null } ] },
     { id: 'networking', group: 'Networking', icon: 'Network', theme: 'lava',
       blurb: 'Addressing, tunnels and network gear.',
-      items: [ { name: 'Subnetting', level: null }, { name: 'VPNs', level: null }, { name: 'UniFi / Ubiquiti', level: null } ] },
+      items: [ { name: 'Subnetting', level: null }, { name: 'VPNs', level: null }, { name: 'UniFi / Ubiquiti', level: null },
+               { name: 'FOG', level: null } ] },
     { id: 'qa', group: 'QA & systems', icon: 'Gauge', theme: 'crimson',
       blurb: 'Testing, benchmarking and diagnosing.',
       items: [ { name: 'QA testing', level: null }, { name: 'WebRTC', level: null }, { name: '3DMark benchmarking', level: null },
@@ -342,8 +486,8 @@ const content = {
   // `issuer` / `date` may be null. `project` = a project slug for a "See project" link. `url` adds a "Credential" link.
   awards: [
     { kind: 'certification', status: 'earned',  title: 'Food Handler Certification', issuer: null, date: null, detail: null, project: null, url: null },
-    { kind: 'certification', status: 'planned', title: 'AWS CloudOps Engineer – Associate', issuer: 'Amazon Web Services', date: null, detail: null, project: null, url: null },
-    { kind: 'certification', status: 'planned', title: 'AWS Solutions Architect – Associate', issuer: 'Amazon Web Services', date: null, detail: null, project: null, url: null },
+    { kind: 'certification', status: 'planned', title: 'AWS CloudOps Engineer – Associate', issuer: 'Amazon Web Services', date: null, detail: 'Next, after Solutions Architect', project: null, url: null },
+    { kind: 'certification', status: 'planned', title: 'AWS Solutions Architect – Associate', issuer: 'Amazon Web Services', date: null, detail: 'Studying for this one first, through a Udemy course', project: null, url: null },
     { kind: 'certification', status: 'planned', title: 'Security+', issuer: 'CompTIA', date: null, detail: null, project: null, url: null },
     { kind: 'certification', status: 'planned', title: 'CCNA', issuer: 'Cisco', date: null, detail: null, project: null, url: null },
   ],
