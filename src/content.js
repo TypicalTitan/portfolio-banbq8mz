@@ -73,7 +73,7 @@ const content = {
     pitch: 'Focused on cybersecurity, networking and cloud ops.', // About headline; must contain sections.about.accent — OWNER: rewrite in your own words
     bio: [                               // About paragraphs — 2 short ones read best
       "I'm working toward an AAS-T in Cybersecurity & Networking at Green River College. From January to June 2026 I was a QA/DevOps Associate at Playcast, where I built an Android game-streaming pipeline and wrote AWS SSM fleet automation scripts.",
-      "I'm focused on cybersecurity, networking and cloud operations. I'm considering a career path in government cyberwork. Outside school I run a modded Rust game server and build software by directing Claude Code, from a Magic: The Gathering rules engine to a dashboard for imaging a lab fleet.",
+      "I'm focused on cybersecurity, networking and cloud operations. I'm considering a career path in government cyberwork. Outside school I run a modded Rust game server and build software, from a Magic: The Gathering rules engine to a dashboard for imaging a lab fleet. Claude Code writes most of the code under my direction.",
     ],
     // Your photo. A 4:5 portrait works best; it is shown small and rounded in the About card.
     // photo: null hides the avatar.
@@ -169,10 +169,10 @@ const content = {
       team: null,
       duration: null,
       context: 'Small community server hosted on Shockbyte', // null hides
-      summary: 'A small community Rust server on Shockbyte running 22 Oxide/uMod plugins. I solved problems with the smallest tool that would work: throwaway scripts for one-off jobs, single-use plugins that were loaded once and deleted, and installs in dependency order so paid and custom plugins kept working together. Claude Code did the hands-on work over RCON and SFTP at my direction.',
+      summary: 'A small community Rust server on Shockbyte running 22 Oxide/uMod plugins. I solved problems with the smallest tool that would work: throwaway scripts for one-off jobs, single-use plugins that were loaded once and deleted, and installs in dependency order so paid and custom plugins kept working together. Risky jobs like the map regen, the wipe and the rollback all started from a backup.',
       cover: { src: 'img/projects/rust-server/cover.svg', alt: 'Illustrated server console listing the installed Oxide plugins', width: 1600, height: 1000 },
       tags: ['Oxide / uMod', 'RCON', 'SFTP', 'Python', 'C#', 'Discord API', 'Raidable Bases', 'CopyPaste',
-             'Shockbyte', 'Claude Code', 'Server admin'],
+             'Shockbyte', 'Server admin', 'Claude Code'],
       links: { demo: null, repo: null, video: null }, // null hides the button
       metrics: [                          // 2–4 { value, unit, label }; [] hides
         { value: '20+', unit: null,  label: 'single-use plugins written, run and deleted' },
@@ -186,12 +186,12 @@ const content = {
           'The server was also a stack of paid, free and custom plugins, several of which depend on others, running on a game that can update without warning. Every fix had to work without breaking something else, and nothing could restart without my OK.',
         ],
         process: {
-          intro: 'I made the calls and ran the Shockbyte panel; Claude Code wrote and ran the code over RCON and SFTP. My rule was to use the smallest tool that would solve the problem and only keep what the server needed long term.',
+          intro: 'My rule was to use the smallest tool that would solve the problem and only keep what the server needed long term. I made the calls and ran the Shockbyte panel; Claude Code wrote and ran the code over RCON and SFTP.',
           steps: [
-            { title: 'Scoped each request before building', body: 'Players suggest changes in Discord threads. Small Python scripts let Claude Code read a thread I had vetted and post status updates back as a bot, with nothing left running. Instant vending restock went live about 30 minutes after I shared the thread. Cheaper explosives were dropped because Rust enforces crafting costs on the client, and the reason was posted in the thread.', image: null },
-            { title: 'Wrote throwaway scripts for one-off jobs', body: 'Jobs that only needed doing once got a short Python script instead of a pile of manual commands: a bulk uploader that installed the first 90 plugin and config files in dependency order, backup scripts that pulled saves, the map and player databases into dated folders before a map regen and a wipe, and pollers that waited until a restarted server had fully booted. When the basic RCON client only caught the first line of a reply, a quick script that listened for every line fixed it. Most were deleted after use; the few I kept reaching for stayed.', image: null },
-            { title: 'Built single-use plugins for in-game tasks', body: 'When I needed something done inside the game, Claude Code wrote a tiny C# plugin, uploaded it, loaded it, ran it and deleted it. More than 20 were made this way. One gave a player items silently, since the console command announces every give to the whole server. Another priced a 248-block base, and another found a corpse a player thought had vanished. Asking the live game also beat trusting wikis: a kit gave no chocolate because a wiki had the item name wrong, and a lookup plugin found the right one.', image: null },
-            { title: 'Managed plugin dependencies and versions', body: 'Raidable Bases needs CopyPaste at a minimum version, so I updated CopyPaste first. Kits, ServerPanel and Skill Tree all need ImageLibrary for their menus. When the server restarted onto a new Rust/Oxide build mid-deploy, the Oxide log showed every plugin compiling cleanly, so the outage wasn’t one of my changes. Custom plugins were compiled on the live server, so when Rust’s API had changed, the compile errors showed exactly what to fix.', image: null },
+            { title: 'Scoped each request before building', body: 'Players suggest changes in Discord threads. Once I had vetted a thread, small Python scripts read it and posted status updates back as a bot, with nothing left running. Instant vending restock went live about 30 minutes after I shared the thread. Cheaper explosives were dropped because Rust enforces crafting costs on the client, and the reason was posted in the thread.', image: null },
+            { title: 'Used throwaway scripts for one-off jobs', body: 'Jobs that only needed doing once got a short Python script instead of a pile of manual commands: a bulk uploader that installed the first 90 plugin and config files in dependency order, backup scripts that pulled saves, the map and player databases into dated folders before a map regen and a wipe, and pollers that waited until a restarted server had fully booted. When the basic RCON client only caught the first line of a reply, a quick script that listened for every line fixed it. Most were deleted after use; the few I kept reaching for stayed.', image: null },
+            { title: 'Handled in-game tasks with single-use plugins', body: 'When I needed something done inside the game, I had a tiny C# plugin written, uploaded, loaded, run and then deleted. More than 20 were made this way. One gave a player items silently, since the console command announces every give to the whole server. Another priced a 248-block base, and another found a corpse a player thought had vanished. Asking the live game also beat trusting wikis: a kit gave no chocolate because a wiki had the item name wrong, and a lookup plugin found the right one.', image: null },
+            { title: 'Managed plugin dependencies and versions', body: 'Raidable Bases needs CopyPaste at a minimum version, so CopyPaste had to be updated first. Kits, ServerPanel and Skill Tree all need ImageLibrary for their menus. When the server restarted onto a new Rust/Oxide build mid-deploy, the Oxide log showed every plugin compiling cleanly, so the outage wasn’t one of my changes. Custom plugins were compiled on the live server, so when Rust’s API had changed, the compile errors showed exactly what to fix.', image: null },
             { title: 'Kept the tools that filled real gaps', body: 'Some problems needed a plugin that stayed. DeathInventoryLogger records a player’s inventory, killer and weapon on death, and a companion command later gave a player back 36 items with no failures. LootVault snapshots every player inventory and owned container before a wipe; afterward it put my 29 carried items back and my 103 container items into 3 boxes, and players got a one-time /restore that is used up before items are given, so it can’t be run twice.', image: null },
             { title: 'Found root causes before changing course', body: 'When a tugboat base vanished, I stopped the server, the current and earlier saves were copied locally, and we rolled back; the likely cause was boat decay, not a plugin bug. When the Frontier era wouldn’t stick, the causes turned out to be a misspelling in the host panel’s dropdown and a game-mode setting that forced a different era at boot. Once it did stick, Frontier crashed players’ workbenches on the client, so I moved to Medieval and then back to vanilla instead of piling on workarounds.', image: null },
           ],
@@ -223,13 +223,13 @@ const content = {
       icon: 'Code',
       theme: 'violet',
       frame: 'window',
-      role: 'Lead, directing Claude Code agents',
+      role: 'Lead',
       team: null,
       duration: null,
-      context: 'Private repo, built in waves of multi-agent Claude Code runs',
-      summary: 'An embeddable rules engine for Magic: The Gathering, built against the current Comprehensive Rules. I planned and reviewed 19 waves of multi-agent Claude Code runs; at the latest commit 22,676 of 38,626 cards are fully supported and all 7,672 tests pass.',
+      context: 'Private repo for now',
+      summary: 'An embeddable rules engine for Magic: The Gathering, built against the current Comprehensive Rules. I planned the work as 19 waves over about a month and reviewed each one; at the latest commit 22,676 of 38,626 cards are fully supported and all 7,672 tests pass.',
       cover: { src: 'img/projects/mtg-rules-engine/cover.svg', alt: 'Terminal running the rules engine test suite beside card-coverage stats', width: 1600, height: 1000 },
-      tags: ['TypeScript', 'Node.js', 'Claude Code', 'AI agent orchestration', 'Testing'],
+      tags: ['TypeScript', 'Node.js', 'Testing', 'Technical writing', 'Git', 'Claude Code', 'AI agent orchestration'],
       links: { demo: null, repo: null, video: null },
       metrics: [
         { value: '58.7', unit: '%', label: 'of 38,626 cards fully supported' },
@@ -259,7 +259,7 @@ const content = {
           'Write down what is known to be wrong, not just what works.',
         ],
       },
-      skills: ['TypeScript', 'Automated testing', 'AI agent orchestration', 'Technical writing'],
+      skills: ['TypeScript', 'Automated testing', 'Technical writing', 'AI agent orchestration'],
       gallery: [],
     },
     {
@@ -274,7 +274,7 @@ const content = {
       icon: 'Network',
       theme: 'dusk',
       frame: 'window',
-      role: 'Builder, with Claude Code',
+      role: 'Creator',
       team: null,
       duration: null,
       context: 'Internal tool for a lab team',
@@ -288,7 +288,7 @@ const content = {
           'The lab’s PCs were reimaged with FOG, but FOG doesn’t know each machine’s current IP address. Finding one meant checking the UniFi network controller separately and matching machines by hand.',
         ],
         process: {
-          intro: 'I built it with Claude Code for a lab team.',
+          intro: 'I planned the tool and directed the build for a lab team; Claude Code wrote most of the code.',
           steps: [
             { title: 'Started with a read-only proof of concept', body: 'A small Python script read from FOG and UniFi without changing anything, to prove the two could be joined before building on them.', image: null },
             { title: 'Joined FOG and UniFi by MAC address', body: 'Each FOG host is matched to its UniFi client record by MAC address, which gives its live IP.', image: null },
@@ -317,7 +317,7 @@ const content = {
       icon: 'Sparkles',
       theme: 'dusk',
       frame: 'window',
-      role: 'Creator, built with Claude Code',
+      role: 'Creator',
       team: null,
       duration: null,
       context: 'Open source (MIT). Unofficial and not affiliated with Playcast.',
