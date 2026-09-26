@@ -15,6 +15,7 @@
 export const TAG_GLYPHS = {
   // ── Languages, frameworks, dev tools ──
   python: 'python',
+  'c#': 'dotnet',
   'c++': 'cplusplus',
   javascript: 'javascript',
   js: 'javascript',
@@ -92,16 +93,15 @@ export const TAG_GLYPHS = {
   'backup and restore': 'archive-restore',
   'change management': 'clipboard-check',
   'log-based incident diagnosis': 'scroll-text',
-  'throwaway scripting': 'terminal',
-  'single-use plugins': 'wrench',
-  'plugin version compatibility': 'list-checks',
+  'python scripting': 'python',
+  'c# plugin development': 'dotnet',
+  'dependency management': 'list-checks',
 
   // ── Rust game server (no official marks exist for these; never the Rust language logo) ──
   shockbyte: 'server',
   'oxide / umod': 'puzzle',
   'plugin configuration': 'settings-2',
-  nteleportation: 'waypoints',
-  'better loot': 'package-open',
+  copypaste: 'package-open',
   'raidable bases': 'castle',
 
   // ── Hardware & making (older template tags, kept so they keep their marks) ──
