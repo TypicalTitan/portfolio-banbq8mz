@@ -387,7 +387,7 @@ const content = {
         },
         outcome: [
           'Gaming: mostly competitive games like Overwatch, League of Legends, Call of Duty and Rust, plus a big Steam library.',
-          'Coding and game dev: my own projects, like a voxel FPS and a Magic: The Gathering engine, built with Claude Code in VS Code and Cursor. I work across Python, Node.js, Go, Rust, .NET and Java, use WSL (Ubuntu) for Linux work, and have Unreal Engine and Blender for 3D.',
+          'Coding and game dev: my own projects, like a Magic: The Gathering rules engine, built with Claude Code in VS Code and Cursor. I work across Python, Node.js, Go, Rust, .NET and Java, use WSL (Ubuntu) for Linux work, and have Unreal Engine and Blender for 3D.',
           'Server and network admin: running my Rust server, the AWS CLI, and a Tailscale network across my devices.',
           'Music: I’m learning to master music in Pro Tools with Auto-Tune and Melodyne, practicing on unfinished tracks.',
         ],
