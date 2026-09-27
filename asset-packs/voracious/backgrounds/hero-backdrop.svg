@@ -10,23 +10,27 @@
 <filter id="voracious-hero-backdrop-glow" filterUnits="userSpaceOnUse" x="-40" y="-40" width="2000" height="1160"><feMorphology operator="dilate" radius=".8"/><feGaussianBlur stdDeviation="3.5"/></filter>
 <linearGradient id="voracious-hero-backdrop-m0" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#3a0f60"/><stop offset=".4" stop-color="#2a0a47"/><stop offset="1" stop-color="#2a0a47"/></linearGradient>
 <linearGradient id="voracious-hero-backdrop-m1" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#4a1379"/><stop offset=".4" stop-color="#3a0f60"/><stop offset="1" stop-color="#2a0a47"/></linearGradient>
-<linearGradient id="voracious-hero-backdrop-m2" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#8420c9"/><stop offset=".4" stop-color="#4a1379"/><stop offset="1" stop-color="#2a0a47"/></linearGradient>
-<linearGradient id="voracious-hero-backdrop-m3" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#b62af0"/><stop offset=".4" stop-color="#8420c9"/><stop offset="1" stop-color="#3a0f60"/></linearGradient>
-<linearGradient id="voracious-hero-backdrop-m4" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#f1dcff"/><stop offset=".4" stop-color="#b62af0"/><stop offset="1" stop-color="#4a1379"/></linearGradient>
-<linearGradient id="voracious-hero-backdrop-m5" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#f1dcff"/><stop offset=".4" stop-color="#f1dcff"/><stop offset="1" stop-color="#8420c9"/></linearGradient>
+<linearGradient id="voracious-hero-backdrop-m2" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#3a3050"/><stop offset=".4" stop-color="#4a1379"/><stop offset="1" stop-color="#2a0a47"/></linearGradient>
+<linearGradient id="voracious-hero-backdrop-m3" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#b8a9d4"/><stop offset=".4" stop-color="#3a3050"/><stop offset="1" stop-color="#3a0f60"/></linearGradient>
+<linearGradient id="voracious-hero-backdrop-m4" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#f1dcff"/><stop offset=".4" stop-color="#b8a9d4"/><stop offset="1" stop-color="#4a1379"/></linearGradient>
+<linearGradient id="voracious-hero-backdrop-m5" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#f1dcff"/><stop offset=".4" stop-color="#f1dcff"/><stop offset="1" stop-color="#3a3050"/></linearGradient>
 <g id="voracious-hero-backdrop-fl0">
-<path fill="#b62af0" d="M-6 0 -17 -54 3 -95 15 -128 7 -95 -1 -54 0 0ZM0 0 -38 31 -73 48 -102 60 -73 40 -43 14 -3 -4Z"/>
-<path fill="#3a0f60" d="M0 0 -1 -54 7 -95 15 -128 14 -90 17 -46 6 0ZM3 4 -30 43 -71 51 -102 60 -73 48 -38 31 0 0Z"/>
-<path fill="#8420c9" d="M3 -4 48 18 77 43 102 60 74 47 40 29 0 0ZM-3 4 -39 -18 -71 -30 -98 -37 -69 -32 -36 -24 3 -4ZM3 -4 -36 -24 -69 -32 -98 -37 -63 -34 -18 -40 5 -7Z"/>
-<path fill="#4a1379" d="M0 0 40 29 74 47 102 60 68 47 24 38 -3 4ZM-5 7 -49 -2 -75 -24 -98 -37 -71 -30 -39 -18 -3 4Z"/>
-<path fill="#ff9bdc" d="M-5 -7 24 -43 66 -38 98 -37 69 -33 34 -27 -3 -4ZM-3 -4 34 -27 69 -33 98 -37 70 -31 37 -22 3 4Z"/>
-<path fill="#2a0a47" d="M3 4 37 -22 70 -31 98 -37 71 -21 44 1 5 7Z"/>
-<path fill="#ff2e9a" d="M15 6 32 30 14 41 5 67 0 72 0 10Z"/>
-<path fill="#ff9bdc" fill-opacity=".85" d="M0 72 -5 67 -14 41 -32 30 -15 6 0 10Z"/>
-<path fill="#f1dcff" d="M-9 8 -6 -20 0 -26 6 -20 9 8Z"/>
+<path fill="#4a1379" d="M4 2 39 14 76 90 40 45 2 12ZM0 19 -21 45 -76 90 -40 45 -2 12ZM0 -2 0 -59 0 -116 19 -57 13 -9ZM6 -1 65 -14 99 -9 73 24 31 30 6 12Z"/>
+<path fill="#3a0f60" d="M2 12 40 45 76 90 21 45 0 19Z"/>
+<path fill="#8420c9" d="M-2 12 -40 45 -76 90 -39 14 -4 2ZM6 -14 35 -47 65 -14 6 -1ZM-6 12 -31 30 -73 24 -99 -9 -65 -14 -6 -1ZM6 5 44 -8 35 14 14 32Z"/>
+<path fill="#b62af0" d="M0 -2 -13 -9 -20 -54 0 -116 0 -59ZM35 -47 83 -53 109 -39 65 -14ZM109 -39 120 4 99 -9 65 -14ZM-6 -1 -65 -14 -35 -47 -6 -14Z"/>
+<path fill="#b8a9d4" fill-opacity=".6" d="M11 -17 35 -47 83 -53 78 -47 37 -41 13 -13Z"/>
+<path fill="#e854ff" d="M-65 -14 -109 -39 -83 -53 -35 -47ZM-65 -14 -99 -9 -120 4 -109 -39Z"/>
+<path fill="#f1dcff" fill-opacity=".9" d="M-13 -13 -37 -41 -78 -47 -83 -53 -35 -47 -11 -17Z"/>
+<path fill="#ff2e9a" d="M6 5 44 -8 21 14ZM8 83 30 111 2 80ZM-14 32 -35 14 -44 -8 -6 5ZM-2 80 -29 111 -8 83ZM0 14 24 35 11 48 21 63 0 90Z"/>
+<path fill="#ff9bdc" d="M-21 14 -44 -8 -6 5ZM0 90 -21 63 -11 48 -24 35 0 14Z"/>
+<path fill="#fff0fa" fill-opacity=".9" d="M0 17 7 26 0 35 -7 26Z"/>
+<path fill="#fff0fa" d="M-8 -12 0 -12 0 18 -9 6Z"/>
+<path fill="#b8a9d4" d="M0 -12 8 -12 9 6 0 18Z"/>
 </g>
 <g id="voracious-hero-backdrop-fl0w">
-<path fill="none" stroke="#ff2e9a" stroke-width="2" stroke-opacity=".9" d="M-6 0 -17 -54 3 -95 15 -128M102 60 68 47 24 38 -3 4M3 4 -30 43 -71 51 -102 60"/>
+<path fill="none" stroke="#c43dff" stroke-width="2" d="M39 14 76 90M-39 14 -76 90M-20 -54 0 -116 19 -57M35 -47 83 -53 109 -39 120 4M-35 -47 -83 -53 -109 -39 -120 4"/>
+<path fill="none" stroke="#ff2e9a" stroke-width="1.4" d="M-23.6 35.4L-10.62 48.38L-21.24 62.54L0 89.68L21.24 62.54L10.62 48.38L23.6 35.4"/>
 </g>
 <g id="voracious-hero-backdrop-n1">
 <path fill="none" stroke="#c43dff" stroke-width="2" stroke-opacity=".5" d="M165 319 132 557 107 772 71 1114M412 706 373 829 343 941 289 1118"/>
@@ -153,8 +157,8 @@
 <path fill="#4a1379" d="M174 921 252 862 317 849 372 832 320 854 262 878 178 928ZM59 696 99 664 133 659 162 652 135 662 105 674 62 700Z"/>
 <path fill="#07040c" d="M178 928 262 878 320 854 372 832 316 865 261 903 182 935ZM62 700 105 674 135 662 162 652 133 669 105 690 65 704Z"/>
 <path fill="#2a0a47" d="M429 1037 399 1010 385 988 371 970 387 986 406 1004 432 1034ZM432 1034 406 1004 387 986 371 970 392 987 418 1001 435 1031Z"/>
-<use href="#voracious-hero-backdrop-fl0" transform="translate(62 700) scale(0.46) rotate(24)"/>
-<use href="#voracious-hero-backdrop-fl0" transform="translate(432 1034) scale(0.34) rotate(24)"/>
+<use href="#voracious-hero-backdrop-fl0" transform="translate(62 700) scale(0.46) rotate(10)"/>
+<use href="#voracious-hero-backdrop-fl0" transform="translate(432 1034) scale(0.34) rotate(10)"/>
 <use href="#voracious-hero-backdrop-fl0" transform="translate(178 928) scale(1.04)"/>
 <path fill="none" stroke="#4a1379" stroke-width="1" stroke-opacity=".4" d="M178 928 87 873 33 829 -14 790M178 928 262 878 320 854 372 832M178 928 239 985 273 1028 303 1067M178 928 168 845 169 790 169 742"/>
 <g transform="matrix(-1 0 0 1 1920 0)">
@@ -163,8 +167,8 @@
 <path fill="#07040c" d="M204 948 287 909 344 892 395 877 340 903 284 933 207 955ZM58 742 95 720 121 710 145 701 120 715 96 733 60 746Z"/>
 <path fill="#3a0f60" d="M198 948 190 870 205 820 214 774 209 820 203 870 204 948Z"/>
 <path fill="#0f0918" d="M204 948 203 870 209 820 214 774 214 826 218 881 210 948Z"/>
-<use href="#voracious-hero-backdrop-fl0" transform="translate(58 742) scale(0.4) rotate(24)"/>
-<use href="#voracious-hero-backdrop-fl0" transform="translate(456 1044) scale(0.3) rotate(24)"/>
+<use href="#voracious-hero-backdrop-fl0" transform="translate(58 742) scale(0.4) rotate(10)"/>
+<use href="#voracious-hero-backdrop-fl0" transform="translate(456 1044) scale(0.3) rotate(10)"/>
 <use href="#voracious-hero-backdrop-fl0" transform="translate(204 948) scale(0.96)"/>
 <path fill="none" stroke="#4a1379" stroke-width="1" stroke-opacity=".4" d="M204 948 126 885 82 836 42 793M204 948 287 909 344 892 395 877M204 948 255 1007 282 1050 306 1089M204 948 203 870 209 820 214 774"/>
 </g>
