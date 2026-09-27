@@ -48,7 +48,7 @@ const total = packs.reduce((n, p) => n + p.assets.length, 0);
 const data = JSON.stringify({ packs, categories: CATEGORIES.map(([id, label, note]) => ({ id, label, note })) }).replace(/</g, '\\u003c');
 
 const page = `<title>Atakhan Asset Packs</title>
-<meta name="description" content="Sharp, blade-like, floral SVG asset packs: Ruinous, Voracious and Thornbound.">
+<meta name="description" content="Sharp, cyberpunk-blade SVG asset packs: Ruinous, Voracious and Thornbound.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -146,7 +146,7 @@ body.bg-light .mono-ink { color: #2a1418; }
 <div class="wrap">
   <header class="masthead">
     <h1>Atakhan Asset Packs</h1>
-    <p>Three packs of sharp, blade-like, floral SVGs in the spirit of Atakhan. Every pack has the same pieces, so you can pick a corner from one, a divider from another, or keep to a single pack.</p>
+    <p>Three packs of sharp, cyberpunk-blade SVGs in the spirit of Atakhan: faceted monoblades with neon edges, chrome and circuitry, and low-poly roses. Every pack has the same pieces, so you can pick a corner from one, a divider from another, or keep to a single pack.</p>
     <p class="meta">${packs.length} packs · ${total} SVGs · files live in asset-packs/&lt;pack&gt;/&lt;category&gt;/</p>
   </header>
 

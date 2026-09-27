@@ -1,14 +1,14 @@
 # Atakhan asset packs
 
-Three packs of standalone SVG assets: sharp, blade-like and floral, leaning toward Atakhan from League of Legends. They are not wired into the site. Pick the pieces you like and use them anywhere.
+Three packs of standalone SVG assets in a sharp, cyberpunk-blade style: faceted monoblades with neon edges, chrome and circuitry, and low-poly roses, leaning toward Atakhan from League of Legends. They are not wired into the site. Pick the pieces you like and use them anywhere.
 
 Open **`index.html`** in a browser to see every asset side by side, switch the preview background, and copy an SVG's source or path. After adding or editing assets, rebuild it with `node asset-packs/build-gallery.mjs`.
 
-| Pack | Mood | Colours |
+| Pack | Style | Colours |
 |---|---|---|
-| **Ruinous** | Blood roses and bone blades | oxblood and blood red, bone white |
-| **Voracious** | Violet hunger, magenta maw | void violet, magenta, lilac |
-| **Thornbound** | Black thorns and Noxian gold | iron black, gold, blood red |
+| **Ruinous** | Blood chrome: neon-edged chrome monoblades, faceted blood roses | chrome and bone, neon red, oxblood |
+| **Voracious** | Neon maw: crystal fang blades, polygon night orchids, a HUD maw-eye | void violet, neon violet, magenta |
+| **Thornbound** | Gilded circuit: black-iron blades with gold circuitry, a crowned rose | iron black, gold and amber neon, blood red |
 
 Each pack has the same files, so a corner from one pack can sit beside a divider from another:
 

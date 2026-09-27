@@ -1,4 +1,4 @@
-/* Ruinous asset pack palette: Blood roses and bone blades. */
+/* Ruinous asset pack palette: Blood chrome: neon-edged monoblades and faceted blood roses. */
 :root {
   --ruinous-void: #070304;
   --ruinous-obsidian: #10070a;
@@ -13,4 +13,8 @@
   --ruinous-bone: #e8d6c4;
   --ruinous-bone-light: #f4dccb;
   --ruinous-bone-white: #fff7f0;
+  --ruinous-steel-dark: #2a2226;
+  --ruinous-steel: #4a3f44;
+  --ruinous-chrome: #b9aeaa;
+  --ruinous-neon-red: #ff1f45;
 }

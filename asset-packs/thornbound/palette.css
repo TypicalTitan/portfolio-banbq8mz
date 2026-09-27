@@ -1,4 +1,4 @@
-/* Thornbound asset pack palette: Black thorns and Noxian gold. */
+/* Thornbound asset pack palette: Gilded circuit: black-iron blades with gold circuitry. */
 :root {
   --thornbound-void: #080706;
   --thornbound-iron: #181411;
@@ -13,4 +13,6 @@
   --thornbound-blood-dark: #6a0913;
   --thornbound-blood: #c0142a;
   --thornbound-blood-bright: #e8243c;
+  --thornbound-chrome: #9c928a;
+  --thornbound-amber-neon: #ffb21e;
 }

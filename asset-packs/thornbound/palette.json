@@ -1,7 +1,7 @@
 {
   "id": "thornbound",
   "name": "Thornbound",
-  "tagline": "Black thorns and Noxian gold",
+  "tagline": "Gilded circuit: black-iron blades with gold circuitry",
   "colors": {
     "void": "#080706",
     "iron": "#181411",
@@ -15,6 +15,8 @@
     "gold-pale": "#f6e2b8",
     "blood-dark": "#6a0913",
     "blood": "#c0142a",
-    "blood-bright": "#e8243c"
+    "blood-bright": "#e8243c",
+    "chrome": "#9c928a",
+    "amber-neon": "#ffb21e"
   }
 }

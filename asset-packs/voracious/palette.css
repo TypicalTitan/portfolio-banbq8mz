@@ -1,4 +1,4 @@
-/* Voracious asset pack palette: Violet hunger, magenta maw. */
+/* Voracious asset pack palette: Neon maw: crystal fang blades and polygon night orchids. */
 :root {
   --voracious-void: #07040c;
   --voracious-abyss: #0f0918;
@@ -13,4 +13,8 @@
   --voracious-orchid: #ff9bdc;
   --voracious-lilac: #f1dcff;
   --voracious-lilac-white: #fff0fa;
+  --voracious-steel-dark: #1c1428;
+  --voracious-steel: #3a3050;
+  --voracious-chrome: #b8a9d4;
+  --voracious-neon-violet: #c43dff;
 }

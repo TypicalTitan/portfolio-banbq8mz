@@ -1,7 +1,7 @@
 {
   "id": "ruinous",
   "name": "Ruinous",
-  "tagline": "Blood roses and bone blades",
+  "tagline": "Blood chrome: neon-edged monoblades and faceted blood roses",
   "colors": {
     "void": "#070304",
     "obsidian": "#10070a",
@@ -15,6 +15,10 @@
     "bone-shadow": "#9a8a80",
     "bone": "#e8d6c4",
     "bone-light": "#f4dccb",
-    "bone-white": "#fff7f0"
+    "bone-white": "#fff7f0",
+    "steel-dark": "#2a2226",
+    "steel": "#4a3f44",
+    "chrome": "#b9aeaa",
+    "neon-red": "#ff1f45"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "voracious",
   "name": "Voracious",
-  "tagline": "Violet hunger, magenta maw",
+  "tagline": "Neon maw: crystal fang blades and polygon night orchids",
   "colors": {
     "void": "#07040c",
     "abyss": "#0f0918",
@@ -15,6 +15,10 @@
     "magenta": "#ff2e9a",
     "orchid": "#ff9bdc",
     "lilac": "#f1dcff",
-    "lilac-white": "#fff0fa"
+    "lilac-white": "#fff0fa",
+    "steel-dark": "#1c1428",
+    "steel": "#3a3050",
+    "chrome": "#b8a9d4",
+    "neon-violet": "#c43dff"
   }
 }
