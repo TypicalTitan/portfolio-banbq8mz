@@ -57,4 +57,6 @@ Put the files you want in `public/` (for example `public/img/ornaments/`), then 
 .hero { background: url(img/ornaments/hero-backdrop.svg) center / cover no-repeat; }
 ```
 
+CSS masks only load when the page is served (by `npm run dev` or any web server); a page opened straight from disk shows nothing for them.
+
 Every element id inside a file is prefixed with its pack and file name (for example `ruinous-corner-a-…`), so several assets can be pasted inline into one page without clashing.
