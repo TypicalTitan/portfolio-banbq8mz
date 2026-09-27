@@ -1,0 +1,15 @@
+{
+  "id": "bloodhaze",
+  "name": "Bloodhaze",
+  "tagline": "Hazy red film and a thorn-crowned avatar decoration",
+  "colors": {
+    "ink": "#0a0205",
+    "oxblood": "#4a0612",
+    "crimson": "#d0103a",
+    "pink": "#ff2e7a",
+    "coral": "#ff6a5c",
+    "violet": "#7a2a9a",
+    "blush": "#fff0f4",
+    "void": "#0b0809"
+  }
+}

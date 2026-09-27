@@ -11,8 +11,8 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const PACK_ORDER = ['ruinous', 'voracious', 'thornbound'];
-const ACCENT = { ruinous: '#e0183a', voracious: '#b62af0', thornbound: '#e0b445' };
+const PACK_ORDER = ['ruinous', 'voracious', 'thornbound', 'bloodhaze'];
+const ACCENT = { ruinous: '#e0183a', voracious: '#b62af0', thornbound: '#e0b445', bloodhaze: '#ff2e7a' };
 const CATEGORIES = [
   ['corners', 'Corners', 'Drawn for the top-left corner. Mirror for the others: transform: scaleX(-1) (top-right), scaleY(-1) (bottom-left), scale(-1) (bottom-right).'],
   ['dividers', 'Dividers', 'Section breaks. Set the width and let the height follow (height: auto), or stretch with preserveAspectRatio="none" on the inline SVG.'],
@@ -24,7 +24,13 @@ const CATEGORIES = [
   ['icons', 'Icons', 'Small marks built for 16–24px: list bullets, sparkles and an inline separator.'],
   ['patterns', 'Patterns', 'Seamless tiles on a transparent ground, shown repeated. Use as background-image with background-repeat: repeat.'],
   ['backgrounds', 'Backgrounds', 'Full-bleed 1920×1080 backdrops with a calm centre for text. Use background-size: cover.'],
+  ['avatar', 'Avatar decoration', 'Animated overlay for a round avatar, 288×288 with the avatar filling the middle 240px (Discord proportions). Also in the folder: a WebM with alpha (lighter), a still PNG and a preview video.'],
+  ['film', 'Film overlays', 'Layer these over any photo for the hazy red film look: clouds (screen) for the double exposure, then light leak, dust and grain (screen). bloodhaze/demo.html has the full recipe with the gradient map.'],
 ];
+// Raster files each category shows (other formats sit beside them in the folder).
+const RASTER = { avatar: (f) => f === 'avatar-decoration.apng', film: (f) => f.endsWith('.png') };
+/** Width and height from a PNG/APNG header. */
+const pngSize = (buf) => [buf.readUInt32BE(16), buf.readUInt32BE(20)];
 
 const packs = PACK_ORDER.filter((id) => {
   try { return statSync(join(HERE, id)).isDirectory(); } catch { return false; }
@@ -33,8 +39,16 @@ const packs = PACK_ORDER.filter((id) => {
   const assets = [];
   for (const [cat] of CATEGORIES) {
     let files = [];
-    try { files = readdirSync(join(HERE, id, cat)).filter((f) => f.endsWith('.svg')).sort(); } catch { continue; }
+    try { files = readdirSync(join(HERE, id, cat)).filter((f) => (RASTER[cat] ? RASTER[cat](f) : f.endsWith('.svg'))).sort(); } catch { continue; }
     for (const f of files) {
+      if (!f.endsWith('.svg')) {
+        const path = join(HERE, id, cat, f);
+        const buf = readFileSync(path);
+        const [w, h] = pngSize(buf);
+        // Raster assets are linked, not embedded: src is relative to index.html.
+        assets.push({ cat, name: f.replace(/\.[a-z]+$/, ''), path: relative(dirname(HERE), path), src: relative(HERE, path), w, h, kb: +(buf.length / 1024).toFixed(1), svg: null });
+        continue;
+      }
       const path = join(HERE, id, cat, f);
       const svg = readFileSync(path, 'utf8').trim();
       const vb = svg.match(/viewBox="([^"]+)"/)?.[1]?.split(/[\s,]+/).map(Number) ?? [0, 0, 100, 100];
@@ -48,7 +62,7 @@ const total = packs.reduce((n, p) => n + p.assets.length, 0);
 const data = JSON.stringify({ packs, categories: CATEGORIES.map(([id, label, note]) => ({ id, label, note })) }).replace(/</g, '\\u003c');
 
 const page = `<title>Atakhan Asset Packs</title>
-<meta name="description" content="Sharp, cyberpunk-blade SVG asset packs: Ruinous, Voracious and Thornbound.">
+<meta name="description" content="Sharp, cyberpunk-blade SVG asset packs (Ruinous, Voracious, Thornbound) and Bloodhaze, an animated avatar decoration with film overlays.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -226,10 +240,10 @@ for (const c of DATA.categories) {
     for (const p of DATA.packs) {
       const a = p.assets.find((x) => x.cat === c.id && x.name === name);
       if (!a) continue;
-      const src = uri(a.svg);
+      const src = a.svg ? uri(a.svg) : a.src;
       let stage;
-      if (c.id === 'patterns') {
-        stage = el('div', { class: 'stage' }, el('div', { class: 'tiled', role: 'img', 'aria-label': p.name + ' ' + name + ' tiled', style: "background-image:url('" + src + "');background-size:" + a.w + 'px ' + a.h + 'px' }));
+      if (c.id === 'patterns' || (c.id === 'film' && name === 'grain')) {
+        stage = el('div', { class: 'stage' }, el('div', { class: 'tiled', role: 'img', 'aria-label': p.name + ' ' + name + ' tiled', style: "background-image:url('" + src + "');background-size:" + (a.svg ? a.w : a.w / 2) + 'px ' + (a.svg ? a.h : a.h / 2) + 'px' }));
       } else if (c.id === 'icons') {
         stage = el('div', { class: 'stage icon' }, el('img', { src, alt: p.name + ' ' + name + ' at 24px', width: '24', height: '24' }), el('img', { src, alt: '', class: 'big', width: '72', height: '72' }));
       } else if (name.endsWith('-mono')) {
@@ -245,7 +259,7 @@ for (const c of DATA.categories) {
         el('div', { class: 'name' }, el('b', {}, el('i', { text: p.name }), ' ' + name), el('small', { text: a.w + '×' + a.h + ' · ' + a.kb + ' KB' })),
         el('div', { class: 'path', text: a.path }),
         el('div', { class: 'actions' },
-          el('button', { class: 'act', type: 'button', text: 'Copy SVG', onclick: (e) => copy(a.svg, e.currentTarget, 'Copy SVG') }),
+          a.svg ? el('button', { class: 'act', type: 'button', text: 'Copy SVG', onclick: (e) => copy(a.svg, e.currentTarget, 'Copy SVG') }) : null,
           el('button', { class: 'act', type: 'button', text: 'Copy path', onclick: (e) => copy(a.path, e.currentTarget, 'Copy path') })));
       const tile = el('article', { class: 'tile', style: '--accent:' + p.accent }, stage, info);
       tile.dataset.pack = p.id;

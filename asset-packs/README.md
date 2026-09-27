@@ -60,3 +60,52 @@ Put the files you want in `public/` (for example `public/img/ornaments/`), then 
 CSS masks only load when the page is served (by `npm run dev` or any web server); a page opened straight from disk shows nothing for them.
 
 Every element id inside a file is prefixed with its pack and file name (for example `ruinous-corner-a-…`), so several assets can be pasted inline into one page without clashing.
+
+## Bloodhaze: avatar decoration and film look
+
+A fourth pack in a different medium, after a hazy red film photo and an animated avatar decoration: an **animated avatar decoration** with a thorn crown, and **film overlays** that give any photo a red, dusty, double-exposed look. See it in use in `bloodhaze/demo.html`.
+
+**Avatar decoration** (`bloodhaze/avatar/`): a 5-second loop. A dark crimson ring shifts from coral to violet; a blade of light sweeps round it; a horned black thorn crown grows over the top, flickers and burns away; pink-white lightning crackles along the bottom; embers drift and film dust flickers.
+
+| File | Use |
+|---|---|
+| `avatar-decoration.apng` (1.7 MB) | Transparent and looping; plays in every browser as an `<img>`. 288×288, the Discord decoration format. |
+| `avatar-decoration.webm` (0.3 MB) | Transparent VP9, the lightest option for Chrome, Edge and Firefox. Safari may not show WebM transparency, so use the APNG there. |
+| `avatar-decoration.png` | A still frame with the crown up. |
+| `avatar-decoration-preview.mp4` | Two loops around a sample avatar, for a quick look. |
+
+The avatar fills the middle 240×240 of the 288×288 frame, so the decoration box is 120% of the avatar and centred on it:
+
+```html
+<div class="avatar">
+  <img src="me.jpg" alt="…">
+  <img class="deco" src="img/bloodhaze/avatar-decoration.apng" alt="">
+</div>
+```
+```css
+.avatar { position: relative; width: 160px; aspect-ratio: 1; }
+.avatar > img:first-child { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.avatar > .deco { position: absolute; inset: -10%; width: 120%; height: 120%; pointer-events: none; }
+```
+
+Discord only offers decorations from its own shop, so this one is for your site and anywhere else that takes an animated overlay. The source is `bloodhaze/src/avatar-decoration.html` (open it to watch it live); after editing it, re-export with `FFMPEG=… node asset-packs/bloodhaze/src/export.mjs`.
+
+**Film look** (`bloodhaze/film/`): `clouds.png` (a sea of clouds for the double exposure), `light-leak.png`, `dust.png`, `grain.png` (tiles) and `gradient-map.svg`, which maps a photo's brightness onto black, oxblood, crimson, coral and pale pink. Paste the gradient map's `<svg>` into the page (Chrome only applies filters defined in the same document), then:
+
+```html
+<div class="bloodhaze"><img src="photo.jpg" alt="…"><span class="bloodhaze__film" aria-hidden="true"></span></div>
+```
+```css
+.bloodhaze { position: relative; overflow: hidden; isolation: isolate; }
+.bloodhaze img { display: block; width: 100%; filter: contrast(1.1) url(#bloodhaze-map); }
+.bloodhaze::before, .bloodhaze::after, .bloodhaze__film { content: ''; position: absolute; inset: 0; pointer-events: none; }
+.bloodhaze::before { z-index: 1; background: url(film/clouds.png) center 65% / cover no-repeat; mix-blend-mode: screen; opacity: .5; }
+.bloodhaze__film { z-index: 2; mix-blend-mode: multiply;
+  background: radial-gradient(120% 90% at 45% 40%, transparent 50%, rgba(10, 2, 5, .7) 100%),
+              linear-gradient(100deg, #ffd2c8 0%, #fff 45%, #c9a4ff 100%); }
+.bloodhaze::after { z-index: 3; mix-blend-mode: screen;
+  background: url(film/dust.png) center / cover, url(film/grain.png) 0 0 / 256px repeat,
+              url(film/light-leak.png) center / cover no-repeat; }
+```
+
+The overlays are generated (`node asset-packs/bloodhaze/src/film.mjs` rebuilds them identically).

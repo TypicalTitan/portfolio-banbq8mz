@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bloodhaze avatar decoration</title>
+<!--
+  Source of the Bloodhaze avatar decoration. Open this file in a browser to watch it live.
+  window.renderFrame(ctx, t) draws the frame at time t (seconds, 0..LOOP) on a 288×288 canvas,
+  transparent everywhere but the decoration; export.mjs uses it to write the APNG / WebM.
+  The avatar sits in the middle: a circle of radius 120 (240px wide) centred on the canvas,
+  the same proportions as a Discord avatar decoration.
+-->
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; gap: 24px; background: #111214; color: #ddd; font: 14px system-ui, sans-serif; }
+  .stage { position: relative; width: 288px; height: 288px; }
+  .stage .avatar { position: absolute; left: 24px; top: 24px; width: 240px; height: 240px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 38%, #3a1a22 0 18%, #140a0e 19% 100%); }
+  .stage canvas { position: absolute; inset: 0; width: 288px; height: 288px; }
+</style>
+</head>
+<body>
+<div class="stage"><div class="avatar"></div><canvas id="deco" width="288" height="288"></canvas></div>
+<p>Bloodhaze avatar decoration (5 s loop)</p>
+<script>
+(() => {
+  const S = 288, C = 144, RA = 120, LOOP = 5;
+  const TAU = Math.PI * 2, DEG = Math.PI / 180;
+  const COL = {
+    coral: [255, 106, 92], pink: [255, 46, 122], crimson: [208, 16, 58], ox: [74, 6, 18],
+    violet: [122, 42, 154], white: [255, 240, 244], ink: '#0a0205',
+  };
+  const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${Math.max(0, Math.min(1, a))})`;
+  const clamp01 = (x) => Math.max(0, Math.min(1, x));
+  const seg = (t, a, b) => clamp01((t - a) / (b - a));
+  const outCubic = (x) => 1 - (1 - x) ** 3;
+  const inOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+  function rng(seed) {
+    return () => {
+      seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const polar = (a, r) => [C + Math.cos(a) * r, C + Math.sin(a) * r];
+
+  /* ── Ring: dark crimson band with a coral → crimson → violet shift, breathing ── */
+  function ring(ctx, t, heat) {
+    const breath = 0.84 + 0.16 * Math.sin((TAU * t) / LOOP) + 0.25 * heat;
+    ctx.save();
+    // Halo band: soft outside, a dark core line on the avatar's edge, red spill inward.
+    const g = ctx.createRadialGradient(C, C, RA - 22, C, C, RA + 22);
+    g.addColorStop(0.0, rgba(COL.crimson, 0));
+    g.addColorStop(0.36, rgba(COL.crimson, 0.07 * breath));
+    g.addColorStop(0.5, rgba(COL.crimson, 0.34 * breath));
+    g.addColorStop(0.56, rgba(COL.ox, 0.95));
+    g.addColorStop(0.64, rgba(COL.crimson, 0.34 * breath));
+    g.addColorStop(1.0, rgba(COL.crimson, 0));
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(C, C, RA + 22, 0, TAU); ctx.arc(C, C, RA - 22, 0, TAU, true); ctx.fill();
+    // Colour shift like a light leak: coral on the left, violet on the upper right.
+    ctx.globalCompositeOperation = 'source-atop';
+    const cg = ctx.createConicGradient(-90 * DEG, C, C);
+    cg.addColorStop(0.0, rgba(COL.violet, 0.35));
+    cg.addColorStop(0.2, rgba(COL.violet, 0.5));
+    cg.addColorStop(0.45, rgba(COL.crimson, 0.0));
+    cg.addColorStop(0.7, rgba(COL.coral, 0.55));
+    cg.addColorStop(0.85, rgba(COL.coral, 0.3));
+    cg.addColorStop(1.0, rgba(COL.violet, 0.35));
+    ctx.fillStyle = cg;
+    ctx.fillRect(0, 0, S, S);
+    ctx.restore();
+    // Thin hot rim.
+    ctx.save();
+    ctx.strokeStyle = rgba(COL.pink, 0.3 * breath);
+    ctx.lineWidth = 1;
+    ctx.shadowColor = rgba(COL.pink, 0.8);
+    ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.arc(C, C, RA + 1.5, 0, TAU); ctx.stroke();
+    ctx.restore();
+  }
+
+  /* ── Thorn crown: a mirror-symmetric tribal tiara over the top of the avatar ──
+     Thorns are placed by angle from the top (0 = straight up, + to the right); positive length
+     points outward, negative bites inward over the avatar. Only the right half is listed. */
+  const HALF = [
+    // [angle°, length, base width, bend° (+ = away from the centre line), barb side (0 none, ±1)]
+    [0, 21, 14, 0, 0],
+    [0, -32, 12, 0, 0],
+    [8, 17, 10, 8, 1],
+    [11, -23, 9, 10, 0],
+    [17, 18, 11, 22, 0],
+    [20, -35, 10, 12, 0],
+    [27, 21, 12, 26, -1],
+    [30, -21, 8, 18, 0],
+    [38, 41, 16, -26, 1],   // the horns: long, curving up and back
+    [43, -27, 9, 22, 0],
+    [48, 30, 11, 46, 0],
+    [53, -15, 7, 26, 0],
+    [58, 25, 8, 70, 1],
+    [64, 17, 5, 84, 0],
+    [68, -9, 4, 34, 0],
+  ];
+  const crown = [];
+  for (const [deg, len, w, bend, barb] of HALF) {
+    for (const side of deg === 0 ? [1] : [1, -1]) {
+      crown.push({
+        a: (-90 + side * deg) * DEG, len, w, bend: side * bend * DEG, barb: barb * side,
+        start: 1.0 + (deg / 68) * 0.55,                  // grows from the top outward
+        end: 3.72 + (1 - deg / 68) * 0.28,               // dissolves from the ends inward
+        flick: deg * 0.37 + (side > 0 ? 0 : 1.7),
+      });
+    }
+  }
+
+  function thornPath(ctx, s, p) {
+    const out = s.len > 0;
+    const base = RA + (out ? 4 : -1);
+    const L = s.len * p;
+    const nx = Math.cos(s.a), ny = Math.sin(s.a);          // outward normal
+    const tx = -ny, ty = nx;                               // tangent (clockwise)
+    const [bx, by] = polar(s.a, base);
+    // Tip: along the normal, swept sideways by the bend (curves toward the ring for big bends).
+    const sweep = Math.sin(s.bend) * Math.abs(L);
+    const reach = L * Math.cos(s.bend * 0.8);
+    const tipx = bx + nx * reach + tx * sweep, tipy = by + ny * reach + ty * sweep;
+    const hw = (s.w / 2) * (out ? 1.15 : 1.35) * Math.min(1, 0.35 + p);
+    // Two cubic flanks: a full convex back and a hollow-ground front give the tribal hook.
+    const k1x = bx + nx * reach * 0.45 + tx * sweep * 0.15, k1y = by + ny * reach * 0.45 + ty * sweep * 0.15;
+    const bs = Math.sign(s.bend) || 1;
+    ctx.moveTo(bx - tx * hw, by - ty * hw);
+    ctx.bezierCurveTo(k1x - tx * hw * 1.5 * bs, k1y - ty * hw * 1.5 * bs, tipx - (tipx - k1x) * 0.35, tipy - (tipy - k1y) * 0.35, tipx, tipy);
+    ctx.bezierCurveTo(k1x + tx * hw * 0.2, k1y + ty * hw * 0.2, bx + tx * hw * 0.6 + nx * reach * 0.12, by + ty * hw * 0.6 + ny * reach * 0.12, bx + tx * hw, by + ty * hw);
+    ctx.closePath();
+    if (s.barb && p > 0.55) {
+      const q = (p - 0.55) / 0.45;
+      const hx = bx + nx * reach * 0.5 + tx * sweep * 0.3, hy = by + ny * reach * 0.5 + ty * sweep * 0.3;
+      const ex = hx + (tx * s.barb * 0.95 - nx * 0.25) * 9 * q, ey = hy + (ty * s.barb * 0.95 - ny * 0.25) * 9 * q;
+      ctx.moveTo(hx - nx * 2.4, hy - ny * 2.4);
+      ctx.quadraticCurveTo(hx + tx * s.barb * 4, hy + ty * s.barb * 4, ex, ey);
+      ctx.lineTo(hx + nx * 2.4, hy + ny * 2.4);
+      ctx.closePath();
+    }
+  }
+
+  function bandPath(ctx, p) {
+    // Thick black band over the ring, thickest at the top, tapering to points at ±66°.
+    const steps = 70, span = 70 * p;
+    for (let i = 0; i <= steps; i++) {
+      const d = -span + (2 * span * i) / steps;
+      const th = 13 * (1 - (Math.abs(d) / 70) ** 1.5);
+      const [x, y] = polar((-90 + d) * DEG, RA + 3 + th * 0.5);
+      if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+    }
+    for (let i = steps; i >= 0; i--) {
+      const d = -span + (2 * span * i) / steps;
+      const th = 13 * (1 - (Math.abs(d) / 70) ** 1.5);
+      const [x, y] = polar((-90 + d) * DEG, RA + 3 - th * 0.75);
+      ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+  }
+
+  // Offscreen layers for the crown (one solid silhouette, then tinted copies of it).
+  const layer = () => { const c = document.createElement('canvas'); c.width = c.height = S; return c; };
+  const silC = layer(), tintC = layer(), crownC = layer();
+  function tinted(colour) {
+    const t = tintC.getContext('2d');
+    t.clearRect(0, 0, S, S);
+    t.globalCompositeOperation = 'source-over';
+    t.drawImage(silC, 0, 0);
+    t.globalCompositeOperation = 'source-in';
+    t.fillStyle = colour;
+    t.fillRect(0, 0, S, S);
+    t.globalCompositeOperation = 'source-over';
+    return tintC;
+  }
+
+  function drawCrown(ctx, t) {
+    const bandGrow = outCubic(seg(t, 0.95, 1.55));
+    const bandFade = seg(t, 3.95, 4.5);
+    if (bandGrow <= 0 || bandFade >= 1) return 0;
+    const flicker = 0.8 + 0.2 * Math.sin(t * 21) * Math.sin(t * 6.1 + 1);
+    // 1. Silhouette: band plus every live thorn, each filled on its own so windings never cancel.
+    const sil = silC.getContext('2d');
+    sil.clearRect(0, 0, S, S);
+    sil.fillStyle = '#000';
+    sil.beginPath(); bandPath(sil, bandGrow); sil.fill();
+    let fading = 0;
+    for (const s of crown) {
+      const grow = outCubic(seg(t, s.start, s.start + 0.38));
+      const fade = seg(t, s.end, s.end + 0.42);
+      if (grow <= 0 || fade >= 1) continue;
+      fading = Math.max(fading, fade);
+      // Dissolving thorns retract rather than turn translucent.
+      sil.beginPath(); thornPath(sil, s, grow * (1 - outCubic(fade))); sil.fill();
+    }
+    // 2. Compose the crown at full strength: pink glow, crisp pink outline (outer edge only),
+    //    pale lit edge, black body. It flares as it burns away.
+    const flare = 1 + 0.8 * Math.sin(Math.PI * Math.min(1, fading * 1.2 + bandFade));
+    const cc = crownC.getContext('2d');
+    cc.clearRect(0, 0, S, S);
+    cc.shadowColor = rgba(COL.pink, Math.min(1, 0.95 * flicker * flare));
+    cc.shadowBlur = 14 * flare;
+    cc.drawImage(tinted(rgba(COL.pink, 1)), 0, 0);
+    cc.shadowBlur = 0;
+    const pinkSil = tinted(rgba(COL.pink, 0.95 * flicker));
+    for (let k = 0; k < 8; k++) {
+      const ang = (k / 8) * TAU;
+      cc.drawImage(pinkSil, Math.cos(ang) * 1.25, Math.sin(ang) * 1.25);
+    }
+    cc.drawImage(tinted(rgba(COL.white, 0.85)), -0.9, -1.1);
+    cc.drawImage(tinted(COL.ink), 0, 0);
+    // 3. Onto the frame as one piece.
+    ctx.save();
+    ctx.globalAlpha = 1 - bandFade ** 1.4;
+    ctx.drawImage(crownC, 0, 0);
+    ctx.restore();
+    return bandGrow * (1 - bandFade);
+  }
+
+  /* ── Lightning: jagged pink-white arcs crackling along the lower ring ── */
+  const flashes = [
+    [0.02, 0.13, 3], [0.2, 0.27, 4], [0.36, 0.44, 5], [1.95, 2.05, 6], [2.2, 2.27, 7],
+    [2.62, 2.74, 8], [2.9, 2.98, 9], [3.28, 3.4, 10], [3.62, 3.7, 11], [4.55, 4.66, 12],
+  ];
+  function bolt(ctx, seed, strength) {
+    const r = rng(seed * 7919);
+    const span = (34 + r() * 44) * DEG;
+    const start = (22 + r() * (136 - 34 - 22)) * DEG;
+    const pts = [];
+    const n = Math.round(span / (3.2 * DEG));
+    for (let i = 0; i <= n; i++) {
+      const a = start + (span * i) / n;
+      const edge = Math.sin((Math.PI * i) / n);
+      pts.push(polar(a, RA + 6 + (r() - 0.35) * 14 * edge));
+    }
+    const branches = [];
+    for (let b = 0; b < 2; b++) {
+      const k = 2 + Math.floor(r() * (pts.length - 4));
+      const [x, y] = pts[k];
+      const a = Math.atan2(y - C, x - C);
+      const br = [[x, y]];
+      let rr = Math.hypot(x - C, y - C);
+      let aa = a;
+      for (let j = 0; j < 4; j++) {
+        rr += 3 + r() * 5; aa += (r() - 0.5) * 9 * DEG;
+        br.push(polar(aa, rr));
+      }
+      branches.push(br);
+    }
+    const line = (p) => { ctx.beginPath(); p.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.stroke(); };
+    ctx.save();
+    ctx.lineJoin = 'miter'; ctx.lineCap = 'round';
+    ctx.strokeStyle = rgba(COL.pink, 0.6 * strength);
+    ctx.shadowColor = rgba(COL.pink, strength);
+    ctx.shadowBlur = 16;
+    ctx.lineWidth = 7;
+    line(pts);
+    ctx.lineWidth = 3.4;
+    branches.forEach(line);
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = rgba(COL.white, strength);
+    ctx.strokeStyle = rgba(COL.white, strength);
+    ctx.lineWidth = 2.3;
+    line(pts);
+    ctx.lineWidth = 1.2;
+    branches.forEach(line);
+    ctx.restore();
+  }
+  function drawLightning(ctx, t) {
+    let heat = 0;
+    for (const [a, b, seed] of flashes) {
+      if (t < a || t > b) continue;
+      const u = (t - a) / (b - a);
+      const strength = (1 - u * 0.6) * (0.75 + 0.25 * Math.sin(u * 40));
+      bolt(ctx, seed + Math.floor(u * 3), strength);
+      heat = Math.max(heat, strength * 0.5);
+    }
+    return heat;
+  }
+
+  /* ── Sweep: a blade-shaped crescent of light sliding around the ring once ── */
+  function drawSweep(ctx, t) {
+    const p = seg(t, 0.45, 1.25);
+    if (p <= 0 || p >= 1) return 0;
+    const e = inOut(p);
+    const head = (150 + 400 * e) * DEG;
+    const len = Math.sin(Math.PI * p) * 150 * DEG + 8 * DEG;
+    const thick = 4 + 16 * Math.sin(Math.PI * p);
+    const steps = 48;
+    const outer = [], inner = [];
+    for (let i = 0; i <= steps; i++) {
+      const u = i / steps;                    // 0 = tail, 1 = head
+      const a = head - len * (1 - u);
+      const prof = Math.sin(Math.PI * Math.min(1, u * 1.15)) ** 0.8; // thickest just behind the head
+      outer.push(polar(a, RA + 3 + thick * prof));
+      inner.push(polar(a, RA + 1 - thick * 0.35 * prof));
+    }
+    ctx.save();
+    const cg = ctx.createConicGradient(head - len, C, C);
+    const fr = len / TAU;
+    cg.addColorStop(0, rgba(COL.crimson, 0));
+    cg.addColorStop(fr * 0.55, rgba(COL.pink, 0.55));
+    cg.addColorStop(fr * 0.92, rgba(COL.white, 0.95));
+    cg.addColorStop(Math.min(1, fr), rgba(COL.white, 1));
+    cg.addColorStop(Math.min(1, fr + 0.001), rgba(COL.white, 0));
+    ctx.fillStyle = cg;
+    ctx.shadowColor = rgba(COL.pink, 0.9);
+    ctx.shadowBlur = 16;
+    ctx.beginPath();
+    outer.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+    for (let i = inner.length - 1; i >= 0; i--) ctx.lineTo(inner[i][0], inner[i][1]);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    return Math.sin(Math.PI * p);
+  }
+
+  /* ── Embers drifting off the ring (periodic in the loop) ── */
+  const embers = (() => {
+    const r = rng(42);
+    return Array.from({ length: 30 }, () => {
+      const lower = r() < 0.55;
+      return {
+        a: lower ? (20 + r() * 140) * DEG : (-160 + r() * 140) * DEG,
+        spawn: r() * LOOP, life: 0.9 + r() * 1.1, speed: 10 + r() * 16,
+        rise: 6 + r() * 14, size: 0.7 + r() * 1.5, sway: r() * TAU,
+      };
+    });
+  })();
+  function drawEmbers(ctx, t) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (const e of embers) {
+      const age = (((t - e.spawn) % LOOP) + LOOP) % LOOP;
+      if (age > e.life) continue;
+      const k = age / e.life;
+      const [x0, y0] = polar(e.a, RA + 4 + age * e.speed);
+      const x = x0 + Math.sin(e.sway + age * 5) * 2;
+      const y = y0 - age * e.rise;
+      if (x < 2 || y < 2 || x > S - 2 || y > S - 2) continue;
+      const a = Math.sin(Math.PI * k) ** 0.8;
+      const rad = e.size * 3;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+      g.addColorStop(0, rgba(COL.white, a));
+      g.addColorStop(0.35, rgba(COL.pink, 0.7 * a));
+      g.addColorStop(1, rgba(COL.pink, 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+    ctx.restore();
+  }
+
+  /* ── Film dust: a few specks and the odd fibre around the ring, fresh each frame ── */
+  function drawDust(ctx, frame) {
+    const r = rng(9001 + frame * 131);
+    ctx.save();
+    const n = 5 + Math.floor(r() * 5);
+    for (let i = 0; i < n; i++) {
+      const a = r() * TAU, rad = RA - 6 + r() * 30;
+      const [x, y] = polar(a, rad);
+      const light = r() < 0.7;
+      ctx.fillStyle = light ? rgba(COL.white, 0.18 + r() * 0.3) : 'rgba(10,2,5,0.55)';
+      ctx.beginPath(); ctx.arc(x, y, 0.5 + r() * 1.1, 0, TAU); ctx.fill();
+    }
+    if (r() < 0.22) {
+      const a = r() * TAU;
+      const [x, y] = polar(a, RA + 8 + r() * 12);
+      ctx.strokeStyle = rgba(COL.white, 0.22);
+      ctx.lineWidth = 0.6;
+      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.bezierCurveTo(x + (r() - 0.5) * 16, y + (r() - 0.5) * 16, x + (r() - 0.5) * 16, y + (r() - 0.5) * 16, x + (r() - 0.5) * 14, y + (r() - 0.5) * 14);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /** Draws the decoration at time t (seconds) into a 288×288 context; `frame` seeds the dust. */
+  window.renderFrame = (ctx, t, frame = Math.round(t * 24)) => {
+    t = ((t % LOOP) + LOOP) % LOOP;
+    ctx.clearRect(0, 0, S, S);
+    // Hot moments (sweep, crown, flashes) brighten the ring a little.
+    const scratch = document.createElement('canvas');
+    scratch.width = scratch.height = S;
+    const s = scratch.getContext('2d');
+    const sweepHeat = drawSweep(s, t);
+    const flashHeat = drawLightning(s, t);
+    ring(ctx, t, Math.max(sweepHeat * 0.6, flashHeat));
+    drawCrown(ctx, t);
+    ctx.drawImage(scratch, 0, 0);
+    drawEmbers(ctx, t);
+    drawDust(ctx, frame);
+  };
+  window.DECORATION = { size: S, loop: LOOP, avatarRadius: RA };
+
+  // Live preview when the file is opened directly.
+  const canvas = document.getElementById('deco');
+  if (canvas && !window.__EXPORTING__) {
+    const ctx = canvas.getContext('2d');
+    const t0 = performance.now();
+    const tick = (now) => { const t = (now - t0) / 1000; window.renderFrame(ctx, t, Math.floor(t * 24)); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+})();
+</script>
+</body>
+</html>
