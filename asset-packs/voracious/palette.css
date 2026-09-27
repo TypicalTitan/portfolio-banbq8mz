@@ -1,0 +1,16 @@
+/* Voracious asset pack palette: Violet hunger, magenta maw. */
+:root {
+  --voracious-void: #07040c;
+  --voracious-abyss: #0f0918;
+  --voracious-dusk: #221332;
+  --voracious-violet-deep: #2a0a47;
+  --voracious-violet-dark: #3a0f60;
+  --voracious-violet-mid: #4a1379;
+  --voracious-violet: #8420c9;
+  --voracious-violet-bright: #b62af0;
+  --voracious-violet-glow: #e854ff;
+  --voracious-magenta: #ff2e9a;
+  --voracious-orchid: #ff9bdc;
+  --voracious-lilac: #f1dcff;
+  --voracious-lilac-white: #fff0fa;
+}

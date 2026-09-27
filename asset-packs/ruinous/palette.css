@@ -1,0 +1,16 @@
+/* Ruinous asset pack palette: Blood roses and bone blades. */
+:root {
+  --ruinous-void: #070304;
+  --ruinous-obsidian: #10070a;
+  --ruinous-ash: #231016;
+  --ruinous-oxblood-deep: #34040c;
+  --ruinous-oxblood: #4f0712;
+  --ruinous-wine: #640817;
+  --ruinous-blood: #b10a27;
+  --ruinous-blood-bright: #e0183a;
+  --ruinous-blood-glow: #ff3653;
+  --ruinous-bone-shadow: #9a8a80;
+  --ruinous-bone: #e8d6c4;
+  --ruinous-bone-light: #f4dccb;
+  --ruinous-bone-white: #fff7f0;
+}

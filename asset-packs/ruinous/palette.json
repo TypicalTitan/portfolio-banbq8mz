@@ -1,0 +1,20 @@
+{
+  "id": "ruinous",
+  "name": "Ruinous",
+  "tagline": "Blood roses and bone blades",
+  "colors": {
+    "void": "#070304",
+    "obsidian": "#10070a",
+    "ash": "#231016",
+    "oxblood-deep": "#34040c",
+    "oxblood": "#4f0712",
+    "wine": "#640817",
+    "blood": "#b10a27",
+    "blood-bright": "#e0183a",
+    "blood-glow": "#ff3653",
+    "bone-shadow": "#9a8a80",
+    "bone": "#e8d6c4",
+    "bone-light": "#f4dccb",
+    "bone-white": "#fff7f0"
+  }
+}

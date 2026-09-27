@@ -1,0 +1,20 @@
+{
+  "id": "voracious",
+  "name": "Voracious",
+  "tagline": "Violet hunger, magenta maw",
+  "colors": {
+    "void": "#07040c",
+    "abyss": "#0f0918",
+    "dusk": "#221332",
+    "violet-deep": "#2a0a47",
+    "violet-dark": "#3a0f60",
+    "violet-mid": "#4a1379",
+    "violet": "#8420c9",
+    "violet-bright": "#b62af0",
+    "violet-glow": "#e854ff",
+    "magenta": "#ff2e9a",
+    "orchid": "#ff9bdc",
+    "lilac": "#f1dcff",
+    "lilac-white": "#fff0fa"
+  }
+}

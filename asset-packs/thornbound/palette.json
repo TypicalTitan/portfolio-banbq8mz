@@ -1,0 +1,20 @@
+{
+  "id": "thornbound",
+  "name": "Thornbound",
+  "tagline": "Black thorns and Noxian gold",
+  "colors": {
+    "void": "#080706",
+    "iron": "#181411",
+    "iron-light": "#2b2524",
+    "steel": "#4a423d",
+    "gold-deep": "#5a4210",
+    "gold-dark": "#7d5c14",
+    "gold": "#c99a2e",
+    "gold-bright": "#e0b445",
+    "gold-glow": "#ffd35a",
+    "gold-pale": "#f6e2b8",
+    "blood-dark": "#6a0913",
+    "blood": "#c0142a",
+    "blood-bright": "#e8243c"
+  }
+}

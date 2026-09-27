@@ -414,6 +414,7 @@ src/effects/            lava, particles, thorns, sigils, reveal, scheduler
 src/render/             one renderer per section / page
 src/styles/             tokens, base, chrome, effects and per-section CSS
 public/                 images and files (copied as-is into dist/)
+asset-packs/            standalone SVG asset packs to pick from (not part of the build; open asset-packs/index.html)
 scripts/check-content.mjs   npm run check
 ```
 
