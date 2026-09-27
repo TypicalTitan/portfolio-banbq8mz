@@ -1,0 +1,219 @@
+/* ==========================================================================
+   themes.css: theme packs. tokens.css holds the Titan (default) look; each pack below
+   restates the colour tokens under :root[data-theme="<id>"]. Anything built from those
+   tokens (gradients, glows, hairlines, the SVG sigils) follows automatically. The canvas
+   half of each pack (lava ramps, embers, petals) lives in src/themes.js; keep the two in step.
+
+   Every pack is Atakhan-leaning: blade-cut corners, the bladed-rose sigil, blood-rose petals.
+   ========================================================================== */
+
+/* ── Blade geometry (every pack) ──────────────────────────────────────────
+   Asymmetric radii: a deep cut on two opposite corners, a nick on the others. Where
+   corner-shape is supported the curves become straight bevels (blade edges; circles become
+   diamonds); elsewhere the same radii round off into leaf and petal shapes. --r-icon stays a
+   single length because base.css reads it inside min(). */
+:root[data-theme] {
+  --r-pill:  16px 4px;
+  --r-hero:  40px 6px;
+  --r-media: 28px 4px;
+  --r-card:  22px 3px;
+  --r-shot:  18px 3px;
+  --r-tile:  14px 3px;
+  --r-icon:  12px;
+  --r-chip:  9px 2px;
+
+  --sigil-yinyang: none;
+  --sigil-rose:    inline;
+}
+@supports (corner-shape: bevel) {
+  /* Pseudo-elements are not allowed inside :where(), hence the separate selectors. */
+  :root[data-theme] :where(*),
+  :root[data-theme] ::before,
+  :root[data-theme] ::after { corner-shape: bevel; }
+  /* The sticker's glow traces its round SVG disc. */
+  :root[data-theme] :where(.fx-sticker) { corner-shape: round; }
+}
+
+/* ── Ruinous: blood roses and bone blades ─────────────────────────────────
+   Obsidian ground, oxblood primaries, bone-white where Titan runs amber. */
+:root[data-theme="ruinous"] {
+  --c-bg: #070304;           --c-bg-deep: #030102;
+  --c-surface-1: #10070a;    --c-surface-2: #180a0e;    --c-surface-3: #230e14;
+  --c-glass: rgba(18, 6, 9, .62);                       --c-glass-solid: #150609;
+  --c-hairline:   rgba(240, 226, 214, .12);
+  --c-hairline-2: rgba(240, 226, 214, .24);
+  --c-hairline-3: rgba(240, 226, 214, .55);
+
+  --c-ink: #f6efe6;          --c-text: #e4d9ce;         --c-muted: #b3a69c;
+  --c-subtle: #8b7d74;       --c-accent-text: #ff7383;
+  --c-on-band: rgba(246, 236, 226, .86);
+  --c-on-primary: #ffffff;   --c-on-bright: #140204;
+
+  --c-crimson-950: #150205;  --c-crimson-900: #34040c;  --c-crimson-800: #4f0712;
+  --c-crimson-700: #640817;  --c-crimson-600: #86091e;  --c-crimson-500: #b10a27;
+  --c-crimson-400: #cf1233;
+  --c-oxblood: #25040a;      --c-ember-deep: #19040a;   --c-surface-warm: #14060a;
+  --c-nav-solid: #0c0406;    --c-shot-bg: #10060a;      --c-shot-bar-1: #1c0a0f;   --c-shot-bar-2: #13060a;
+
+  --c-hot: #ff1f45;          --c-hot-2: #ff3653;        --c-rose: #f3e4d6;
+  --c-petal: #d10f30;        --c-petal-deep: #7a0616;
+
+  --c-lava: #ff4b63;         --c-lava-hi: #f4dccb;      --c-lava-gold: #f7e6d6;
+  --c-lava-core: #fff7ef;    --c-crust: #0e0304;
+
+  --c-dusk-1: #2a0a12;       --c-dusk-2: #52101f;
+  --c-strip-1: #1d2329;      --c-strip-mid: #2a2025;    --c-strip-2: #45121d;
+  --c-violet-0: #16060c;     --c-violet-1: #2e0c18;     --c-violet-2: #7c1631;     --c-violet-3: #5c1024;
+  --c-dusk-night: #060405;   --c-violet-night: #070305;
+  --c-stone-1: #0d0a0a;      --c-stone-2: #151112;      --c-stone-3: #201a1b;
+
+  --ch-bg: 7, 3, 4;          --ch-bg-deep: 3, 1, 2;     --ch-surface: 16, 7, 10;
+  --ch-crimson: 177, 10, 39; --ch-crimson-600: 134, 9, 30;
+  --ch-crimson-900: 52, 4, 12;                          --ch-crimson-950: 21, 2, 5;
+  --ch-hot: 255, 31, 69;     --ch-hot-2: 255, 54, 83;   --ch-accent: 255, 115, 131;
+  --ch-petal-hi: 255, 90, 110;
+  --ch-rose: 243, 228, 214;  --ch-blush: 240, 226, 214;
+  --ch-lava: 255, 75, 99;    --ch-lava-hi: 244, 220, 203;
+  --ch-dusk-1: 42, 10, 18;   --ch-dusk-2: 82, 16, 31;
+  --ch-strip-1: 29, 35, 41;  --ch-strip-2: 69, 18, 29;
+  --ch-violet-2: 124, 22, 49;                           --ch-violet-lt: 240, 196, 204;
+
+  --g-blackletter:   linear-gradient(180deg, #fff7f0 0%, #f4dccb 26%, #ff4a60 52%, #b10a27 76%, #4f0712 100%);
+  --g-accent:        linear-gradient(180deg, #fff3e8 0%, #f4d3bd 34%, #ff5a6e 70%, #b30c27 100%);
+  --g-lava:          linear-gradient(90deg, #ff4b63 0%, #ff8a8a 50%, #f4dccb 100%);
+  --g-primary:       linear-gradient(180deg, #c5102f 0%, #a1081f 100%);
+  --g-primary-hover: linear-gradient(180deg, #d9163a 0%, #b10a27 100%);
+  --g-contact-title: linear-gradient(180deg, #fff4ea 0%, #f2b5ad 22%, #ff4058 52%, #cf1233 100%);
+  --g-band-crimson:  radial-gradient(80% 60% at 18% 0%, rgba(var(--ch-crimson), .34), transparent 62%),
+                     linear-gradient(180deg, var(--c-bg) 0%, #3e050e 10%, #200309 60%, var(--c-bg) 100%);
+
+  --scales: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='40'%3E%3Cpath d='M12 0L24 20L12 40L0 20Z' fill='none' stroke='rgb(243,228,214)' stroke-opacity='.05'/%3E%3C/svg%3E");
+  --seam-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28'%3E%3Cpath d='M0 14.5H120' stroke='rgba(255,54,83,.55)'/%3E%3Cpath d='M8 14.5L34 10.5L28 14.5ZM48 14.5L74 18.5L68 14.5ZM88 14.5L114 10.5L108 14.5Z' fill='rgba(255,54,83,.85)'/%3E%3Cpath d='M58 14.5L60 12.5L62 14.5L60 16.5Z' fill='rgba(243,228,214,.8)'/%3E%3C/svg%3E");
+}
+
+/* ── Voracious: violet hunger, magenta maw ────────────────────────────────
+   Void-black ground, violet primaries, a devouring magenta where Titan runs lava. */
+:root[data-theme="voracious"] {
+  --c-bg: #07040c;           --c-bg-deep: #030206;
+  --c-surface-1: #0f0918;    --c-surface-2: #170d24;    --c-surface-3: #221332;
+  --c-glass: rgba(16, 8, 26, .62);                      --c-glass-solid: #140b21;
+  --c-hairline:   rgba(234, 222, 255, .12);
+  --c-hairline-2: rgba(234, 222, 255, .24);
+  --c-hairline-3: rgba(234, 222, 255, .55);
+
+  --c-ink: #f6f0ff;          --c-text: #e3daf2;         --c-muted: #b1a5c6;
+  --c-subtle: #887c9e;       --c-accent-text: #e08cff;
+  --c-on-band: rgba(244, 236, 255, .86);
+  --c-on-primary: #ffffff;   --c-on-bright: #12041c;
+
+  --c-crimson-950: #12051f;  --c-crimson-900: #2a0a47;  --c-crimson-800: #3a0f60;
+  --c-crimson-700: #4a1379;  --c-crimson-600: #621aa0;  --c-crimson-500: #8420c9;
+  --c-crimson-400: #9a34e0;
+  --c-oxblood: #1f0836;      --c-ember-deep: #170629;   --c-surface-warm: #130a1f;
+  --c-nav-solid: #0c0714;    --c-shot-bg: #0f0918;      --c-shot-bar-1: #1b1029;   --c-shot-bar-2: #120a1e;
+
+  --c-hot: #d63bff;          --c-hot-2: #e854ff;        --c-rose: #f1dcff;
+  --c-petal: #b62af0;        --c-petal-deep: #5a168f;
+
+  --c-lava: #ff2e9a;         --c-lava-hi: #ff9bdc;      --c-lava-gold: #ffd9f1;
+  --c-lava-core: #fff0fa;    --c-crust: #0d0414;
+
+  --c-dusk-1: #2a0a3a;       --c-dusk-2: #5a1a6a;
+  --c-strip-1: #0f2c3d;      --c-strip-mid: #1f2350;    --c-strip-2: #3d145e;
+  --c-violet-0: #150a2a;     --c-violet-1: #321066;     --c-violet-2: #7a36d6;     --c-violet-3: #5a28a8;
+  --c-dusk-night: #05050c;   --c-violet-night: #06030e;
+  --c-stone-1: #0c0a10;      --c-stone-2: #14111a;      --c-stone-3: #1e1a26;
+
+  --ch-bg: 7, 4, 12;         --ch-bg-deep: 3, 2, 6;     --ch-surface: 15, 9, 24;
+  --ch-crimson: 132, 32, 201;                           --ch-crimson-600: 98, 26, 160;
+  --ch-crimson-900: 42, 10, 71;                         --ch-crimson-950: 18, 5, 31;
+  --ch-hot: 214, 59, 255;    --ch-hot-2: 232, 84, 255;  --ch-accent: 224, 140, 255;
+  --ch-petal-hi: 240, 120, 255;
+  --ch-rose: 241, 220, 255;  --ch-blush: 234, 222, 255;
+  --ch-lava: 255, 46, 154;   --ch-lava-hi: 255, 155, 220;
+  --ch-dusk-1: 42, 10, 58;   --ch-dusk-2: 90, 26, 106;
+  --ch-strip-1: 15, 44, 61;  --ch-strip-2: 61, 20, 94;
+  --ch-violet-2: 122, 54, 214;                          --ch-violet-lt: 214, 190, 255;
+
+  --g-blackletter:   linear-gradient(180deg, #fbeaff 0%, #e2a6ff 20%, #c046ff 46%, #7d1fc9 72%, #34085a 100%);
+  --g-accent:        linear-gradient(180deg, #ffe3f7 0%, #ff9bdc 34%, #ff2e9a 68%, #9a1fd6 100%);
+  --g-lava:          linear-gradient(90deg, #ff2e9a 0%, #ff5fc0 55%, #ff9bdc 100%);
+  --g-primary:       linear-gradient(180deg, #9227d9 0%, #7419b8 100%);
+  --g-primary-hover: linear-gradient(180deg, #a236ea 0%, #8420c9 100%);
+  --g-contact-title: linear-gradient(180deg, #fbeaff 0%, #eeb0ff 20%, #d44bff 50%, #a02ae6 100%);
+  --g-band-crimson:  radial-gradient(80% 60% at 18% 0%, rgba(var(--ch-crimson), .34), transparent 62%),
+                     linear-gradient(180deg, var(--c-bg) 0%, #2c0a4a 10%, #1a0730 60%, var(--c-bg) 100%);
+
+  --scales: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='40'%3E%3Cpath d='M12 0L24 20L12 40L0 20Z' fill='none' stroke='rgb(241,220,255)' stroke-opacity='.05'/%3E%3C/svg%3E");
+  --seam-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28'%3E%3Cpath d='M0 14.5H120' stroke='rgba(232,84,255,.55)'/%3E%3Cpath d='M8 14.5L34 10.5L28 14.5ZM48 14.5L74 18.5L68 14.5ZM88 14.5L114 10.5L108 14.5Z' fill='rgba(232,84,255,.85)'/%3E%3Cpath d='M58 14.5L60 12.5L62 14.5L60 16.5Z' fill='rgba(255,155,220,.9)'/%3E%3C/svg%3E");
+}
+
+/* ── Thornbound: black thorns and Noxian gold ─────────────────────────────
+   Iron-black ground, gold primaries (with dark text), blood-red thorns and roses. */
+:root[data-theme="thornbound"] {
+  --c-bg: #080706;           --c-bg-deep: #040302;
+  --c-surface-1: #100d0b;    --c-surface-2: #181411;    --c-surface-3: #231d18;
+  --c-glass: rgba(18, 14, 11, .62);                     --c-glass-solid: #16120f;
+  --c-hairline:   rgba(244, 230, 204, .12);
+  --c-hairline-2: rgba(244, 230, 204, .24);
+  --c-hairline-3: rgba(244, 230, 204, .55);
+  --c-hairline-hot: rgba(var(--ch-accent), .42);
+
+  --c-ink: #faf5ea;          --c-text: #e8e0d0;         --c-muted: #b8ad9a;
+  --c-subtle: #8f8573;       --c-accent-text: #f2c35a;
+  --c-on-band: rgba(250, 242, 226, .86);
+  --c-on-primary: #140c02;   --c-on-bright: #120c02;
+
+  --c-crimson-950: #140f04;  --c-crimson-900: #2e2208;  --c-crimson-800: #45330c;
+  --c-crimson-700: #5a4210;  --c-crimson-600: #7d5c14;  --c-crimson-500: #c99a2e;
+  --c-crimson-400: #e0b445;
+  --c-oxblood: #22190a;      --c-ember-deep: #1a1308;   --c-surface-warm: #15110c;
+  --c-nav-solid: #0d0b09;    --c-shot-bg: #110e0b;      --c-shot-bar-1: #1d1813;   --c-shot-bar-2: #14100c;
+
+  --c-hot: #e8243c;          --c-hot-2: #ff3a4c;        --c-rose: #f6e2b8;
+  --c-petal: #c0142a;        --c-petal-deep: #6a0913;
+
+  --c-lava: #e89a14;         --c-lava-hi: #ffd35a;      --c-lava-gold: #ffe6a3;
+  --c-lava-core: #fff8e0;    --c-crust: #0c0904;
+
+  --c-dusk-1: #2a1410;       --c-dusk-2: #4d1f17;
+  --c-strip-1: #1f2226;      --c-strip-mid: #2b2524;    --c-strip-2: #3d1a14;
+  --c-violet-0: #16100a;     --c-violet-1: #2a1a0c;     --c-violet-2: #8a5a14;     --c-violet-3: #6a4610;
+  --c-dusk-night: #060505;   --c-violet-night: #070504;
+  --c-stone-1: #0e0c0a;      --c-stone-2: #161311;      --c-stone-3: #211c19;
+
+  --ch-bg: 8, 7, 6;          --ch-bg-deep: 4, 3, 2;     --ch-surface: 16, 13, 11;
+  --ch-crimson: 201, 154, 46;                           --ch-crimson-600: 125, 92, 20;
+  --ch-crimson-900: 46, 34, 8;                          --ch-crimson-950: 20, 15, 4;
+  --ch-hot: 232, 36, 60;     --ch-hot-2: 255, 58, 76;   --ch-accent: 242, 195, 90;
+  --ch-petal-hi: 255, 90, 100;
+  --ch-rose: 246, 226, 184;  --ch-blush: 244, 230, 204;
+  --ch-lava: 232, 154, 20;   --ch-lava-hi: 255, 211, 90;
+  --ch-dusk-1: 42, 20, 16;   --ch-dusk-2: 77, 31, 23;
+  --ch-strip-1: 31, 34, 38;  --ch-strip-2: 61, 26, 20;
+  --ch-violet-2: 138, 90, 20;                           --ch-violet-lt: 246, 222, 170;
+
+  --g-blackletter:   linear-gradient(180deg, #fff6da 0%, #f7d88a 20%, #e0a93a 46%, #a8741a 72%, #4a320a 100%);
+  --g-accent:        linear-gradient(180deg, #fff4cf 0%, #ffd35a 36%, #e89a14 70%, #9c5f08 100%);
+  --g-lava:          linear-gradient(90deg, #d88a0e 0%, #f2b02c 55%, #ffd35a 100%);
+  --g-primary:       linear-gradient(180deg, #dcae3e 0%, #b8871f 100%);
+  --g-primary-hover: linear-gradient(180deg, #ecc050 0%, #c99a2e 100%);
+  --g-contact-title: linear-gradient(180deg, #fff6da 0%, #f7d88a 22%, #e8a93a 52%, #c98a1e 100%);
+  --g-band-crimson:  radial-gradient(80% 60% at 18% 0%, rgba(var(--ch-hot), .22), transparent 62%),
+                     linear-gradient(180deg, var(--c-bg) 0%, #24190a 10%, #151008 60%, var(--c-bg) 100%);
+
+  /* Gold buttons glow gold, not blood. */
+  --glow-btn:       inset 0 1px 0 rgba(255,255,255,.35), 0 0 0 1px rgba(var(--ch-lava-hi), .45), 0 8px 24px -8px rgba(var(--ch-lava), .55);
+  --glow-btn-hover: inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 1px rgba(var(--ch-lava-hi), .8), 0 0 28px rgba(var(--ch-lava), .6);
+
+  --scales: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='40'%3E%3Cpath d='M12 0L24 20L12 40L0 20Z' fill='none' stroke='rgb(246,226,184)' stroke-opacity='.05'/%3E%3C/svg%3E");
+  --seam-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='28'%3E%3Cpath d='M0 14.5H120' stroke='rgba(232,36,60,.6)'/%3E%3Cpath d='M8 14.5L34 10.5L28 14.5ZM48 14.5L74 18.5L68 14.5ZM88 14.5L114 10.5L108 14.5Z' fill='rgba(255,211,90,.85)'/%3E%3Cpath d='M58 14.5L60 12.5L62 14.5L60 16.5Z' fill='rgba(255,58,76,.9)'/%3E%3C/svg%3E");
+}
+
+/* ── Restate tokens.css's media-query adjustments at pack specificity ─────── */
+@media (max-width: 767.98px) {
+  :root[data-theme] { --r-hero: 26px 4px; }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root[data-theme] { --c-glass: var(--c-glass-solid); }
+}

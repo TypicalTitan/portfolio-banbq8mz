@@ -3,6 +3,7 @@
  * behind destroyEffects(), and the lifecycle shared by the lava and particle canvases.
  */
 import { reducedMotion, onReducedMotionChange } from './motion.js';
+import { onThemeChange } from './theme.js';
 
 const MAX_DT = 50; // ms; returning to a throttled tab never makes particles jump
 
@@ -133,6 +134,7 @@ export function destroyEffects() {
  *   resize(cssW, cssH)   reallocate buffers (always called before any paint)
  *   frame(dt)            advance by dt seconds (0 = repaint only) and draw
  *   still()              draw the static frame
+ *   retheme()            optional: swap palettes after a theme-pack switch (a repaint follows)
  * }
  */
 export function mountCanvasEffect(impl) {
@@ -143,6 +145,8 @@ export function mountCanvasEffect(impl) {
   let io = null;
   let ro = null;
   let unsubscribe = null;
+  // From mount, not start(): a pack switch before the start gate must still reach this canvas.
+  const unsubscribeTheme = impl.retheme ? onThemeChange(onTheme) : null;
   let handle = null;
   let timer = 0;
   let w = 0;
@@ -215,6 +219,13 @@ export function mountCanvasEffect(impl) {
     sync();
   }
 
+  function onTheme() {
+    if (dead) return;
+    impl.retheme();
+    dirty = true;
+    sync(); // repaints now if sized and near; otherwise the next sync does
+  }
+
   function onStep(dt) {
     impl.frame(dt);
     dirty = false;
@@ -247,6 +258,7 @@ export function mountCanvasEffect(impl) {
     if (io) io.disconnect();
     if (ro) ro.disconnect();
     if (unsubscribe) unsubscribe();
+    if (unsubscribeTheme) unsubscribeTheme();
     if (handle) handle.unregister();
     handle = null;
     canvas.remove();

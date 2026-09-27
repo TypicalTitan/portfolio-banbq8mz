@@ -205,7 +205,7 @@
 /* z-index -1 (inside the isolated article) keeps the frame's drop shadow from dimming the title below. */
 .wk-lab-feature-shot { z-index: -1; width: 100%; transition: box-shadow var(--dur-3) var(--ease-out); }
 .wk-lab-feature-shot img { aspect-ratio: 16 / 9; object-fit: cover; }
-.wk-lab-feature:hover .wk-lab-feature-shot { box-shadow: var(--shadow-shot), 0 0 48px -10px rgba(255, 59, 107, .45); }
+.wk-lab-feature:hover .wk-lab-feature-shot { box-shadow: var(--shadow-shot), 0 0 48px -10px rgba(var(--ch-hot-2), .45); }
 
 .wk-lab-feature-title {
   margin-top: 20px;
@@ -273,7 +273,7 @@
 .wk-lab-row-arrow {
   position: absolute; top: 10px; right: 10px;
   display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(10, 2, 4, .72); color: var(--c-ink);
+  background: rgba(var(--ch-bg), .72); color: var(--c-ink);
   opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
 }
 
@@ -318,13 +318,13 @@
 }
 .wk-detail-hero[data-wk-theme="dusk"] {
   background:
-    radial-gradient(55% 45% at 70% 105%, rgba(255, 59, 107, .4), transparent 70%),
-    linear-gradient(180deg, #07040a 0%, #1b3a55 55%, #4a1f4f 100%);
+    radial-gradient(55% 45% at 70% 105%, rgba(var(--ch-hot-2), .4), transparent 70%),
+    linear-gradient(180deg, var(--c-dusk-night) 0%, var(--c-strip-1) 55%, var(--c-strip-2) 100%);
 }
 .wk-detail-hero[data-wk-theme="violet"] {
   background:
-    radial-gradient(55% 45% at 70% 105%, rgba(138, 63, 209, .45), transparent 70%),
-    linear-gradient(180deg, #07030d 0%, #3b1a6e 70%, #6a1a4a 100%);
+    radial-gradient(55% 45% at 70% 105%, rgba(var(--ch-violet-2), .45), transparent 70%),
+    linear-gradient(180deg, var(--c-violet-night) 0%, var(--c-violet-1) 70%, var(--c-dusk-2) 100%);
 }
 
 .wk-detail-scrim { display: none; }
@@ -365,8 +365,8 @@
     display: block; position: absolute; inset: 0; z-index: var(--z-scrim); pointer-events: none;
     /* Scoped to the text column (≥.85 behind the copy) so the lava glows around the cover. */
     background:
-      linear-gradient(to top, rgba(10, 2, 4, .5), transparent 40%),
-      linear-gradient(90deg, rgba(10, 2, 4, .88) 0%, rgba(10, 2, 4, .6) 45%, transparent 70%);
+      linear-gradient(to top, rgba(var(--ch-bg), .5), transparent 40%),
+      linear-gradient(90deg, rgba(var(--ch-bg), .88) 0%, rgba(var(--ch-bg), .6) 45%, transparent 70%);
   }
 
   /* Capped so the text never runs under the cover, which starts at 50%. */
@@ -462,7 +462,7 @@
   content: ""; position: absolute; left: -36px; top: 6px;
   width: 12px; height: 12px; border-radius: 50%;
   background: radial-gradient(circle at 40% 35%, var(--c-lava-core), var(--c-lava-hi) 40%, var(--c-lava) 78%);
-  box-shadow: 0 0 0 3px var(--c-bg), 0 0 12px rgba(255, 74, 0, .7);
+  box-shadow: 0 0 0 3px var(--c-bg), 0 0 12px rgba(var(--ch-lava), .7);
 }
 .wk-detail-article .wk-step-title { font-size: 1.125rem; line-height: var(--lh-snug); }
 .wk-detail-article .wk-step-body { margin-top: 6px; font-size: 1rem; line-height: 1.6; color: var(--c-muted); }
@@ -504,8 +504,8 @@
   border: 1px solid var(--c-hairline-2); border-radius: var(--r-pill);
   font-size: var(--fs-small); font-weight: 700; line-height: 1.2; color: var(--c-ink);
 }
-.wk-verdict--supported { border-color: var(--c-lava); color: var(--c-lava-gold); box-shadow: 0 0 18px -6px rgba(255, 74, 0, .55); }
-.wk-verdict--partial { border-color: rgba(255, 176, 0, .6); color: var(--c-lava-hi); }
+.wk-verdict--supported { border-color: var(--c-lava); color: var(--c-lava-gold); box-shadow: 0 0 18px -6px rgba(var(--ch-lava), .55); }
+.wk-verdict--partial { border-color: rgba(var(--ch-lava-hi), .6); color: var(--c-lava-hi); }
 .wk-verdict--refuted { border-color: var(--c-hairline-hot); color: var(--c-accent-text); }
 
 /* Lab: method steps with mono 01 counters */
@@ -595,7 +595,7 @@
   position: absolute; top: 10px; right: 10px;
   display: grid; place-items: center; width: 36px; height: 36px;
   border: 1px solid var(--c-hairline-2); border-radius: 50%;
-  background: rgba(10, 2, 4, .72); color: var(--c-ink);
+  background: rgba(var(--ch-bg), .72); color: var(--c-ink);
   opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
 }
 .wk-gallery-open:hover { border-color: var(--c-hairline-hot); }
@@ -617,7 +617,7 @@
 }
 .wk-lightbox[open] { display: grid; place-items: center; animation: wk-lightbox-in var(--dur-2) var(--ease-out); }
 .wk-lightbox::backdrop {
-  background: rgba(5, 1, 2, .92);
+  background: rgba(var(--ch-bg-deep), .92);
   -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
 }
 @keyframes wk-lightbox-in {
@@ -633,8 +633,8 @@
 .wk-lightbox-caption { max-width: min(72ch, 90vw); text-align: center; font-size: var(--fs-small); line-height: 1.5; color: var(--c-text); }
 .wk-lightbox-count { margin-inline-end: 10px; font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--c-lava-hi); }
 
-.wk-lightbox .icon-btn { position: absolute; z-index: 1; background: rgba(20, 6, 9, .86); }
-.wk-lightbox .icon-btn:hover { background: rgba(61, 6, 16, .92); }
+.wk-lightbox .icon-btn { position: absolute; z-index: 1; background: rgba(var(--ch-surface), .86); }
+.wk-lightbox .icon-btn:hover { background: rgba(var(--ch-crimson-900), .92); }
 .wk-lightbox-close { top: 16px; right: 16px; }
 .wk-lightbox-prev { top: 50%; left: 16px; translate: 0 -50%; }
 .wk-lightbox-next { top: 50%; right: 16px; translate: 0 -50%; }

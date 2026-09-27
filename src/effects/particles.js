@@ -1,34 +1,32 @@
 /**
- * Embers and crimson petals on a DPR-aware 2D canvas. Every glow and blur is baked
- * into sprites once; the frame loop only does drawImage (never shadowBlur).
+ * Embers and petals on a DPR-aware 2D canvas, coloured and shaped by the active theme pack.
+ * Every glow and blur is baked into sprites once per pack; the frame loop only does drawImage
+ * (never shadowBlur).
  */
 import { mulberry32 } from './noise.js';
 import { perfTier } from './motion.js';
 import { mountCanvasEffect, effectCanvas } from './scheduler.js';
+import { themePack } from './theme.js';
 
 const TAU = Math.PI * 2;
 const RES = 2; // sprites are rasterised at the DPR cap
 
-/* ── Sprites (built once, shared by every instance) ──────────────────────── */
+/* ── Sprites (built once per pack, shared by every instance) ─────────────── */
 
 const EMBER_PX = 32;
-const EMBER_TINTS = [
-  // amber · lava · hot; [core, body] as "r,g,b"
-  ['255,241,194', '255,176,0', '255,74,0'],
-  ['255,196,150', '255,74,0', '255,74,0'],
-  ['255,200,214', '255,45,85', '255,45,85'],
-];
-const PETAL_PATH = 'M2 14 C8 2,26 0,38 10 C34 12,34 16,38 18 C26 28,8 26,2 14Z';
+// Petal outlines in a 40×28 box, tip at the right. 'petal' is the rounded, notched rose petal;
+// 'blade' comes to a point; 'sickle' is a thin curved crescent, like a scythe edge.
+const PETAL_PATHS = {
+  petal: 'M2 14 C8 2,26 0,38 10 C34 12,34 16,38 18 C26 28,8 26,2 14Z',
+  blade: 'M2 14 C7 3,24 1,39 12 C27 25,8 25,2 14Z',
+  sickle: 'M1 21 C7 8,24 2,39 5 C28 8,15 14,1 21Z',
+};
 const PETAL_W = 40;
 const PETAL_H = 28;
 const PETAL_SCALES = [0.6, 1, 1.6];
 const PETAL_BLUR = 3;
-const PETAL_TINTS = [
-  ['#ff3355', '#c8102e'], // tip → base
-  ['#ff6682', '#9e0b24'],
-];
 
-let sprites = null;
+const spriteCache = new Map();
 
 function makeCanvas(w, h) {
   const c = document.createElement('canvas');
@@ -63,31 +61,65 @@ function emberSprite([core, body, edge], soft) {
   return c;
 }
 
-function petalSprite([tip, base], scale, blurred, canFilter) {
+/* A rising sliver of light: a thin vertical rhombus, hottest just above centre, in a faint halo. */
+function shardSprite([core, body, edge], soft) {
+  const px = EMBER_PX * RES;
+  const m = px / 2;
+  const c = makeCanvas(px, px);
+  const g = c.getContext('2d');
+  const halo = g.createRadialGradient(m, m, 0, m, m, m);
+  halo.addColorStop(0, `rgba(${edge},${soft ? 0.3 : 0.34})`);
+  halo.addColorStop(0.5, `rgba(${edge},${soft ? 0.1 : 0.08})`);
+  halo.addColorStop(1, `rgba(${edge},0)`);
+  g.fillStyle = halo;
+  g.fillRect(0, 0, px, px);
+  const hw = px * (soft ? 0.15 : 0.1);
+  const hh = px * 0.47;
+  const waist = m - hh * 0.12;
+  const blade = g.createLinearGradient(m, m - hh, m, m + hh);
+  blade.addColorStop(0, `rgba(${body},0)`);
+  blade.addColorStop(0.38, `rgba(${core},${soft ? 0.65 : 1})`);
+  blade.addColorStop(0.62, `rgba(${body},${soft ? 0.5 : 0.9})`);
+  blade.addColorStop(1, `rgba(${edge},0)`);
+  g.fillStyle = blade;
+  g.beginPath();
+  g.moveTo(m, m - hh);
+  g.lineTo(m + hw, waist);
+  g.lineTo(m, m + hh);
+  g.lineTo(m - hw, waist);
+  g.closePath();
+  g.fill();
+  return c;
+}
+
+function petalSprite({ shape, tip, base }, sheenRgb, ribRgb, scale, blurred, canFilter) {
   const pad = blurred ? PETAL_BLUR * 3 : 1;
   const w = PETAL_W * scale + pad * 2;
   const h = PETAL_H * scale + pad * 2;
   const sharp = makeCanvas(w * RES, h * RES);
   const g = sharp.getContext('2d');
   g.setTransform(RES * scale, 0, 0, RES * scale, pad * RES, pad * RES);
-  const path = new Path2D(PETAL_PATH);
+  const path = new Path2D(PETAL_PATHS[shape] ?? PETAL_PATHS.petal);
   const fill = g.createLinearGradient(38, 14, 2, 14);
   fill.addColorStop(0, tip);
   fill.addColorStop(1, base);
   g.fillStyle = fill;
   g.fill(path);
+  g.save();
+  g.clip(path); // sheen and midrib stay inside thin shapes
   const sheen = g.createRadialGradient(27, 9, 0, 27, 9, 17);
-  sheen.addColorStop(0, 'rgba(255,214,222,.3)');
-  sheen.addColorStop(1, 'rgba(255,214,222,0)');
+  sheen.addColorStop(0, `rgba(${sheenRgb},.3)`);
+  sheen.addColorStop(1, `rgba(${sheenRgb},0)`);
   g.fillStyle = sheen;
   g.fill(path);
-  g.strokeStyle = 'rgba(255,140,160,.35)';
+  g.strokeStyle = `rgba(${ribRgb},.35)`;
   g.lineWidth = 0.8;
   g.lineCap = 'round';
   g.beginPath();
   g.moveTo(5, 14.2);
   g.quadraticCurveTo(20, 12.4, 33, 13.6);
   g.stroke();
+  g.restore();
   if (!blurred) return { img: sharp, w, h };
 
   const soft = makeCanvas(w * RES, h * RES);
@@ -99,18 +131,31 @@ function petalSprite([tip, base], scale, blurred, canFilter) {
 }
 
 function getSprites() {
+  const pack = themePack();
+  let sprites = spriteCache.get(pack.id);
   if (sprites) return sprites;
   const canFilter = canvasFilterWorks();
+  const ember = pack.embers.shape === 'shard' ? shardSprite : emberSprite;
   sprites = {
-    ember: EMBER_TINTS.map((t) => emberSprite(t, false)),
-    emberSoft: EMBER_TINTS.map((t) => emberSprite(t, true)),
-    // petal[tint][scaleIndex][blurred ? 1 : 0]
-    petal: PETAL_TINTS.map((tint) => PETAL_SCALES.map((sc) => [
-      petalSprite(tint, sc, false, canFilter),
-      petalSprite(tint, sc, true, canFilter),
+    ember: pack.embers.tints.map((t) => ember(t, false)),
+    emberSoft: pack.embers.tints.map((t) => ember(t, true)),
+    // Cumulative petal weights, for pickPetal().
+    petalAt: pack.petals.reduce((acc, p) => [...acc, (acc[acc.length - 1] ?? 0) + p.weight], []),
+    // petal[variant][scaleIndex][blurred ? 1 : 0]
+    petal: pack.petals.map((variant) => PETAL_SCALES.map((sc) => [
+      petalSprite(variant, pack.sheen, pack.rib, sc, false, canFilter),
+      petalSprite(variant, pack.sheen, pack.rib, sc, true, canFilter),
     ])),
   };
+  spriteCache.set(pack.id, sprites);
   return sprites;
+}
+
+/** Petal variant for a uniform draw `u` in [0, 1), by the pack's weights. */
+function pickPetal(sp, u) {
+  const total = sp.petalAt[sp.petalAt.length - 1];
+  const i = sp.petalAt.findIndex((edge) => u * total < edge);
+  return i < 0 ? sp.petalAt.length - 1 : i;
 }
 
 /* ── Particle model ──────────────────────────────────────────────────────── */
@@ -182,20 +227,21 @@ export function mountParticles(host, { embers = 0, petals = 0, petalLayers = 'al
     e.ph = rnd() * TAU;
     e.life = range(rnd, 2.5, 6);
     e.age = fresh ? rnd() * e.life : 0;
-    const big = rnd() < 0.08;
-    const r = big ? range(rnd, 3, 4) : range(rnd, 0.8, 2.4);
-    const tint = pickEmberTint(rnd);
-    e.img = big ? sp.emberSoft[tint] : sp.ember[tint];
+    e.big = rnd() < 0.08;
+    const r = e.big ? range(rnd, 3, 4) : range(rnd, 0.8, 2.4);
+    e.tint = pickEmberTint(rnd);
+    e.img = (e.big ? sp.emberSoft : sp.ember)[e.tint];
     e.size = r * 6;
     return e;
   }
 
   function makePetal(layer, rnd) {
     const L = LAYERS[layer];
-    const tint = rnd() < 0.62 ? 0 : 1;
+    const u = rnd();
     return {
       L,
-      sprite: sp.petal[tint][L.scale][L.blur],
+      u,
+      sprite: sp.petal[pickPetal(sp, u)][L.scale][L.blur],
       alpha: Math.min(L.alpha, alphaCap),
       x: 0,
       y: 0,
@@ -327,6 +373,11 @@ export function mountParticles(host, { embers = 0, petals = 0, petalLayers = 'al
       t = 0;
       seed(mulberry32(7), true);
       draw();
+    },
+    retheme() {
+      sp = getSprites();
+      for (const e of emberList) e.img = (e.big ? sp.emberSoft : sp.ember)[e.tint];
+      for (const p of petalList) p.sprite = sp.petal[pickPetal(sp, p.u)][p.L.scale][p.L.blur];
     },
   });
 }

@@ -8,7 +8,7 @@ import { asset, monthYear } from '../lib/format.js';
 import { socialLinks } from '../lib/ui.js';
 import { featuredProjects, hasFeatured, hasLabs, hasProjectGrid } from '../lib/sections.js';
 import { projectHref, sectionHref } from '../router.js';
-import { reducedMotion, yinYang } from '../effects/index.js';
+import { reducedMotion, sigil } from '../effects/index.js';
 
 function linkColumn(title, links) {
   const list = links.filter(Boolean);
@@ -95,7 +95,7 @@ export function renderFooter(content) {
         document.getElementById('main')?.focus({ preventScroll: true });
       },
     },
-    h('span', { class: 'ft-top-glyph', 'aria-hidden': 'true' }, yinYang(16)),
+    h('span', { class: 'ft-top-glyph', 'aria-hidden': 'true' }, sigil(16)),
     h('span', null, 'Back to the surface'),
     h('span', { class: 'ft-top-caret', 'aria-hidden': 'true' }, '▲'),
   );

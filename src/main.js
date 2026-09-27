@@ -3,6 +3,7 @@ import '@fontsource-variable/inter/wght-italic.css';
 import '@fontsource-variable/grenze-gotisch/wght.css';
 import '@fontsource-variable/jetbrains-mono/wght.css';
 import './styles/tokens.css';
+import './styles/themes.css';
 import './styles/base.css';
 import './styles/chrome.css';
 import './styles/effects.css';

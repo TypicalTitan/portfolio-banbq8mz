@@ -51,6 +51,8 @@ const LUCIDE = new Set(
   (readFileSync(join(ROOT, 'src', 'lib', 'icons.js'), 'utf8').match(/const LUCIDE = \{([^}]*)\}/)?.[1] ?? '')
     .split(/[\s,]+/).filter(Boolean),
 );
+// Theme packs (site.theme) are the ids in src/themes.js.
+const { THEME_IDS } = await import(pathToFileURL(join(ROOT, 'src', 'themes.js')).href);
 const THEMES = ['lava', 'dusk', 'violet', 'ember'];
 const SKILL_THEMES = ['lava', 'dusk', 'crimson', 'violet', 'ember'];
 const FRAMES = ['window', 'plate'];
@@ -275,6 +277,7 @@ const site = content.site || {};
 if (need(site, ['title', 'description', 'copyrightYear', 'updated', 'currently', 'marquee', 'projectCategories', 'sections'], 'site')) {
   str(site, 'title', 'site'); str(site, 'description', 'site'); str(site, 'currently', 'site', { optional: true });
   if (!Number.isInteger(site.copyrightYear)) err('site.copyrightYear', 'must be a year number like 2026');
+  oneOf(site.theme, THEME_IDS, 'site.theme', { optional: true });
   date(site.updated, 'site.updated');
   if (!isArr(site.marquee)) err('site.marquee', 'must be a list ([] hides the tools strip)');
   else site.marquee.forEach((m, i) => { if (!isStr(m)) err(`site.marquee[${i}]`, 'must be non-empty text'); });
