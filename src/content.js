@@ -40,10 +40,6 @@ const content = {
     copyrightYear: 2026,
     updated: '2026-09',                     // footer "Updated Sep 2026"
     currently: 'Working toward an AAS-T in Cybersecurity & Networking', // footer "Currently"; null hides
-    // Look of the site for first-time visitors: 'titan' (crimson and lava, the original), or one of the
-    // Atakhan-inspired packs 'ruinous' (blood and bone), 'voracious' (violet) or 'thornbound' (black and gold).
-    // Visitors can switch from the nav; their pick is remembered. Packs are defined in src/themes.js.
-    theme: 'titan',
     // Scrolling tools strip under the hero. Names that match a known brand get its logo
     // automatically (Python, C++, Git, Linux, WebRTC, UniFi…).
     marquee: ['AWS', 'Linux', 'PowerShell', 'Python', 'C++', 'C#', '.NET', 'TypeScript', 'SQL', 'Git', 'REST APIs',

@@ -9,7 +9,6 @@ import { breakable, button, iconButton, socialLinks } from '../lib/ui.js';
 import { hasFeatured, hasLabs, projectsAnchor } from '../lib/sections.js';
 import { sectionHref } from '../router.js';
 import { motionPaused, onReducedMotionChange, setMotionPaused } from '../effects/index.js';
-import { themeOptions, themePicker } from './theme-picker.js';
 
 const DESKTOP = '(min-width: 1024px)';
 const SPY_MARGIN = '-45% 0px -50% 0px';
@@ -122,7 +121,6 @@ export function renderNav(content) {
       h(
         'div',
         { class: 'nav-drawer-foot' },
-        themeOptions({ className: 'nav-drawer-theme' }),
         email,
         socialLinks(person.socials, { className: 'nav-drawer-socials' }),
         primaryButton({ size: 'lg', className: 'nav-drawer-resume', onClick: () => onDrawerLink('contact') }),
@@ -176,7 +174,6 @@ export function renderNav(content) {
   });
 
   /* ── Header ── */
-  const picker = themePicker();
   const header = h(
     'header',
     { class: 'nav', id: 'nav-root' },
@@ -192,9 +189,8 @@ export function renderNav(content) {
       items.length
         ? h('nav', { class: 'nav-links', 'aria-label': 'Primary' }, h('ul', null, deskLinks.map((a) => h('li', null, a))))
         : null,
-      h('div', { class: 'nav-actions' }, picker.button, motionToggle(), primaryButton({ size: 'sm', className: ['nav-resume', !resumeHref && 'nav-cta--contact'] }), menuBtn),
+      h('div', { class: 'nav-actions' }, motionToggle(), primaryButton({ size: 'sm', className: ['nav-resume', !resumeHref && 'nav-cta--contact'] }), menuBtn),
     ),
-    picker.panel,
     drawer,
   );
 

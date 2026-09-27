@@ -8,7 +8,7 @@ import { h } from '../../lib/dom.js';
 import { icon, brand } from '../../lib/icons.js';
 import { asset } from '../../lib/format.js';
 import { breakable, button, copyEmailButton } from '../../lib/ui.js';
-import { mountLava, mountParticles, sigil, sprig, thornSeam } from '../../effects/index.js';
+import { mountLava, mountParticles, sprig, thornSeam, yinYang } from '../../effects/index.js';
 
 export function renderContact(content) {
   const person = content.person ?? {};
@@ -17,7 +17,7 @@ export function renderContact(content) {
   const accent = copy.titleAccent || 'something.';
 
   const lava = h('div', { class: 'hm-contact-lava', 'aria-hidden': 'true' },
-    h('div', { class: 'hm-contact-sigil' }, sigil(240)));
+    h('div', { class: 'hm-contact-sigil' }, yinYang(240)));
   mountLava(lava, { preset: 'fissure' });
   mountParticles(lava, { embers: 40, spawn: 'bottom' });
 

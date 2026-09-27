@@ -78,7 +78,6 @@ Everything the site shows lives in `src/content.js`. **Keep the keys and change 
 - `title` and `description`: the browser tab, the search snippet and link previews (Discord, LinkedIn). They are written into `index.html` for you when the site builds.
 - `updated` and `copyrightYear`: shown in the footer.
 - `currently`: the footer's "Currently" note; `null` hides it.
-- `theme`: the look first-time visitors get: `'titan'` (the original crimson and lava) or one of the Atakhan-inspired packs `'ruinous'`, `'voracious'` or `'thornbound'` (see [Theme packs](#theme-packs)). Visitors can switch from the nav, and their pick is remembered.
 - `marquee`: the scrolling tools strip. Every name gets a glyph, and so does every Skills item and every tag / skill chip (see **Skill and tag glyphs** below).
 - `projectCategories`: the filter buttons, in order (currently `['Servers', 'Hardware']`). Every `project.category` must be listed.
 - `sections`: the eyebrow, title, accent word and blurb for every section.
@@ -339,7 +338,7 @@ GitHub Pages sites are always public: anyone who has the URL can open the site. 
 
 ## Design system
 
-The look is a black stage lit by its own fire. Atmosphere lives in colour, texture, type and edge effects, while the content stays structured like a résumé: role, dates, evidence. All tokens live in `src/styles/tokens.css`; the palette below is the default Titan look, and [theme packs](#theme-packs) restate it.
+The look is a black stage lit by its own fire. Atmosphere lives in colour, texture, type and edge effects, while the content stays structured like a résumé: role, dates, evidence. All tokens live in `src/styles/tokens.css`.
 
 ### Palette
 
@@ -357,32 +356,6 @@ The look is a black stage lit by its own fire. Atmosphere lives in colour, textu
 
 Text colours are chosen for WCAG AA contrast on every dark surface. Hot pink is never used for text.
 
-### Theme packs
-
-Four looks share the layout. **Titan** is the original; the other three lean on Atakhan from League of Legends: sharp, blade-like and floral.
-
-| Pack | Mood | Primary | Heat (where Titan runs lava) |
-|---|---|---|---|
-| **Titan** (`titan`) | Crimson, lava and thorns | crimson `#c8102e` | lava orange → amber |
-| **Ruinous** (`ruinous`) | Blood roses and bone blades | oxblood `#b10a27` | blood → bone white |
-| **Voracious** (`voracious`) | Violet hunger, magenta maw | violet `#8420c9` | magenta → orchid |
-| **Thornbound** (`thornbound`) | Black thorns and Noxian gold | gold `#c99a2e` (dark text) | molten gold, with blood-red thorns |
-
-Every pack except Titan also changes shape:
-
-- **Blade corners:** cards, buttons, chips and panels get asymmetric bevelled corners (a deep cut on two opposite corners, a nick on the others), and round buttons and dots become diamonds. This uses CSS `corner-shape`; browsers that don't support it yet round the same radii into leaf and petal shapes instead.
-- **Bladed rose sigil:** replaces the yin-yang in the sticker, the thorn seams, the contact banner and the footer.
-- **Blade petals and shards:** the falling petals mix pointed rose petals with thin sickle blades, and the embers rise as slivers of light.
-
-Visitors choose from the Palette button in the nav (in the menu on phones). The choice applies instantly, is remembered per browser, and is set before the first paint, so there's no flash of the wrong theme. `site.theme` in `content.js` picks what first-time visitors see.
-
-A pack has two halves that must agree:
-
-- **`src/styles/themes.css`:** the token overrides under `:root[data-theme="<id>"]` (colours, RGB channel tokens such as `--ch-hot: 255, 45, 85` for `rgba(var(--ch-hot), .5)`, and the signature gradients).
-- **`src/themes.js`:** the name, tagline and swatch for the picker, plus the canvas palette (lava colour ramps, ember tints and shape, petal colours and shapes).
-
-To add a pack, copy one block in each file, give both the same `id`, and check that text still meets AA contrast on every surface.
-
 ### Type
 
 | Role | Font |
@@ -397,7 +370,7 @@ All three fonts are self-hosted through `@fontsource-variable`, with no Google F
 
 - **Lava:** a low-resolution 2D canvas noise field, drawn in the hero, contact banner and 404.
 - **Particles:** canvas embers and crimson petals. The petal storm lives on the About band.
-- **Thorns and sigils:** SVG thorn vines on the hero corners and the portrait, which draw themselves in and flicker with pink arcs. The yin-yang sticker, favicon and contact sigil share one geometry; the theme packs swap the yin-yang for a bladed rose.
+- **Thorns and sigils:** SVG thorn vines on the hero corners and the portrait, which draw themselves in and flicker with pink arcs. The yin-yang sticker, favicon and contact sigil share one geometry.
 - **Other details:** ember bullets, lava underlines, dragon-scale texture and grain.
 
 Effects start only after the page has loaded and the browser is idle. They pause when off-screen or when the tab is hidden, and they're cleaned up when you change pages.
@@ -437,10 +410,9 @@ src/content.js          ← all the content
 src/main.js, router.js  wiring and hash routing
 src/lib/                DOM builder, icons (+ logos.js loader, tag-glyphs.js table), formatting, shared UI pieces
 src/assets/logos/       one .svg per skill / tool / social logo (see Skill and tag glyphs)
-src/themes.js           theme packs: picker names and the canvas palettes (CSS half in styles/themes.css)
-src/effects/            lava, particles, thorns, sigils, reveal, scheduler, active theme
-src/render/             one renderer per section / page (+ the theme picker)
-src/styles/             tokens, theme packs, base, chrome, effects and per-section CSS
+src/effects/            lava, particles, thorns, sigils, reveal, scheduler
+src/render/             one renderer per section / page
+src/styles/             tokens, base, chrome, effects and per-section CSS
 public/                 images and files (copied as-is into dist/)
 scripts/check-content.mjs   npm run check
 ```

@@ -81,7 +81,7 @@
   flex: none;
   width: 32px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--c-hot-2));
+  background: linear-gradient(90deg, transparent, #ff3b6b);
 }
 .hm-hero-realname::after { transform: scaleX(-1); }
 @media (max-width: 379.98px) {
@@ -394,7 +394,7 @@
   flex: none;
   margin-inline: 40px;
   color: var(--c-hot);
-  filter: drop-shadow(0 0 6px rgba(var(--ch-hot), .55));
+  filter: drop-shadow(0 0 6px rgba(255, 45, 85, .55));
 }
 
 @media (max-width: 767.98px) {
@@ -444,9 +444,9 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   background:
     radial-gradient(35% 45% at 12% 30%, rgba(62, 54, 58, .55), transparent 70%),
     radial-gradient(30% 40% at 88% 65%, rgba(52, 46, 50, .5), transparent 70%),
-    radial-gradient(50% 35% at 60% 8%, rgba(var(--ch-dusk-2), .4), transparent 70%),
-    radial-gradient(45% 40% at 28% 96%, rgba(var(--ch-strip-1), .38), transparent 70%),
-    linear-gradient(180deg, #0c0709, #151013 50%, var(--c-bg));
+    radial-gradient(50% 35% at 60% 8%, rgba(106, 26, 74, .4), transparent 70%),
+    radial-gradient(45% 40% at 28% 96%, rgba(27, 58, 85, .38), transparent 70%),
+    linear-gradient(180deg, #0c0709, #151013 50%, #0a0204);
 }
 /* Concentric stone swirl, blurred like an out-of-focus backdrop. */
 .hm-about::before {
@@ -454,7 +454,7 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   position: absolute;
   inset: -16px;
   z-index: 0;
-  background: repeating-radial-gradient(circle at 72% 50%, transparent 0 22px, rgba(var(--ch-dusk-2), .2) 24px, transparent 30px);
+  background: repeating-radial-gradient(circle at 72% 50%, transparent 0 22px, rgba(106, 26, 74, .2) 24px, transparent 30px);
   filter: blur(6px);
   opacity: .8;
   pointer-events: none;
@@ -668,7 +668,7 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   isolation: isolate;
   overflow-x: clip;
   /* The top glow (--g-glow-top, centred lower) so it isn't at full strength on the seam. */
-  background: radial-gradient(60% 45% at 50% 18%, rgba(var(--ch-crimson), .24), transparent 70%), var(--scales), var(--c-stone-2);
+  background: radial-gradient(60% 45% at 50% 18%, rgba(200, 16, 46, .24), transparent 70%), var(--scales), var(--c-stone-2);
 }
 .hm-skills::before,
 .hm-skills::after {
@@ -745,21 +745,21 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(var(--ch-bg), .35);
+  background: rgba(10, 2, 4, .35);
   pointer-events: none;
 }
 .hm-fan-card--lava {
   background:
-    radial-gradient(120% 55% at 50% 112%, rgba(var(--ch-lava), .55), transparent 62%),
-    linear-gradient(180deg, var(--c-ember-deep), var(--c-crimson-900));
+    radial-gradient(120% 55% at 50% 112%, rgba(255, 74, 0, .55), transparent 62%),
+    linear-gradient(180deg, #1c0509, #3d0610);
 }
-.hm-fan-card--dusk { background: linear-gradient(180deg, rgba(var(--ch-strip-1), .9), rgba(var(--ch-strip-2), .9)); }
+.hm-fan-card--dusk { background: linear-gradient(180deg, rgba(27, 58, 85, .9), rgba(74, 31, 79, .9)); }
 .hm-fan-card--crimson { background: var(--g-crimson-fade); }
-.hm-fan-card--violet { background: linear-gradient(170deg, var(--c-violet-0), var(--c-violet-1) 60%, var(--c-violet-3)); }
+.hm-fan-card--violet { background: linear-gradient(170deg, #1a0b2e, #3b1a6e 60%, #6a2fb0); }
 .hm-fan-card--ember {
   background:
-    radial-gradient(60% 40% at 50% 0, rgba(var(--ch-hot), .35), transparent),
-    linear-gradient(180deg, var(--c-oxblood), var(--c-crimson-700));
+    radial-gradient(60% 40% at 50% 0, rgba(255, 45, 85, .35), transparent),
+    linear-gradient(180deg, #2a050c, #6b0a18);
 }
 
 .hm-fan-card:hover,
@@ -1040,7 +1040,7 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   height: 6px;
   border-radius: 50%;
   background: var(--c-lava-hi);
-  box-shadow: 0 0 0 3px rgba(var(--ch-lava-hi), .16), 0 0 10px rgba(var(--ch-lava-hi), .75);
+  box-shadow: 0 0 0 3px rgba(255, 176, 0, .16), 0 0 10px rgba(255, 176, 0, .75);
 }
 @media (forced-colors: active) {
   .hm-edu-status-dot { box-sizing: border-box; border: 3px solid CanvasText; box-shadow: none; }
@@ -1252,7 +1252,7 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   min-height: 600px;
   padding-block: 0;
   overflow-x: clip;
-  background: var(--c-surface-warm);
+  background: #170609;
 }
 
 .hm-contact-lava {
@@ -1261,9 +1261,9 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   z-index: 0;
   overflow: clip;
   background:
-    radial-gradient(45% 35% at 70% 88%, rgba(var(--ch-lava-hi), .4), transparent 70%),
-    radial-gradient(60% 45% at 55% 100%, rgba(var(--ch-lava), .55), transparent 70%),
-    linear-gradient(180deg, var(--c-crimson-950) 0%, var(--c-crimson-900) 100%);
+    radial-gradient(45% 35% at 70% 88%, rgba(255, 176, 0, .4), transparent 70%),
+    radial-gradient(60% 45% at 55% 100%, rgba(255, 74, 0, .55), transparent 70%),
+    linear-gradient(180deg, #1a0306 0%, #3d0610 100%);
 }
 .hm-contact-lava::after {
   content: '';
@@ -1283,7 +1283,7 @@ html.motion-paused .hm-marquee-toggle { display: none; }
   width: 240px;
   height: 240px;
   translate: -50% -50%;
-  filter: drop-shadow(0 0 24px rgba(var(--ch-hot), .6));
+  filter: drop-shadow(0 0 24px rgba(255, 45, 85, .6));
 }
 .hm-contact-sigil > svg {
   display: block;
@@ -1302,7 +1302,7 @@ html.motion-paused .hm-contact-sigil { animation: none; }
   position: absolute;
   inset: 0 calc(42% - 80px) 0 0;
   z-index: 1;
-  background: linear-gradient(160deg, var(--c-crimson-900), var(--c-oxblood) 60%, var(--c-surface-warm));
+  background: linear-gradient(160deg, #3d0610, #2a050c 60%, #170609);
   clip-path: polygon(0 0, 100% 0, calc(100% - 80px) 100%, 0 100%);
 }
 .hm-contact-panel.grain::after { opacity: .06; }
@@ -1312,14 +1312,14 @@ html.motion-paused .hm-contact-sigil { animation: none; }
   position: absolute;
   inset: 0;
   z-index: 1;
-  filter: drop-shadow(0 0 8px var(--c-hot-2));
+  filter: drop-shadow(0 0 8px #ff3b6b);
   pointer-events: none;
 }
 .hm-contact-seam::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 0%, var(--c-hot-2) 30%, var(--c-lava-hi) 55%, var(--c-hot-2) 75%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, #ff3b6b 30%, #ffb000 55%, #ff3b6b 75%, transparent 100%);
   clip-path: polygon(calc(58% + 78px) 0, calc(58% + 81px) 0, calc(58% + 1px) 100%, calc(58% - 2px) 100%);
 }
 
@@ -1338,7 +1338,7 @@ html.motion-paused .hm-contact-sigil { animation: none; }
 }
 .hm-contact .hm-contact-accent {
   /* Lighter-bottomed than --g-blackletter so the baseline and descenders keep 3:1 on the panel. */
-  background-image: var(--g-contact-title);
+  background-image: linear-gradient(180deg, #ffe3e8 0%, #ff9aae 20%, #ff3b5c 50%, #e0173a 100%);
   font-size: 1.1em;
   text-transform: none;
   vertical-align: baseline;
@@ -1372,7 +1372,7 @@ html.motion-paused .hm-contact-sigil { animation: none; }
   padding: 18px;
   border: 1px solid var(--c-hairline);
   border-radius: 12px;
-  background: rgba(var(--ch-blush), .05);
+  background: rgba(255, 214, 222, .05);
   color: inherit;
   text-decoration: none;
   transition:
@@ -1386,7 +1386,7 @@ a.hm-contact-tile:focus-visible {
   border-color: var(--c-hairline-hot);
   box-shadow: var(--glow-hot-sm);
 }
-a.hm-contact-tile:hover { background: rgba(var(--ch-blush), .08); }
+a.hm-contact-tile:hover { background: rgba(255, 214, 222, .08); }
 .hm-contact-tile-top {
   display: flex;
   align-items: center;

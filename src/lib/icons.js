@@ -12,7 +12,7 @@ import {
   CircleCheck, CircleDashed, CircleDot, CircleX, CircuitBoard, Clock, Cloud, Code, Copy, Cpu, Dna,
   Download, Droplets, ExternalLink, FileDown, FileText, Flame, FlaskConical, Gamepad2, Gauge, Globe,
   GraduationCap, Hammer, Hand, HeartHandshake, Keyboard, Layers, Lightbulb, Mail, MapPin, Medal, Menu,
-  Microscope, Network, Orbit, Palette, Pause, PenTool, Pipette, Play, Plus, Quote, School, Server, Sparkles,
+  Microscope, Network, Orbit, Pause, PenTool, Pipette, Play, Plus, Quote, School, Server, Sparkles,
   Sprout, Store, Table, Target, Terminal, Thermometer, TriangleAlert, Trophy, User, Users, Wrench, X,
   Zap,
 } from 'lucide';
@@ -26,7 +26,7 @@ const LUCIDE = {
   CircleCheck, CircleDashed, CircleDot, CircleX, CircuitBoard, Clock, Cloud, Code, Copy, Cpu, Dna,
   Download, Droplets, ExternalLink, FileDown, FileText, Flame, FlaskConical, Gamepad2, Gauge, Globe,
   GraduationCap, Hammer, Hand, HeartHandshake, Keyboard, Layers, Lightbulb, Mail, MapPin, Medal, Menu,
-  Microscope, Network, Orbit, Palette, Pause, PenTool, Pipette, Play, Plus, Quote, School, Server, Sparkles,
+  Microscope, Network, Orbit, Pause, PenTool, Pipette, Play, Plus, Quote, School, Server, Sparkles,
   Sprout, Store, Table, Target, Terminal, Thermometer, TriangleAlert, Trophy, User, Users, Wrench, X,
   Zap,
 };

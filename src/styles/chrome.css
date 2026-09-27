@@ -56,16 +56,16 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
     border-color var(--dur-2) var(--ease-out);
 }
 .nav.is-solid {
-  background-color: rgba(var(--ch-bg), .8);
+  background-color: rgba(10, 2, 4, .8);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
   border-bottom-color: var(--c-hairline);
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .nav.is-solid { background-color: var(--c-nav-solid); }
+  .nav.is-solid { background-color: #0f0407; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .nav.is-solid { background-color: var(--c-nav-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .nav.is-solid { background-color: #0f0407; -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 
 .nav-inner {
@@ -104,7 +104,7 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   line-height: 1;
   padding: .02em .06em .1em;
 }
-.nav-brand:hover .nav-mark { border-color: rgba(var(--ch-accent), .8); box-shadow: var(--glow-hot); }
+.nav-brand:hover .nav-mark { border-color: rgba(255, 122, 149, .8); box-shadow: var(--glow-hot); }
 .nav-name {
   overflow: hidden;
   color: var(--c-ink);
@@ -141,7 +141,7 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   height: 2px;
   border-radius: 2px;
   background: var(--g-lava);
-  box-shadow: 0 0 10px rgba(var(--ch-lava), .55);
+  box-shadow: 0 0 10px rgba(255, 74, 0, .55);
   transform: scaleX(0);
   transform-origin: left center;
   opacity: 0;
@@ -180,95 +180,6 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   .nav-menu-btn { display: none; }
 }
 
-/* ── Theme-pack picker (render/theme-picker.js) ─────────────────────────────
-   A popover in the top layer; the script sets top/right to sit under the Palette button. */
-
-/* Desktop only: below 1024px the same choices sit inline in the drawer. */
-.nav-theme { display: none; flex: none; }
-@media (min-width: 1024px) {
-  .nav-theme { display: inline-grid; }
-}
-
-.theme-picker {
-  position: fixed;
-  inset: auto;
-  z-index: var(--z-dialog);
-  width: min(320px, calc(100vw - 16px));
-  max-height: calc(100dvh - var(--nav-h) - 16px);
-  margin: 0;
-  padding: 8px;
-  overflow-y: auto;
-  border: 1px solid var(--c-hairline-2);
-  border-radius: var(--r-card);
-  background: var(--c-glass-solid);
-  box-shadow: var(--shadow-card), 0 24px 60px -20px rgba(0, 0, 0, .9), 0 0 0 1px rgba(var(--ch-hot), .12);
-  color: var(--c-text);
-}
-.theme-picker[hidden] { display: none; }
-.theme-picker__set { display: grid; gap: 4px; min-width: 0; margin: 0; padding: 0; border: 0; }
-.theme-picker__title {
-  padding: 6px 10px 8px;
-  color: var(--c-muted);
-  font: 700 var(--fs-micro)/1.2 var(--font-sans);
-  letter-spacing: var(--tr-micro);
-  text-transform: uppercase;
-}
-
-.theme-opt {
-  position: relative;
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) 10px;
-  align-items: center;
-  gap: 12px;
-  min-height: 56px;
-  padding: 8px 12px 8px 10px;
-  border: 1px solid transparent;
-  border-radius: var(--r-tile);
-  cursor: pointer;
-  transition: background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out);
-}
-.theme-opt:hover { background: rgba(255, 255, 255, .04); }
-.theme-opt:has(:checked) { border-color: var(--c-hairline-hot); background: var(--c-tint); }
-.theme-opt:has(:focus-visible) { box-shadow: var(--ring-focus); }
-/* The radio stays focusable and in the accessibility tree; the whole row is its label. */
-.theme-opt__input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
-/* A blade from base to tip in the pack's colours. */
-.theme-opt__swatch {
-  width: 34px;
-  height: 34px;
-  background: linear-gradient(45deg, var(--sw-c) 0 30%, var(--sw-a) 30% 68%, var(--sw-b) 68%);
-  clip-path: polygon(0 100%, 20% 40%, 100% 0, 60% 80%);
-}
-.theme-opt__text { display: grid; gap: 2px; min-width: 0; }
-.theme-opt__name { color: var(--c-ink); font: 600 var(--fs-small)/1.25 var(--font-sans); }
-.theme-opt__tag { color: var(--c-muted); font: 400 var(--fs-meta)/1.3 var(--font-sans); }
-/* Selected marker: a small diamond, so the choice never rests on colour alone. */
-.theme-opt::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  background: var(--c-accent-text);
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  opacity: 0;
-  transform: scale(.4);
-  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-spring);
-}
-.theme-opt:has(:checked)::after { opacity: 1; transform: none; }
-
-@media (prefers-reduced-motion: no-preference) {
-  .theme-picker {
-    transition:
-      opacity var(--dur-2) var(--ease-out),
-      translate var(--dur-2) var(--ease-out),
-      display var(--dur-2) allow-discrete,
-      overlay var(--dur-2) allow-discrete;
-  }
-  .theme-picker:not(:popover-open) { opacity: 0; translate: 0 -6px; }
-  @starting-style {
-    .theme-picker:popover-open { opacity: 0; translate: 0 -6px; }
-  }
-}
-
 /* ── Drawer (<dialog>, below 1024px) ────────────────────────────────────── */
 
 .nav-drawer {
@@ -284,11 +195,11 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   overflow-y: auto;
   overscroll-behavior: contain;
   background:
-    radial-gradient(80% 40% at 50% 110%, rgba(var(--ch-lava), .35), transparent),
+    radial-gradient(80% 40% at 50% 110%, rgba(255, 74, 0, .35), transparent),
     var(--c-bg-deep);
   color: var(--c-text);
 }
-.nav-drawer::backdrop { background: rgba(var(--ch-bg-deep), .85); }
+.nav-drawer::backdrop { background: rgba(5, 1, 2, .85); }
 .nav-drawer[open] { display: block; }
 
 .nav-drawer-inner {
@@ -355,12 +266,6 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
 .nav-drawer-email .icon { color: var(--c-accent-text); }
 .nav-drawer-email:hover { color: var(--c-ink); }
 .nav-drawer-resume { width: 100%; }
-/* Theme packs, two to a row where they fit. */
-.nav-drawer-theme { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
-.nav-drawer-theme .theme-picker__title { padding-inline: 0; }
-.nav-drawer-theme .theme-opt { grid-template-columns: 28px minmax(0, 1fr); gap: 10px; border-color: var(--c-hairline); }
-.nav-drawer-theme .theme-opt__swatch { width: 28px; height: 28px; }
-.nav-drawer-theme .theme-opt::after { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; }
 
 @media (prefers-reduced-motion: no-preference) {
   .nav-drawer[open] { animation: nav-drawer-in var(--dur-3) var(--ease-out); }
@@ -394,8 +299,8 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   inset: 0;
   z-index: -1;
   background-image:
-    linear-gradient(rgba(var(--ch-hot-2), .045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(var(--ch-hot-2), .045) 1px, transparent 1px);
+    linear-gradient(rgba(255, 59, 107, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 59, 107, .045) 1px, transparent 1px);
   background-size: 24px 24px;
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%);
   mask-image: linear-gradient(180deg, transparent, #000 30%);
@@ -410,7 +315,7 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   right: 0;
   height: 1px;
   background: var(--g-ember-seam);
-  box-shadow: 0 0 12px rgba(var(--ch-hot-2), .45);
+  box-shadow: 0 0 12px rgba(255, 59, 107, .45);
   pointer-events: none;
 }
 
@@ -476,7 +381,7 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
 .ft-now__icon {
   margin-top: 3px;
   color: var(--c-lava);
-  filter: drop-shadow(0 0 6px rgba(var(--ch-lava), .6));
+  filter: drop-shadow(0 0 6px rgba(255, 74, 0, .6));
 }
 
 .ft-bottom {
@@ -546,10 +451,10 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   z-index: 0;
   overflow: clip;
   background:
-    radial-gradient(45% 35% at 30% 100%, rgba(var(--ch-lava-hi), .35), transparent 70%),
-    radial-gradient(55% 45% at 70% 100%, rgba(var(--ch-lava), .5), transparent 70%),
-    radial-gradient(80% 60% at 50% 120%, var(--c-crimson-500), transparent 70%),
-    linear-gradient(180deg, var(--c-bg) 0%, var(--c-crimson-950) 50%, var(--c-crimson-900) 100%);
+    radial-gradient(45% 35% at 30% 100%, rgba(255, 176, 0, .35), transparent 70%),
+    radial-gradient(55% 45% at 70% 100%, rgba(255, 74, 0, .5), transparent 70%),
+    radial-gradient(80% 60% at 50% 120%, #c8102e, transparent 70%),
+    linear-gradient(180deg, #0a0204 0%, #1a0306 50%, #3d0610 100%);
 }
 /* Layers: lava → dim overlay (darker behind the text) → embers. */
 .nf-lava > .fx-lava { z-index: 0; }
@@ -559,8 +464,8 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(55% 55% at 50% 50%, rgba(var(--ch-bg), .6), transparent 80%),
-    rgba(var(--ch-bg), .35);
+    radial-gradient(55% 55% at 50% 50%, rgba(10, 2, 4, .6), transparent 80%),
+    rgba(10, 2, 4, .35);
   pointer-events: none;
 }
 .nf-lava > .fx-particles { z-index: 2; }
@@ -629,10 +534,6 @@ html.is-drawer-open { overflow: hidden; scrollbar-gutter: stable; }
   .nav.is-solid { border-bottom-color: CanvasText; }
   .nav-link.is-active::after { forced-color-adjust: none; background: CanvasText; box-shadow: none; }
   .nav-mark, .nav-menu-btn, .ft-top-btn { border: 1px solid ButtonText; }
-  .theme-picker { border: 1px solid CanvasText; }
-  .theme-opt:has(:checked) { border-color: Highlight; }
-  .theme-opt::after { forced-color-adjust: none; background: Highlight; }
-  .theme-opt__swatch { forced-color-adjust: none; }
   .ft::after { forced-color-adjust: none; background: CanvasText; box-shadow: none; }
   .nf { border: 1px solid CanvasText; }
 }

@@ -5,19 +5,19 @@
 import { fbm, smoothstep } from './noise.js';
 import { perfTier } from './motion.js';
 import { mountCanvasEffect, effectCanvas } from './scheduler.js';
-import { themePack } from './theme.js';
 
+const LAVA = ['#0a0204', '#2a050c', '#6b0a18', '#c8102e', '#ff4a00', '#ffb000'];
 const STOP_AT = [0, 0.35, 0.55, 0.7, 0.85, 1];
+const CORE = '#fff1c2';
 
-// `ramp` names the active pack's colour ramp (src/themes.js: lava.stops / .dusk / .violet).
 const PRESETS = {
-  hero:    { ramp: 'stops', core: true, cool: 0.7, heat: 1, speed: 0.05 },
+  hero:    { stops: LAVA, core: true, cool: 0.7, heat: 1, speed: 0.05 },
   // Corner-biased: heat falls from the bottom-right corner (lo + span·b) instead of by row.
-  fissure: { ramp: 'stops', core: true, cool: 0, heat: 1.08, speed: 0.04, corner: true, lo: 0.5, span: 0.6 },
-  lava:    { ramp: 'stops', core: true, cool: 0.55, heat: 0.9, speed: 0.05 },
-  ember:   { ramp: 'stops', core: true, cool: 0.55, heat: 0.75, speed: 0.05 },
-  dusk:    { ramp: 'dusk', cool: 0.55, heat: 0.85, speed: 0.04 },
-  violet:  { ramp: 'violet', cool: 0.55, heat: 0.85, speed: 0.04 },
+  fissure: { stops: LAVA, core: true, cool: 0, heat: 1.08, speed: 0.04, corner: true, lo: 0.5, span: 0.6 },
+  lava:    { stops: LAVA, core: true, cool: 0.55, heat: 0.9, speed: 0.05 },
+  ember:   { stops: LAVA, core: true, cool: 0.55, heat: 0.75, speed: 0.05 },
+  dusk:    { stops: ['#07040a', '#1b3a55', '#4a1f4f', '#a0265f', '#ff3b6b', '#ffd1dc'], cool: 0.55, heat: 0.85, speed: 0.04 },
+  violet:  { stops: ['#07030d', '#3b1a6e', '#6a1a4a', '#8a3fd1', '#ff6b8e', '#ffd1dc'], cool: 0.55, heat: 0.85, speed: 0.04 },
 };
 
 const FPS = 24;
@@ -39,13 +39,11 @@ function rgb(hex) {
 }
 
 function lutFor(name) {
-  const pack = themePack();
-  const key = `${pack.id}:${name}`;
-  let lut = luts.get(key);
+  let lut = luts.get(name);
   if (lut) return lut;
-  const { ramp, core } = PRESETS[name];
-  const cols = pack.lava[ramp].map(rgb);
-  const hot = rgb(pack.lava.core);
+  const { stops, core } = PRESETS[name];
+  const cols = stops.map(rgb);
+  const hot = rgb(CORE);
   lut = new Uint32Array(256);
   for (let i = 0; i < 256; i++) {
     let x = (i / 255) * HEAT_MAX;
@@ -61,7 +59,7 @@ function lutFor(name) {
     const [r, g, b] = c.map(Math.round);
     lut[i] = LITTLE_ENDIAN ? ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0 : ((r << 24) | (g << 16) | (b << 8) | 255) >>> 0;
   }
-  luts.set(key, lut);
+  luts.set(name, lut);
   return lut;
 }
 
@@ -134,7 +132,7 @@ export function mountLava(host, { preset = 'hero', animate = true, t: stillT = S
   const name = Object.prototype.hasOwnProperty.call(PRESETS, preset) ? preset : 'lava';
   const base = PRESETS[name];
   const P = heatScale === 1 ? base : { ...base, heat: base.heat * heatScale };
-  let lut = lutFor(name);
+  const lut = lutFor(name);
   const canvas = effectCanvas('fx-lava');
   host.insertBefore(canvas, host.firstChild);
 
@@ -204,9 +202,6 @@ export function mountLava(host, { preset = 'hero', animate = true, t: stillT = S
     },
     still() {
       paint(still);
-    },
-    retheme() {
-      lut = lutFor(name);
     },
   });
 }

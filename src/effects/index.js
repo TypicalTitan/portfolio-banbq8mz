@@ -3,7 +3,6 @@ export { reducedMotion, systemReducedMotion, motionPaused, setMotionPaused, onRe
 export { mountLava } from './lava.js';
 export { mountParticles } from './particles.js';
 export { thornCorners, thornRing, thornVine } from './thorns.js';
-export { sigil, stickerDisc, sparkle, sprig, thornSeam } from './sigils.js';
+export { yinYang, stickerDisc, sparkle, sprig, thornSeam } from './sigils.js';
 export { initReveal } from './reveal.js';
 export { destroyEffects } from './scheduler.js';
-export { themePack, themePacks, setThemePack, onThemeChange } from './theme.js';
