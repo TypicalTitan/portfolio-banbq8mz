@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-<title>Voracious — blade spark</title>
-<path d="M12 12L13.9 10.1C12.56 6.08 12.15 4.88 12 0.8ZM12 12L10.1 13.9C7.46 12.56 6.67 12.15 4 12ZM12 12L13.9 13.9C16.54 12.56 17.33 12.15 20 12ZM12 12L13.9 13.9C12.56 17.92 12.15 19.12 12 23.2Z" fill="#8420c9"/>
-<path d="M12 12L10.1 10.1C11.44 6.08 11.85 4.88 12 0.8ZM12 12L10.1 10.1C7.46 11.44 6.67 11.85 4 12ZM12 12L13.9 10.1C16.54 11.44 17.33 11.85 20 12ZM12 12L10.1 13.9C11.44 17.92 11.85 19.12 12 23.2Z" fill="#e854ff"/>
-<path d="M12 9.75L12.68 12L12 14.25L11.33 12Z" fill="#fff0fa"/>
+<title>Voracious — fang swirl spark</title>
+<defs><mask id="voracious-spark-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><path fill="#000" d="M12 7.6L13.3 12L12 16.4L10.7 12Z"/></mask></defs>
+<g mask="url(#voracious-spark-cut)"><path fill="#8420c9" d="M12 12L12 0.8L13.1 6.6ZM12 12L22.2 12L16.2 13.4ZM12 12L13.1 17.4L12 23.2ZM12 12L7.8 13.4L1.8 12ZM12 12L16.2 13.4L14.6 15.4L13.1 17.4ZM12 12L10.9 17.4L9.4 15.4L7.8 13.4Z"/><path fill="#c43dff" d="M12 12L10.9 6.6L12 0.8ZM12 12L16.2 10.6L22.2 12ZM12 12L12 23.2L10.9 17.4ZM12 12L1.8 12L7.8 10.6ZM12 12L10.9 6.6L9.4 8.6L7.8 10.6ZM12 12L13.1 6.6L14.6 8.6L16.2 10.6Z"/></g>
 </svg>

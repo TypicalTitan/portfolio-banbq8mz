@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none">
-<title>Thornbound — spark</title>
-<path d="M12 1Q13 6.6 14.6 9.4L12 12L12 1ZM3.2 12Q7.8 13 9.4 14.6L12 12L3.2 12ZM20.8 12Q16.2 13 14.6 14.6L12 12L20.8 12ZM12 23Q13 17.4 14.6 14.6L12 12L12 23ZM12 1Q11 6.6 9.4 9.4L12 12L12 1ZM3.2 12Q7.8 11 9.4 9.4L12 12L3.2 12ZM20.8 12Q16.2 11 14.6 9.4L12 12L20.8 12ZM12 23Q11 17.4 9.4 14.6L12 12L12 23Z" fill="#7d5c14"/>
-<path d="M12 1Q11 6.6 9.4 9.4L12 12L12 1ZM3.2 12Q7.8 11 9.4 9.4L12 12L3.2 12ZM20.8 12Q16.2 11 14.6 9.4L12 12L20.8 12ZM12 23Q11 17.4 9.4 14.6L12 12L12 23Z" fill="#e0b445"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+<title>Thornbound — crown thorn spark</title>
+<defs><mask id="thornbound-spark-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><path fill="#000" d="M10.3 10.3L13.7 10.3L13.7 13.7L10.3 13.7Z"/></mask></defs>
+<g mask="url(#thornbound-spark-cut)"><path fill="#7d5c14" d="M12 12L12 0.6L14.5 9.4ZM12 12L17.23 6.77L15.18 11.51ZM12 12L14.6 9.5L23.4 12ZM12 12L15.18 12.49L17.23 17.23ZM12 12L14.5 14.6L12 23.4ZM12 12L11.51 15.18L6.77 17.23ZM12 12L9.4 14.5L0.6 12ZM12 12L6.77 6.77L11.51 8.82Z"/><path fill="#c99a2e" d="M12 12L9.5 9.4L12 0.6ZM12 12L12.49 8.82L17.23 6.77ZM12 12L23.4 12L14.6 14.5ZM12 12L17.23 17.23L12.49 15.18ZM12 12L12 23.4L9.5 14.6ZM12 12L6.77 17.23L8.82 12.49ZM12 12L0.6 12L9.4 9.5ZM12 12L8.82 11.51L6.77 6.77Z"/></g>
 </svg>

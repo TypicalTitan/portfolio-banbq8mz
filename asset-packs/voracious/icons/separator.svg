@@ -1,8 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 16" width="48" height="16">
-<title>Voracious — maw-eye separator</title>
-<path d="M18.4 8Q17.31 9.45 15.68 9.45Q10.68 9.31 1.4 8ZM29.6 8Q30.69 9.45 32.32 9.45Q37.32 9.31 46.6 8ZM19 9.2Q17.1 13.6 11.6 14.2Q14.5 11.3 16.6 9.3ZM29 9.2Q30.9 13.6 36.4 14.2Q33.5 11.3 31.4 9.3Z" fill="#8420c9"/>
-<path d="M18.4 8Q17.31 6.55 15.68 6.55Q10.68 6.7 1.4 8ZM29.6 8Q30.69 6.55 32.32 6.55Q37.32 6.7 46.6 8ZM19 6.8Q17.1 2.4 11.6 1.8Q14.5 4.7 16.6 6.7ZM29 6.8Q30.9 2.4 36.4 1.8Q33.5 4.7 31.4 6.7Z" fill="#e854ff"/>
-<path d="M19 8L29 8Q26.1 10.86 24 14.8Q21.9 10.86 19 8Z" fill="#8420c9"/>
-<path d="M19 8Q21.9 5.14 24 1.2Q26.1 5.14 29 8Z" fill="#e854ff"/>
-<path d="M24 4.6Q25.2 8 24 11.4Q22.8 8 24 4.6Z" fill="#ff2e9a"/>
+<title>Voracious — maw eye separator</title>
+<defs><mask id="voracious-separator-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="16"><rect width="48" height="16" fill="#fff"/><path fill="#000" d="M24 3.9L25.5 8L24 12.1L22.5 8Z"/></mask></defs>
+<g mask="url(#voracious-separator-cut)"><path fill="#8420c9" d="M16.4 8L31.6 8L27.6 12.6L20.4 12.6ZM2 11.6L9.6 8.6L14.2 8.6L13 11.2L8 11.4ZM40 11.4L35 11.2L33.8 8.6L38.4 8.6L46 11.6Z"/><path fill="#c43dff" d="M16.4 8L20.4 3.4L27.6 3.4L31.6 8ZM2 11.6L6.6 6.6L11.2 4.6L14.6 6.2L14.2 8.6L9.6 8.6ZM38.4 8.6L33.8 8.6L33.4 6.2L36.8 4.6L41.4 6.6L46 11.6Z"/></g>
 </svg>

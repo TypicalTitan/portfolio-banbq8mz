@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 16" width="48" height="16" fill="none">
-<title>Thornbound — separator</title>
-<path d="M18 8L20.4 8L24 12.4L27.6 8L30 8L24 15L18 8ZM17.4 8L17.4 9.5Q12.4 9.28 1.5 8L17.4 8ZM14.6 8.9Q11.6 11.16 9.4 14.2L11.4 8.75L14.6 8.9ZM30.6 8L30.6 9.5Q35.6 9.28 46.5 8L30.6 8ZM33.4 8.9Q36.4 11.16 38.6 14.2L36.6 8.75L33.4 8.9ZM18 8L24 1L30 8L27.6 8L24 3.6L20.4 8L18 8ZM17.4 8L17.4 6.5Q12.4 6.73 1.5 8L17.4 8ZM14.6 7.1Q11.6 4.84 9.4 1.8L11.4 7.25L14.6 7.1ZM30.6 8L30.6 6.5Q35.6 6.73 46.5 8L30.6 8ZM33.4 7.1Q36.4 4.84 38.6 1.8L36.6 7.25L33.4 7.1Z" fill="#7d5c14"/>
-<path d="M18 8L24 1L30 8L27.6 8L24 3.6L20.4 8L18 8ZM17.4 8L17.4 6.5Q12.4 6.73 1.5 8L17.4 8ZM14.6 7.1Q11.6 4.84 9.4 1.8L11.4 7.25L14.6 7.1ZM30.6 8L30.6 6.5Q35.6 6.73 46.5 8L30.6 8ZM33.4 7.1Q36.4 4.84 38.6 1.8L36.6 7.25L33.4 7.1Z" fill="#e0b445"/>
-<path d="M20.4 8L27.6 8L24 12.4L20.4 8ZM20.4 8L24 3.6L27.6 8L20.4 8Z" fill="#c0142a"/>
-<path d="M20.4 8L24 3.6L27.6 8L20.4 8Z" fill="#e8243c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 16" width="48" height="16">
+<title>Thornbound — chevron diamond separator</title>
+<defs><mask id="thornbound-separator-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="16"><rect width="48" height="16" fill="#fff"/><path fill="#000" d="M22.5 6.5L25.5 6.5L25.5 9.5L22.5 9.5Z"/></mask></defs>
+<g mask="url(#thornbound-separator-cut)"><path fill="#7d5c14" d="M2 8L11.2 8L11.2 9.6ZM36.8 9.6L36.8 8L46 8ZM11.4 11.6L16 8L18.6 8L13.2 13.4ZM34.8 13.4L29.4 8L32 8L36.6 11.6ZM19.2 8L28.8 8L24 13.8Z"/><path fill="#c99a2e" d="M2 8L11.2 6.4L11.2 8ZM36.8 8L36.8 6.4L46 8ZM13.2 2.6L18.6 8L16 8L11.4 4.4ZM36.6 4.4L32 8L29.4 8L34.8 2.6ZM24 2.2L28.8 8L19.2 8Z"/></g>
 </svg>
